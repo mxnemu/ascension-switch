@@ -20,7 +20,9 @@ GameEngine* GameEngine_create(void) {
 }
 
 void GameEngine_destroy(GameEngine* this) {
+	CANCEL_IF_FALSE(this);
 	lua_close(this->l);
+	GameModule_destroy(this->module);
 	SDL_Quit();
 	free(this);
 }

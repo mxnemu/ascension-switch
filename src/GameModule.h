@@ -15,6 +15,7 @@ typedef struct GameModule {
 } GameModule;
 
 GameModule* GameModule_create(void);
+void GameModule_destroy(GameModule* this);
 
 void emptyUpdate(RawTime dt);
 void emptyDraw(SDL_Surface* surface);

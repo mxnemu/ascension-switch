@@ -14,5 +14,10 @@ GameModule* GameModule_create(void) {
 	return this;
 }
 
+void GameModule_destroy(GameModule* this) {
+	CANCEL_IF_FALSE(this);
+	free(this);
+}
+
 void emptyUpdate(RawTime dt) {}
 void emptyDraw(SDL_Surface* surface) {}

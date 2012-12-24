@@ -19,3 +19,5 @@
 #include <lua5.2/lualib.h>    /* libs */
 
 typedef float RawTime;
+
+#define CANCEL_IF_FALSE(value) if (!value) { return; }
