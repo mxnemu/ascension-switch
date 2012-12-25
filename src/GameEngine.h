@@ -17,6 +17,7 @@ typedef struct GameEngine {
 	lua_State* l;
 	GameModule* module;
 	TextureCache* textureCache;
+	SDL_Surface* icon;
 } GameEngine;
 
 GameEngine* GameEngine_create(void);
