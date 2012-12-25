@@ -10,12 +10,14 @@
 #include "Constants.h"
 
 typedef struct GameModule {
-	void (*update)(RawTime dt);
-	void (*draw)(SDL_Surface* surface);
+	void (*update)(void* context, RawTime dt);
+	void (*draw)(void* context, SDL_Surface* surface);
+	void (*destroy)(void* context);
+	void* context;
 } GameModule;
 
-GameModule* GameModule_create(void);
+GameModule* GameModule_create(void* context);
 void GameModule_destroy(GameModule* this);
 
-void emptyUpdate(RawTime dt);
-void emptyDraw(SDL_Surface* surface);
+void emptyUpdate(void* context, RawTime dt);
+void emptyDraw(void* context, SDL_Surface* surface);

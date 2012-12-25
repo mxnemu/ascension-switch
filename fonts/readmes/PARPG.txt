@@ -1,0 +1,17 @@
+==============================
+Description
+==============================
+There was no "Old typewriter"-like font available before, at least I was unable to find one for PARPG. Someone had to do that, so what the heck, I did it.
+
+Font is called PARPG, same as project it was designed for.
+
+Fixed-width, rather skinny (as for antique typewriter fonts genre).
+
+There are many characters still missing, some of them may also not be dispalyed properly. Please INFORM ME if you have any specific needs. Many languages should be completely or nearly supported, and adding a couple more glyphs is not a big issue.
+
+==============================
+Source
+==============================
+Uploaded by Q_x to opengameart.org under the CC0 1.0 - Public Domain license
+http://opengameart.org/content/old-typewriter-font
+

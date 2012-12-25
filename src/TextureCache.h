@@ -24,7 +24,7 @@ typedef struct TextureEntry {
 TextureCache* TextureCache_create(void);
 void TextureCache_destroy(TextureCache* this);
 SDL_Surface* TextureCache_get(TextureCache* this, const char* path);
-SDL_Surface* TextureCache_loadImage(TextureCache* this, const char* path);
+SDL_Surface* TextureCache_loadImage(TextureCache* this, const char* path, bool store);
 
 TextureEntry* TextureEntry_create(const char* key, SDL_Surface* image, bool ownsImage);
 void TextureEntry_destroy(TextureEntry* this);

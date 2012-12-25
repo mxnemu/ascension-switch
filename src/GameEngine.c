@@ -6,6 +6,7 @@
  */
 
 #include "GameEngine.h"
+#include "Intro.h"
 
 GameEngine* GameEngine_create(void) {
 
@@ -20,7 +21,8 @@ GameEngine* GameEngine_create(void) {
 	this->screen = SDL_SetVideoMode(800,480,24,SDL_SWSURFACE|SDL_DOUBLEBUF);
 	this->l = luaL_newstate();
 	this->icon = icon;
-	this->module = GameModule_create();
+//	this->module = GameModule_create(NULL);
+	this->module = Intro_create()->module;
 	this->textureCache = TextureCache_create();
 	return this;
 }
@@ -50,11 +52,6 @@ void GameEngine_initSubsystems() {
 
 int GameEngine_run(GameEngine* this) {
 
-	SDL_Surface* person = TextureCache_get(this->textureCache, "images/person.png");
-	SDL_Rect offset = {.x = 0, .y = 0, .w=0, .h=0};
-	SDL_Rect rect = {.x = 0, .y = 0, .w=800, .h=480};
-
-
 	SDL_Event event;
 	while(this->windowIsRunning) {
 
@@ -65,11 +62,8 @@ int GameEngine_run(GameEngine* this) {
         	}
         }
 
-        this->module->update(1); // TODO pass update time
-        this->module->draw(this->screen);
-
-        SDL_FillRect(this->screen, &rect, 0xFF0000);
-        SDL_BlitSurface(person, NULL, this->screen, &offset);
+        this->module->update(this->module->context, 1); // TODO pass update time
+        this->module->draw(this->module->context, this->screen);
 
 		SDL_Flip(this->screen);
 	}
