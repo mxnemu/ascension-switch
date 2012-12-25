@@ -38,6 +38,7 @@ void GameEngine_destroy(GameEngine* this) {
 	SDLNet_Quit();
 	TTF_Quit();
 	Mix_CloseAudio();
+	Mix_Quit();
 	free(this);
 }
 
