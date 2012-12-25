@@ -19,6 +19,7 @@ typedef struct Intro {
 	SDL_Surface* slogan;
 	GameModule* module;
 	RawTime timePassed;
+	Mix_Music* music;
 
 	// TODO create a Sprite class for this bullshit
 	SDL_Rect logoRect;

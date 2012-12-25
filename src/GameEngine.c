@@ -48,6 +48,7 @@ void GameEngine_initSubsystems() {
 	SDLNet_Init();
 	TTF_Init();
 	Mix_Init(MIX_INIT_OGG);
+	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
 }
 
 int GameEngine_run(GameEngine* this) {

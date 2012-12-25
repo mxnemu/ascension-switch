@@ -17,6 +17,7 @@ Intro* Intro_create() {
 	this->logo = IMG_Load("images/agdg-logo.png");
 	this->title = TTF_RenderUTF8_Shaded(this->font, "Amateur Game Dev. Games", fontColor, fontShadeColor);
 	this->slogan = TTF_RenderUTF8_Shaded(this->font, " - just like make game -",  fontColor, fontShadeColor);
+	this->music = Mix_LoadMUS("music/TheLoomingBattle.ogg");
 	this->timePassed = 0;
 
 	this->module = GameModule_create(this);
@@ -32,6 +33,8 @@ Intro* Intro_create() {
 	this->logoRect.y = 10;
 	this->titleRect.y = this->logoRect.y + this->logo->h + 25;
 	this->sloganRect.y = this->titleRect.y + this->title->h + 35;
+
+	Mix_PlayMusic(this->music, -1);
 	return this;
 }
 
@@ -42,6 +45,7 @@ void Intro_destroy(void* context) {
 	SDL_FreeSurface(this->logo);
 	SDL_FreeSurface(this->title);
 	SDL_FreeSurface(this->slogan);
+	Mix_FreeMusic(this->music);
 }
 
 void Intro_update(void* context, RawTime dt) {
