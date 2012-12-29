@@ -30,9 +30,13 @@ Intro* Intro_create() {
 	this->titleRect = r;
 	this->sloganRect = r;
 
-	this->logoRect.y = 10;
-	this->titleRect.y = this->logoRect.y + this->logo->h + 25;
-	this->sloganRect.y = this->titleRect.y + this->title->h + 35;
+	SDL_Surface* transformedLogo = rotozoomSurface(this->logo,45, 1, 1);
+	SDL_FreeSurface(this->logo);
+	this->logo = transformedLogo;
+
+	this->logoRect.y = 2;
+	this->titleRect.y = this->logoRect.y + this->logo->h + 5;
+	this->sloganRect.y = this->titleRect.y + this->title->h + 5;
 
 	Mix_PlayMusic(this->music, -1);
 	return this;

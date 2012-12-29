@@ -10,6 +10,7 @@
 #include <stdbool.h>
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_rotozoom.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_joystick.h>
 #include <SDL/SDL_ttf.h>
