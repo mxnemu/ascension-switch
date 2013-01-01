@@ -38,12 +38,16 @@ SDL_Surface* TextureCache_get(TextureCache* this, const char* path) {
 
 SDL_Surface* TextureCache_loadImage(TextureCache* this, const char* path, bool store) {
 	SDL_Surface* originalImage = IMG_Load(path);
-	SDL_Surface* optimizedImage = SDL_DisplayFormatAlpha(originalImage);
-	SDL_FreeSurface(originalImage);
-	if (this && store) {
-		Vector_AddElement(this->images, TextureEntry_create(path, optimizedImage , true));
+	if (originalImage) {
+		SDL_Surface* optimizedImage = SDL_DisplayFormatAlpha(originalImage);
+		SDL_FreeSurface(originalImage);
+		if (this && store) {
+			Vector_AddElement(this->images, TextureEntry_create(path, optimizedImage , true));
+		}
+		return optimizedImage;
 	}
-	return optimizedImage;
+	printf("Could not load image: %s", path);
+	return NULL;
 }
 
 TextureEntry* TextureEntry_create(const char* key, SDL_Surface* image, bool ownsImage) {

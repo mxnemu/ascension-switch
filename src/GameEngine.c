@@ -14,7 +14,7 @@ GameEngine* GameEngine_create(void) {
 
 	SDL_Surface* icon = SDL_LoadBMP("images/icon.bmp");
 	SDL_WM_SetCaption("Year Of The Maya", NULL);
-	SDL_WM_SetIcon(icon,NULL);
+	SDL_WM_SetIcon(icon, NULL);
 
 	GameEngine* this = malloc(sizeof(GameEngine));
 	this->windowIsRunning = true;

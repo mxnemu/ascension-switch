@@ -21,3 +21,5 @@ void Scene_destroy(Scene* this);
 
 void Scene_update(Scene* this, RawTime dt);
 void Scene_draw(Scene* this, SDL_Surface* screen);
+
+void Scene_addBackground(Scene* this, const char* background);

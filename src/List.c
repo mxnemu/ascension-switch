@@ -87,6 +87,9 @@ ListNode* ListNode_create(ListNode* previous, void* data) {
 	this->previous = previous;
 	this->next = NULL;
 	this->data = data;
+	if (previous) {
+		previous->next = this;
+	}
 	return this;
 }
 

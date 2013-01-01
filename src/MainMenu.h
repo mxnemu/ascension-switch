@@ -11,6 +11,7 @@ CLASS(MainMenu) {
 
 	UiNode* ui;
 	Scene* scene;
+	int moveMultiplier;
 
 	GameModule* module;
 	GameEngine* engine;
