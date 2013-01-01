@@ -20,6 +20,7 @@ GameEngine* GameEngine_create(void) {
 	this->windowIsRunning = true;
 	this->screen = SDL_SetVideoMode(800,480,DEFAULT_BPP,DEFAULT_WINDOW_FLAGS);
 	this->l = luaL_newstate();
+	luaL_openlibs(this->l);
 	this->icon = icon;
 	this->module = NULL;
 	this->nextModule = NULL;

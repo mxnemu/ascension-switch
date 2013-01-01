@@ -8,7 +8,7 @@
 #include "Intro.h"
 #include "MainMenu.h"
 
-#define INTRO_TIME 4000
+#define INTRO_TIME 1000
 
 #define INTRO_FADEIN_START 0
 #define INTRO_FADEIN_END (INTRO_TIME/3)
@@ -99,7 +99,7 @@ void Intro_update(void* context, RawTime dt) {
 	} else if (inRangeOrEqual(this->timePassed, INTRO_FADEOUT_START, INTRO_FADEOUT_END)) {
 		this->blendAlpha = ((float)(this->timePassed-INTRO_FADEOUT_START)/(float)INTRO_FADEOUT_TIME)*255;
 	} else {
-		this->engine->nextModule = MainMenu_create(this)->module;
+		this->engine->nextModule = MainMenu_create(this->engine)->module;
 	}
 	SDL_SetAlpha(this->blendSurface, SDL_SRCALPHA, this->blendAlpha);
 }

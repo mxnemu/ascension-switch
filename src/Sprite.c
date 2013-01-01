@@ -14,6 +14,8 @@ Sprite* Sprite_create(SDL_Surface* image) {
 	this->rect.y = 0;
 	this->frame.x = 0;
 	this->frame.y = 0;
+	this->scrollX = 1;
+	this->scrollY = 1;
 	if (image) {
 		Sprite_setFrameSize(this, image->w, image->h);
 	} else {
@@ -40,4 +42,16 @@ void Sprite_setFrameSize(Sprite* this, int w, int h) {
 
 void Sprite_draw(Sprite* this, SDL_Surface* surface) {
 	SDL_BlitSurface(this->image, &this->frame, surface, &this->rect);
+}
+
+void Sprite_drawOnCamera(Sprite* this, SDL_Surface* surface, Camera* camera) {
+	// TODO only draw the the subrect that is acutally on cam
+	SDL_Rect translatedRect = {
+		.x = (this->rect.x - (camera->viewport.x * this->scrollX)),
+		.y = (this->rect.y - (camera->viewport.y * this->scrollY)),
+		.w = this->rect.w,
+		.h = this->rect.h
+	};
+
+	SDL_BlitSurface(this->image, &this->frame, surface, &translatedRect);
 }

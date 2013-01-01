@@ -1,4 +1,8 @@
 scene = {
-    ["width"] = 4, -- repeat the background 4 times
-    ["backgrounds"] = {"images/background.png"}
+    ["backgrounds"] = {
+        "images/background.png",
+        "images/background.png",
+        "images/background.png",
+        "images/background.png"
+    }
 }
