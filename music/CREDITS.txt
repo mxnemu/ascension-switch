@@ -3,6 +3,7 @@
         {
             "name": "Orchestral Battle Music",
             "file": "TheLoomingBattle.ogg",
+            "modified": false,
             "author": "Zefz",
             "licence": "CC-BY-SA 3.0",
             "url": "http://opengameart.org/content/orchestral-battle-music"

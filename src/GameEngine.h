@@ -16,10 +16,12 @@ typedef struct GameEngine {
 	SDL_Surface* screen;
 	lua_State* l;
 	GameModule* module;
+	GameModule* nextModule;
 	TextureCache* textureCache;
 	SDL_Surface* icon;
 } GameEngine;
 
 GameEngine* GameEngine_create(void);
 void GameEngine_initSubsystems(void);
+void GameEngine_setActiveModule(GameEngine* this, GameModule* module);
 int GameEngine_run(GameEngine* this);

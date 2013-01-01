@@ -1,0 +1,12 @@
+{
+    "images": [
+        {
+            "name": "Brickwall texture",
+            "file": "mainmenu.png",
+            "modified": true,
+            "author": "arikel",
+            "licence": "CC0 1.0",
+            "url": "http://opengameart.org/node/10181"
+        }
+    ]
+}

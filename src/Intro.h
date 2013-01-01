@@ -9,26 +9,26 @@
 
 #include "Constants.h"
 #include "GameModule.h"
-
-#define INTRO_TIME 3000
+#include "Sprite.h"
+#include "GameEngine.h"
 
 typedef struct Intro {
-	SDL_Surface* logo;
+	Sprite* logo;
+	Sprite* title;
+	Sprite* slogan;
+	SDL_Surface* blendSurface;
+	Uint8 blendAlpha;
 	TTF_Font* font;
-	SDL_Surface* title;
-	SDL_Surface* slogan;
 	GameModule* module;
 	RawTime timePassed;
 	Mix_Music* music;
-
-	// TODO create a Sprite class for this bullshit
-	SDL_Rect logoRect;
-	SDL_Rect titleRect;
-	SDL_Rect sloganRect;
+	GameEngine* engine;
 } Intro;
 
-Intro* Intro_create();
+Intro* Intro_create(GameEngine* engine);
+void Intro_init(void* context);
 void Intro_destroy(void* context);
 
+void Intro_resize(void* context, SDL_Surface* surface);
 void Intro_update(void* context, RawTime dt);
 void Intro_draw(void* context, SDL_Surface* surface);

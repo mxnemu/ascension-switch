@@ -9,7 +9,9 @@
 
 GameModule* GameModule_create(void* context) {
 	GameModule* this = malloc(sizeof(GameModule));
+	this->init = emptyInit;
 	this->draw = emptyDraw;
+	this->resize = emptyDraw;
 	this->update = emptyUpdate;
 	this->destroy = NULL;
 	this->context = context;
@@ -23,6 +25,6 @@ void GameModule_destroy(GameModule* this) {
 	}
 	free(this);
 }
-
+void emptyInit(void* context) {}
 void emptyUpdate(void* context, RawTime dt) {}
 void emptyDraw(void* context, SDL_Surface* surface) {}

@@ -21,6 +21,31 @@
 #include <lua5.2/lauxlib.h>   /* utils*/
 #include <lua5.2/lualib.h>    /* libs */
 
-typedef float RawTime;
+typedef Uint32 RawTime;
+
+#define DEFAULT_BPP 24
+#define DEFAULT_WINDOW_FLAGS SDL_HWSURFACE|SDL_DOUBLEBUF
+
 
 #define CANCEL_IF_FALSE(value) if (!value) { return; }
+#define CLASS(name) typedef struct name name; struct name
+
+// Thanks to David Titarenco for providing this typesafe min/max
+// http://stackoverflow.com/a/3437484
+#ifndef MAX
+#define MAX(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
+#endif
+
+#ifndef MIN
+#define MIN(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
+#endif
+
+#define inRange(a, min, max) (a > min && a < max)
+#define inRangeOrEqual(a, min, max) (a >= min && a <= max)
+
