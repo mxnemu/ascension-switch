@@ -4,13 +4,14 @@
 #include "List.h"
 #include "Sprite.h"
 #include "GameEngine.h"
+#include "Vector.h"
 
 CLASS(Scene) {
-
 	const char* luaFile;
 	Sprite* leftBackground;
 	Sprite* rightBackground;
 	List* backgrounds;
+	Vector* entities;
 	Camera* camera;
 	GameEngine* engine;
 };
@@ -26,4 +27,4 @@ void Scene_addBackground(Scene* this, const char* background);
 
 
 // Lua stuff
-static int Scene_luaAddBackground(lua_State *l);
+int Scene_luaAddBackground(lua_State *l);

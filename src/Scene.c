@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Utils.h"
+#include "Entity.h"
 
 Scene* Scene_create(GameEngine* engine, const char* luaFile) {
 	Scene* this = malloc(sizeof(Scene));
@@ -9,6 +10,7 @@ Scene* Scene_create(GameEngine* engine, const char* luaFile) {
 	this->engine = engine;
 	this->leftBackground = NULL;
 	this->rightBackground = NULL;
+	this->entities = Vector_Create();
 	return this;
 }
 
@@ -47,6 +49,12 @@ void Scene_init(Scene* this) {
 		lua_pop(l, 2);
 	}
 	*/
+	for (int i=0; i < this->entities->allocatedElements; ++i) {
+		Entity* it = this->entities->elements[i];
+		if (it != NULL) {
+			Entity_destroy(it);
+		}
+	}
 }
 
 void Scene_destroy(Scene* this) {
@@ -71,6 +79,13 @@ void Scene_update(Scene* this, RawTime dt) {
 //		this->rightBackground = this->leftBackground;
 //		this->leftBackground = node->data;
 //	}
+
+	for (int i=0; i < this->entities->allocatedElements; ++i) {
+		Entity* it = this->entities->elements[i];
+		if (it != NULL) {
+			it->update(it->context, dt);
+		}
+	}
 }
 
 void Scene_draw(Scene* this, SDL_Surface* surface) {
