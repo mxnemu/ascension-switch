@@ -21,6 +21,7 @@ typedef struct {
 // public
 Vector* Vector_Create(void);
 void Vector_AddElement(Vector* this, ElementType element);
+void Vector_InsertInFirstFreeSpace(Vector* this, ElementType element);
 void Vector_ShrinkCache(Vector* this, bool maximumShrink);
 ElementType Vector_Get(Vector* this, unsigned int i);
 void Vector_Set(Vector* this, unsigned int i, ElementType element);

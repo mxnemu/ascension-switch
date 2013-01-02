@@ -17,6 +17,17 @@ void Vector_AddElement(Vector* this, ElementType element) {
     _Vector_AddElementWithoutSizeCheck(this, element);
 }
 
+void Vector_InsertInFirstFreeSpace(Vector* this, ElementType element) {
+	for (int i=0; i < this->allocatedElements; ++i) {
+		if (this->elements[i] == NULL) {
+			this->elements[i] = element;
+			return;
+		}
+	}
+
+	Vector_AddElement(this, element);
+}
+
 void Vector_ShrinkCache(Vector* this, bool maximumShrink) {
     if (this->allocatedElements - CacheIncreaseRate > this->usedElements) {
         _Vector_RecreateWithoutSizeCheck(this, this->usedElements+CacheIncreaseRate);
