@@ -23,3 +23,7 @@ void Scene_update(Scene* this, RawTime dt);
 void Scene_draw(Scene* this, SDL_Surface* screen);
 
 void Scene_addBackground(Scene* this, const char* background);
+
+
+// Lua stuff
+static int Scene_luaAddBackground(lua_State *l);

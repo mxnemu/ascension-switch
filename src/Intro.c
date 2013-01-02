@@ -47,6 +47,8 @@ void Intro_init(void *context) {
 	this->logo = Sprite_create(transformedLogo);
 
 	this->font = TTF_OpenFont("fonts/Black-Chancery.ttf", 30);
+//	this->title = Sprite_create(TTF_RenderUTF8_Blended(this->font, "Amateur Game Dev. Games", fontColor));
+//	this->slogan = Sprite_create(TTF_RenderUTF8_Blended(this->font, " - just like make game -",  fontColor));
 	this->title = Sprite_create(TTF_RenderUTF8_Shaded(this->font, "Amateur Game Dev. Games", fontColor, fontShadeColor));
 	this->slogan = Sprite_create(TTF_RenderUTF8_Shaded(this->font, " - just like make game -",  fontColor, fontShadeColor));
 	this->music = Mix_LoadMUS("music/TheLoomingBattle.ogg");

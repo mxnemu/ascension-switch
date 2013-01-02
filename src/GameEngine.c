@@ -31,6 +31,7 @@ GameEngine* GameEngine_create(void) {
 
 void GameEngine_destroy(GameEngine* this) {
 	CANCEL_IF_FALSE(this);
+	lua_pop(this->l, INT_MAX); // in case I screw up, just pop'em all
 	lua_close(this->l);
 	GameModule_destroy(this->module);
 	TextureCache_destroy(this->textureCache);

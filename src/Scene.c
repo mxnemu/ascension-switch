@@ -14,11 +14,21 @@ Scene* Scene_create(GameEngine* engine, const char* luaFile) {
 
 void Scene_init(Scene* this) {
 	lua_State* l = this->engine->l;
+
+	lua_pushlightuserdata(l, &this);
+	lua_setglobal(l, "scenePointer");
+
+	lua_pushcfunction(l, Scene_luaAddBackground);
+	lua_setglobal(l, "Scene_addBackground");
+
 	if (luaL_dofile(this->engine->l, this->luaFile)) {
 		printf("Could not execute Lua scene file: %s\n", this->luaFile);
 		return;
 	}
+	lua_pop(l, 2);
 
+	stackDump(l);
+	/*
 	lua_getglobal(l, "backgrounds");
 	if (lua_istable(l, -1)) {
 		int i = 1;
@@ -36,6 +46,7 @@ void Scene_init(Scene* this) {
 		}
 		lua_pop(l, 2);
 	}
+	*/
 }
 
 void Scene_destroy(Scene* this) {
@@ -78,7 +89,6 @@ void Scene_addBackground(Scene* this, const char* background) {
 		Sprite* lastSprite = this->backgrounds->last->data;
 		sprite->rect.x = lastSprite->rect.x + lastSprite->rect.w;
 	}
-
 	List_pushBack(this->backgrounds, sprite);
 
 	if (!this->leftBackground) {
@@ -88,4 +98,13 @@ void Scene_addBackground(Scene* this, const char* background) {
 		this->rightBackground = sprite;
 	}
 	this->camera->bounds.w += sprite->rect.w;
+}
+
+
+int Scene_luaAddBackground(lua_State *l) {
+	Scene* this = *((Scene**)lua_checklightuserdata(l, 1));
+	const char* background = luaL_checkstring(l, 2);
+	Scene_addBackground(this, background);
+	lua_pop(l,2);
+	return 0;
 }
