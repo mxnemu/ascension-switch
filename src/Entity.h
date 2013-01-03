@@ -17,6 +17,7 @@ CLASS(Entity) {
 	Scene* scene;
 	int team;
 	void* context;
+	List* hitboxes;
 };
 
 Entity* Entity_create(Scene* scene, void* context, Sprite* sprite);
