@@ -34,3 +34,10 @@ void* lua_checklightuserdata(lua_State* l, int idx){
 	luaL_checktype(l, idx, LUA_TLIGHTUSERDATA);
 	return lua_touserdata(l, idx);
 }
+
+void initRect(SDL_Rect* rect) {
+	rect->x = 0;
+	rect->y = 0;
+	rect->w = 0;
+	rect->h = 0;
+}
