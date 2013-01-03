@@ -27,8 +27,6 @@ void Scene_init(Scene* this) {
 		printf("Could not execute Lua scene file: %s\n", this->luaFile);
 		return;
 	}
-	lua_pop(l, 2);
-
 	stackDump(l);
 	/*
 	lua_getglobal(l, "backgrounds");
