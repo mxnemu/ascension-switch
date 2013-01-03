@@ -43,29 +43,19 @@ void initRect(SDL_Rect* rect) {
 	rect->h = 0;
 }
 
-// Thanks to user46874 on stackoverflow.com
-// http://stackoverflow.com/a/11197262
-void lua_createLib(lua_State* l, const char* name, const luaL_Reg* functions, const luaL_Reg* methods) {
-    /* newclass = {} */
-    lua_createtable(l, 0, 0);
-    int lib_id = lua_gettop(l);
+void lua_createLib(lua_State* l, const char* tableName, const char* globalName, const luaL_Reg* functions, const luaL_Reg* methods) {
 
-    /* metatable = {} */
-    luaL_newmetatable(l, name);
-    int meta_id = lua_gettop(l);
-    luaL_setfuncs(l, functions, 0);
+	luaL_newmetatable(l, tableName); // push table to stack
+	lua_pushvalue(l, -1); // push empy value to stack
+	luaL_setfuncs(l, methods,0); // set top of stack to functions
+	lua_setfield(l, -2, "__index"); // write top of stack into table -2 (before the functions)
+	lua_pop(l,1); // pop the table from stack, we no longer need it there
 
-    /* metatable.__index = _methods */
-    luaL_newlib(l, methods);
-    lua_setfield(l, meta_id, "__index");
+	printf("lsize%d",lua_gettop(l));
 
-    /* metatable.__metatable = functions */
-    luaL_newlib(l, functions);
-    lua_setfield(l, meta_id, "__metatable");
+    luaL_newlib(l, (const luaL_Reg*)functions);
+    luaL_setmetatable(l, tableName);
 
-    /* class.__metatable = metatable */
-    lua_setmetatable(l, lib_id);
-
-    /* _G["Foo"] = newclass */
-    lua_setglobal(l, name);
+    lua_setglobal(l, globalName);
+    printf("lsize%d",lua_gettop(l));
 }

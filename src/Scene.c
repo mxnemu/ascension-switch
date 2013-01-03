@@ -2,7 +2,8 @@
 #include "Utils.h"
 #include "Entity.h"
 
-Scene* Scene_create(GameEngine* engine, const char* luaFile) {
+/*
+Scene* Scene_create() {
 	Scene* this = malloc(sizeof(Scene));
 	this->backgrounds = List_create();
 	this->camera = Camera_create(engine->screen->w, engine->screen->h);
@@ -13,46 +14,50 @@ Scene* Scene_create(GameEngine* engine, const char* luaFile) {
 	this->entities = Vector_Create();
 	return this;
 }
+*/
 
-void Scene_init(Scene* this) {
-	lua_State* l = this->engine->l;
+int Scene_luaCreate(lua_State* l) {
+	Scene* this = lua_newuserdata(l, sizeof(Scene));
+	luaL_getmetatable(l, SCENE_LUA_MTABLE);
+	lua_setmetatable(l, -2);
+	//lua_pushvalue(l, -1);
 
-	lua_pushlightuserdata(l, this);
-	lua_setglobal(l, "scene");
+	this->backgrounds = List_create();
+	this->leftBackground = NULL;
+	this->rightBackground = NULL;
+	this->entities = Vector_Create();
 
-	if (luaL_dofile(this->engine->l, this->luaFile)) {
-		printf("Could not execute Lua scene file: %s\n", this->luaFile);
-		return;
+	return 1;
+}
+
+Scene* Scene_create(GameEngine* engine, const char* filePath) {
+	if (luaL_dofile(engine->l, filePath)) {
+		printf("Could not execute Lua scene file: %s\n", filePath);
+		return NULL;
 	}
-	stackDump(l);
-	/*
-	lua_getglobal(l, "backgrounds");
-	if (lua_istable(l, -1)) {
-		int i = 1;
-		lua_pushinteger(l, i);
-		lua_gettable(l, -2);
-		while(lua_isstring(l, -1)) {
-			const char* background = lua_tostring(l, -1);
-			printf("oh my %s\n", background);
-			Scene_addBackground(this, background);
+	stackDump(engine->l);
 
-			++i;
-			lua_pop(l, 1);
-			lua_pushinteger(l, i);
-			lua_gettable(l, -2);
-		}
-		lua_pop(l, 2);
-	}
-	*/
+	lua_getglobal(engine->l, "scene");
+	Scene* scene = Scene_checkfromLua(engine->l);
+	scene->camera = Camera_create(engine->screen->w, engine->screen->h);
+	return scene;
+}
+
+void Scene_destroy(Scene* this) {
+
 	for (int i=0; i < this->entities->allocatedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
 			Entity_destroy(it);
 		}
 	}
-}
 
-void Scene_destroy(Scene* this) {
+	ListNode* it = this->backgrounds->first;
+	while (it) {
+		Sprite_destroy(it->data);
+		it = it->next;
+	}
+
 	List_destroy(this->backgrounds); // TODO delete content
 	free(this);
 }
@@ -120,14 +125,22 @@ void Scene_luaExport(lua_State *l) {
 	};
 
 	static struct luaL_Reg functions[] = {
+		{"create", Scene_luaCreate},
 		{NULL, NULL}
 	};
 
-	lua_createLib(l, "yotm.Scene", functions, methods);
+	lua_createLib(l, SCENE_LUA_MTABLE, "Scene", functions, methods);
 }
 
-int Scene_luaAddBackground(lua_State *l) {
-	Scene* this = *((Scene**)lua_checklightuserdata(l, 1));
+Scene* Scene_checkfromLua (lua_State *L) {
+	void *userData = luaL_checkudata(L, 1, SCENE_LUA_MTABLE);
+	luaL_argcheck(L, (userData != NULL), 1, "`Scene' expected");
+	return (Scene*) userData;
+}
+
+int Scene_luaAddBackground(lua_State* l) {
+	stackDump(l);
+	Scene* this = Scene_checkfromLua(l);
 	const char* background = luaL_checkstring(l, 2);
 	Scene_addBackground(this, background);
 	lua_pop(l,2);

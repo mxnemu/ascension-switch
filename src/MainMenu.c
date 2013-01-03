@@ -14,8 +14,8 @@ MainMenu* MainMenu_create(GameEngine* engine) {
 
 void MainMenu_init(void* context) {
 	MainMenu* this = context;
+
 	this->scene = Scene_create(this->engine, "scenes/mainMenu.lua");
-	Scene_init(this->scene);
 	this->ui = UiNode_create(NULL, NULL);
 }
 
