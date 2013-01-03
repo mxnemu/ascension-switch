@@ -1,19 +1,5 @@
--- check if required variables are provided
-if nil == Scene_addBackground or 
-   nil == scenePointer then 
-    -- cancel if required variables are not provided
-    print("required scene variables are not provided");
-    return nil;
-end
-
 print("Hello world from lua");
---[[
-backgrounds = {
-    "images/mainmenu.png",
-    "images/mainmenu.png",
-    "images/mainmenu.png"
-}
---]]
+
 print(scenePointer);
 print(Scene_addBackground);
 Scene_addBackground(scenePointer, "images/mainmenu.png");

@@ -17,11 +17,8 @@ Scene* Scene_create(GameEngine* engine, const char* luaFile) {
 void Scene_init(Scene* this) {
 	lua_State* l = this->engine->l;
 
-	lua_pushlightuserdata(l, &this);
-	lua_setglobal(l, "scenePointer");
-
-	lua_pushcfunction(l, Scene_luaAddBackground);
-	lua_setglobal(l, "Scene_addBackground");
+	lua_pushlightuserdata(l, this);
+	lua_setglobal(l, "scene");
 
 	if (luaL_dofile(this->engine->l, this->luaFile)) {
 		printf("Could not execute Lua scene file: %s\n", this->luaFile);
@@ -113,6 +110,21 @@ void Scene_addBackground(Scene* this, const char* background) {
 	this->camera->bounds.w += sprite->rect.w;
 }
 
+
+// Lua
+
+void Scene_luaExport(lua_State *l) {
+	static struct luaL_Reg methods[] = {
+		{"addBackground", Scene_luaAddBackground},
+		{NULL, NULL}
+	};
+
+	static struct luaL_Reg functions[] = {
+		{NULL, NULL}
+	};
+
+	lua_createLib(l, "yotm.Scene", functions, methods);
+}
 
 int Scene_luaAddBackground(lua_State *l) {
 	Scene* this = *((Scene**)lua_checklightuserdata(l, 1));

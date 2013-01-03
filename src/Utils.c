@@ -42,3 +42,30 @@ void initRect(SDL_Rect* rect) {
 	rect->w = 0;
 	rect->h = 0;
 }
+
+// Thanks to user46874 on stackoverflow.com
+// http://stackoverflow.com/a/11197262
+void lua_createLib(lua_State* l, const char* name, const luaL_Reg* functions, const luaL_Reg* methods) {
+    /* newclass = {} */
+    lua_createtable(l, 0, 0);
+    int lib_id = lua_gettop(l);
+
+    /* metatable = {} */
+    luaL_newmetatable(l, name);
+    int meta_id = lua_gettop(l);
+    luaL_setfuncs(l, functions, 0);
+
+    /* metatable.__index = _methods */
+    luaL_newlib(l, methods);
+    lua_setfield(l, meta_id, "__index");
+
+    /* metatable.__metatable = functions */
+    luaL_newlib(l, functions);
+    lua_setfield(l, meta_id, "__metatable");
+
+    /* class.__metatable = metatable */
+    lua_setmetatable(l, lib_id);
+
+    /* _G["Foo"] = newclass */
+    lua_setglobal(l, name);
+}

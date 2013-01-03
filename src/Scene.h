@@ -27,4 +27,7 @@ void Scene_addBackground(Scene* this, const char* background);
 
 
 // Lua stuff
+void Scene_luaExport(lua_State *l);
+Scene* Scene_luaCheck(lua_State *l);
 int Scene_luaAddBackground(lua_State *l);
+void Scene_luaAddEntity(lua_State *l);
