@@ -78,6 +78,7 @@ void Scene_update(Scene* this, RawTime dt) {
 //		this->rightBackground = this->leftBackground;
 //		this->leftBackground = node->data;
 //	}
+	CollisionHandler_update(this->collisionHandler, this->entities);
 
 	for (int i=0; i < this->entities->allocatedElements; ++i) {
 		Entity* it = this->entities->elements[i];

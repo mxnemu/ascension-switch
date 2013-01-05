@@ -15,8 +15,8 @@ void initRect(SDL_Rect* rect);
 
 
 #define FREE_VECTOR_WITH_ELMENTS(vector, destructor) \
-	for (int _i=0; _i < this->entities->allocatedElements; ++_i) { \
-		void* it = this->entities->elements[_i]; \
+	for (int _i=0; _i < vector->allocatedElements; ++_i) { \
+		void* it = vector->elements[_i]; \
 		if (it != NULL) { \
 			destructor(it); \
 		} \

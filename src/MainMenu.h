@@ -4,6 +4,7 @@
 #include "GameEngine.h"
 
 #include "Scene.h"
+#include "Entity.h"
 
 #include "ui/UiNode.h"
 

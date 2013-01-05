@@ -17,6 +17,8 @@ void MainMenu_init(void* context) {
 
 	this->scene = Scene_create(this->engine, "scenes/mainMenu.lua");
 	this->ui = UiNode_create(NULL, NULL);
+
+	// create stupid playersprite that
 }
 
 void MainMenu_destroy(void* context) {
