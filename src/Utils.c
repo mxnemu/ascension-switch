@@ -43,12 +43,14 @@ void initRect(SDL_Rect* rect) {
 	rect->h = 0;
 }
 
-void lua_createLib(lua_State* l, const char* tableName, const char* globalName, const luaL_Reg* functions, const luaL_Reg* methods) {
+void lua_createLib(lua_State* l, const char* tableName, const char* globalName, const luaL_Reg* functions, const luaL_Reg* methods, lua_CFunction destructor) {
 
 	luaL_newmetatable(l, tableName); // push table to stack
 	lua_pushvalue(l, -1); // push empy value to stack
 	luaL_setfuncs(l, methods,0); // set top of stack to functions
 	lua_setfield(l, -2, "__index"); // write top of stack into table -2 (before the functions)
+	lua_pushcfunction(l, destructor);
+	lua_setfield(l, -2, "__gc"); // write top of stack into table -2 (before the functions)
 	lua_pop(l,1); // pop the table from stack, we no longer need it there
 
 	printf("lsize%d",lua_gettop(l));

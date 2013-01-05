@@ -14,12 +14,13 @@ CLASS(Scene) {
 	Sprite* rightBackground;
 	List* backgrounds;
 	Vector* entities;
+	Vector* triggers;
 	Camera* camera;
 	GameEngine* engine;
 };
 
 Scene* Scene_create(GameEngine* engine, const char* filePath);
-void Scene_destroy(Scene* this);
+int Scene_luaDestroy(lua_State* l);
 
 void Scene_update(Scene* this, RawTime dt);
 void Scene_draw(Scene* this, SDL_Surface* screen);
@@ -34,3 +35,5 @@ void Scene_luaExport(lua_State *l);
 int Scene_luaCreate(lua_State* l);
 int Scene_luaAddBackground(lua_State *l);
 void Scene_luaAddEntity(lua_State *l);
+void Scene_luaPopFrontBackgroundAndTranslateBack(lua_State);
+int Scene_luaAddTrigger(lua_State* l);

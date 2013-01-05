@@ -22,7 +22,6 @@ void MainMenu_init(void* context) {
 void MainMenu_destroy(void* context) {
 	CANCEL_IF_FALSE(context);
 	MainMenu* this = context;
-	Scene_destroy(this->scene);
 	UiNode_destroy(this->ui);
 	free(this);
 }

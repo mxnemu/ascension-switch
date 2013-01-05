@@ -30,6 +30,11 @@ typedef Uint32 RawTime;
 #define CANCEL_IF_FALSE(value) if (!value) { return; }
 #define CLASS(name) typedef struct name name; struct name
 
+// Thanks to Lindydancer for providing prepocess var to string converter code
+// http://stackoverflow.com/a/5459929
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 // Thanks to David Titarenco for providing this typesafe min/max
 // http://stackoverflow.com/a/3437484
 #ifndef MAX
