@@ -87,13 +87,15 @@ int GameEngine_run(GameEngine* this) {
         		SDL_FreeSurface(this->screen);
         		this->screen = SDL_SetVideoMode(event.resize.w,event.resize.h, DEFAULT_BPP, DEFAULT_WINDOW_FLAGS);
         		this->module->resize(this->module->context, this->screen);
+        	} else {
+        		this->module->handleEvent(this->module->context, &event);
         	}
         }
 
 
         RawTime now = SDL_GetTicks();
         while (now - lastUpdate > UPDATE_TIME) {
-        	this->module->update(this->module->context, UPDATE_TIME); // TODO pass update time
+        	this->module->update(this->module->context, UPDATE_TIME);
         	lastUpdate += UPDATE_TIME;
         }
 

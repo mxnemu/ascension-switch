@@ -15,6 +15,7 @@ typedef struct GameModule {
 	void (*update)(void* context, RawTime dt);
 	void (*draw)(void* context, SDL_Surface* surface);
 	void (*resize)(void* context, SDL_Surface* surface);
+	void (*handleEvent)(void* context, SDL_Event* event);
 	void* context;
 } GameModule;
 

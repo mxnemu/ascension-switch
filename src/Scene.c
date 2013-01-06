@@ -5,7 +5,7 @@
 
 int Scene_luaCreate(lua_State* l) {
 	Scene* this = lua_newuserdata(l, sizeof(Scene));
-	luaL_getmetatable(l, SCENE_LUA_MTABLE);
+	luaL_getmetatable(l, SCENE_MTABLE);
 	lua_setmetatable(l, -2);
 	GameEngine* engine = *((GameEngine**)lua_checklightuserdata(l, 1));
 	luaL_argcheck(l, (engine != NULL), 1, "please set the global 'gameEngine' as first argument of Scene.create");
@@ -27,6 +27,8 @@ int Scene_luaCreate(lua_State* l) {
 Scene* Scene_create(GameEngine* engine, const char* filePath) {
 	lua_pushlightuserdata(engine->l, &engine);
 	lua_setglobal(engine->l, "gameEngine");
+//	lua_pushnil(engine->l);
+//	lua_setglobal(engine->l, "scene");
 	if (luaL_dofile(engine->l, filePath)) {
 		printf("Could not execute Lua scene file: %s\n", filePath);
 		printf("%s\n", lua_tostring(engine->l, -1));
@@ -35,7 +37,8 @@ Scene* Scene_create(GameEngine* engine, const char* filePath) {
 	stackDump(engine->l);
 
 	lua_getglobal(engine->l, "scene");
-	Scene* scene = Scene_checkfromLua(engine->l);
+	Scene* scene = Scene_checkfromLua(engine->l, -1);
+	printf("C gets %p", scene);
 
 	if (scene) {
 		lua_gc(engine->l, LUA_GCSTEP,0);
@@ -44,7 +47,7 @@ Scene* Scene_create(GameEngine* engine, const char* filePath) {
 }
 
 int Scene_luaDestroy(lua_State* l) {
-	Scene* this = Scene_checkfromLua(l);
+	Scene* this = Scene_checkfromLua(l, 1);
 	FREE_VECTOR_WITH_ELMENTS(this->entities, Entity_destroy);
 	// lua probably deals whit everything.
 	//FREE_VECTOR_WITH_ELMENTS(this->triggers, Trigger_destroy);
@@ -131,17 +134,17 @@ void Scene_luaExport(lua_State *l) {
 		{NULL, NULL}
 	};
 
-	lua_createLib(l, SCENE_LUA_MTABLE, "Scene", functions, methods, Scene_luaDestroy);
+	lua_createLib(l, SCENE_MTABLE, "Scene", functions, methods, Scene_luaDestroy);
 }
 
-Scene* Scene_checkfromLua (lua_State *L) {
-	void *userData = luaL_checkudata(L, 1, SCENE_LUA_MTABLE);
-	luaL_argcheck(L, (userData != NULL), 1, "`Scene' expected");
+Scene* Scene_checkfromLua (lua_State *L, int idx) {
+	void *userData = luaL_checkudata(L, idx, SCENE_MTABLE);
+	luaL_argcheck(L, (userData != NULL), idx, "`Scene' expected");
 	return (Scene*) userData;
 }
 
 int Scene_luaAddBackground(lua_State* l) {
-	Scene* this = Scene_checkfromLua(l);
+	Scene* this = Scene_checkfromLua(l, 1);
 	const char* background = luaL_checkstring(l, 2);
 	Scene_addBackground(this, background);
 	lua_pop(l,2);
@@ -150,7 +153,7 @@ int Scene_luaAddBackground(lua_State* l) {
 
 int Scene_luaAddTrigger(lua_State* l) {
 	stackDump(l);
-	Scene* this = Scene_checkfromLua(l);
+	Scene* this = Scene_checkfromLua(l, 1);
 	Trigger* trigger = Trigger_checkFromLua(l, 2);
 	Trigger_setScene(trigger, this);
 	Vector_InsertInFirstFreeSpace(this->triggers, trigger);

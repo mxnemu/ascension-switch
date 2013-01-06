@@ -1,5 +1,6 @@
 #include "MainMenu.h"
 #include "ui/UiMenuList.h"
+#include "Game.h"
 
 MainMenu* MainMenu_create(GameEngine* engine) {
 	MainMenu* this = malloc(sizeof(MainMenu));
@@ -9,6 +10,7 @@ MainMenu* MainMenu_create(GameEngine* engine) {
 	this->module->init = MainMenu_init;
 	this->module->update = MainMenu_update;
 	this->module->draw = MainMenu_draw;
+	this->module->handleEvent = MainMenu_handleEvent;
 	this->moveMultiplier = -1;
 	return this;
 }
@@ -31,9 +33,9 @@ void MainMenu_init(void* context) {
 	UiMenuList* menu = UiMenuList_create(this->ui);
 
 	UiMenuElement_create(menu, "Play", NULL, MainMenu_onStartButton, this);
-	UiMenuElement_create(menu, "Options", NULL, MainMenu_onStartButton, this);
-	UiMenuElement_create(menu, "Credits", NULL, MainMenu_onStartButton, this);
-	UiMenuElement_create(menu, "Exit", NULL, MainMenu_onStartButton, this);
+	UiMenuElement_create(menu, "Options", NULL, NULL, this);
+	UiMenuElement_create(menu, "Credits", NULL, NULL, this);
+	UiMenuElement_create(menu, "Exit", NULL, NULL, this);
 
 	UiNode_moveTo(menu->node,
 				this->ui->bounds.w - menu->node->bounds.w - (this->ui->bounds.w/15),
@@ -44,8 +46,10 @@ void MainMenu_init(void* context) {
 	// create stupid playersprite that
 }
 
-void MainMenu_onStartButton(UiNode* button) {
+void MainMenu_onStartButton(UiNode* button, void* callbackContext) {
+	MainMenu* this = callbackContext;
 	printf("OH NO SOMEBODY REALLY WANT'S TO PLAY THIS SHIT");
+	this->engine->nextModule = Game_create(this->engine)->module;
 }
 
 void MainMenu_update(void* context, RawTime dt) {
@@ -61,4 +65,9 @@ void MainMenu_draw(void* context, SDL_Surface* surface) {
 	MainMenu* this = context;
 	Scene_draw(this->scene, surface);
 	UiNode_draw(this->ui, surface);
+}
+
+void MainMenu_handleEvent(void* context, SDL_Event* event) {
+	MainMenu* this = context;
+	UiNode_handleEvent(this->ui, event);
 }

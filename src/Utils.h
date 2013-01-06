@@ -9,6 +9,7 @@ void lua_createLib(lua_State* l, const char* tableName, const char* globalName, 
 // SDL utils
 void SDL_Rect_init(SDL_Rect* rect);
 bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b);
+bool SDL_Rect_isInside(SDL_Rect* a, int x, int y);
 
 
 #define CHECK_LUA_USERCLASS(l, clazz, metatable, idx) \
@@ -29,3 +30,4 @@ void emptyInit(void* context);
 void emptyUpdate(void* context, RawTime dt);
 void emptyDraw(void* context, SDL_Surface* surface);
 void emptyDestroy(void* context);
+void emptyHandleEvent(void* context, SDL_Event*);

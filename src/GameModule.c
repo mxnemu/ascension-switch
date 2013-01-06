@@ -15,6 +15,7 @@ GameModule* GameModule_create(void* context) {
 	this->resize = emptyDraw;
 	this->update = emptyUpdate;
 	this->destroy = emptyDestroy;
+	this->handleEvent = emptyHandleEvent;
 	this->context = context;
 	return this;
 }

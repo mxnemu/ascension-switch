@@ -15,7 +15,7 @@ UiNode* UiNode_create(void* context, UiNode* parent) {
 
 	SDL_Rect_init(&this->bounds);
 
-	this->selectable = false;
+	this->selectable = true;
 	this->selectedChild = NULL;
 
 	if (parent) {
@@ -64,7 +64,7 @@ bool UiNode_handleEvent(UiNode* this, SDL_Event* event) {
 void UiNode_eventDefaultActions(UiNode* this, SDL_Event* event) {
 	if (this->selectable) {
 		if (event->type == SDL_MOUSEBUTTONUP) {
-			if (this->parent) {
+			if (this->parent && SDL_Rect_isInside(&this->bounds, event->button.x, event->button.y)) {
 				this->parent->selectedChild = this;
 			}
 		}

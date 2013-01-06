@@ -23,6 +23,7 @@ void MainMenu_init(void* context);
 void MainMenu_destroy(void* context);
 void MainMenu_update(void* context, RawTime dt);
 void MainMenu_draw(void* context, SDL_Surface* surface);
+void MainMenu_handleEvent(void* context, SDL_Event* event);
 
 // UiCallbacks
-void MainMenu_onStartButton(UiNode* button);
+void MainMenu_onStartButton(UiNode* button, void* callbackContext);

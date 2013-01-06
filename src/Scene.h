@@ -7,7 +7,7 @@
 #include "Vector.h"
 #include "CollisionHandler.h"
 
-#define SCENE_LUA_MTABLE "yotm.Scene"
+#define SCENE_MTABLE "yotm.Scene"
 
 CLASS(Scene) {
 	const char* luaFile;
@@ -31,7 +31,7 @@ void Scene_addBackground(Scene* this, const char* background);
 
 
 // Lua stuff
-Scene* Scene_checkfromLua (lua_State *L);
+Scene* Scene_checkfromLua (lua_State *L, int idx);
 
 void Scene_luaExport(lua_State *l);
 int Scene_luaCreate(lua_State* l);

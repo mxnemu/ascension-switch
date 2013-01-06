@@ -34,12 +34,18 @@ void emptyInit(void* context) {}
 void emptyUpdate(void* context, RawTime dt) {}
 void emptyDraw(void* context, SDL_Surface* surface) {}
 void emptyDestroy(void* context) {}
+void emptyHandleEvent(void* context, SDL_Event*event) {}
 
 bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b) {
 	return !(a->x      > b->x+b->w ||
 			  a->x+a->w < b->x      ||
 			  a->y      > b->y+b->h ||
 			  a->y+a->h < b->y);
+}
+
+bool SDL_Rect_isInside(SDL_Rect* a, int x, int y) {
+	return x > a->x && x < a->x + a->w &&
+			y > a->y && y < a->y + a->h;
 }
 
 void* lua_checklightuserdata(lua_State* l, int idx){
@@ -66,7 +72,7 @@ void lua_createLib(lua_State* l, const char* tableName, const char* globalName, 
 
 	printf("lsize%d",lua_gettop(l));
 
-    luaL_newlib(l, (const luaL_Reg*)functions);
+    luaL_newlib(l, functions);
     luaL_setmetatable(l, tableName);
 
     lua_setglobal(l, globalName);
