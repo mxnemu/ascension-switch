@@ -38,7 +38,6 @@ Scene* Scene_create(GameEngine* engine, const char* filePath) {
 
 	lua_getglobal(engine->l, "scene");
 	Scene* scene = Scene_checkfromLua(engine->l, -1);
-	printf("C gets %p", scene);
 
 	if (scene) {
 		lua_gc(engine->l, LUA_GCSTEP,0);
