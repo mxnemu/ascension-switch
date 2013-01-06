@@ -2,6 +2,11 @@
 #include "Constants.h"
 #include "Vector.h"
 
+// TODO somehow differentiate the player. Store hotkeys in Player.c or something
+typedef enum ActionId {
+	none, left, right, up, down, kickLeft, kickRight, hitLeft, hitRight, action
+} ActionId;
+
 CLASS(KeyHotkey) {
 	SDL_keysym key;
 	int axisValue;
@@ -22,7 +27,7 @@ CLASS(InputHotkey) {
 		JoystickHotkey joystick;
 	} hotkey;
 	short hotkeyType;
-	int id;
+	ActionId id;
 };
 
 CLASS(Input) {
@@ -36,10 +41,18 @@ CLASS(Input) {
 Input* Input_create();
 void Input_destroy(Input* this);
 void Input_update(Input* this);
-void Input_initDefaultHotkeys(Input* this);
+void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath);
 void Input_addHotkey(Input* this, InputHotkey* hotkey);
 
-int Input_getAxis(Input* this, int hotkeyId);
-bool Input_isDown(Input* this, int hotkeyId);
+int Input_getAxis(Input* this, ActionId id);
+bool Input_isDown(Input* this, ActionId id);
 
 bool Input_keysymIsDown(Input* this, SDL_keysym* keysym);
+
+
+InputHotkey* InputHotkey_create(int type, int actionId);
+
+// Utils
+SDLKey Input_stringToKeycode(const char* keyText);
+ActionId Input_stringToActionId(const char* actionIdText);
+

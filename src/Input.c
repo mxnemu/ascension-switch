@@ -1,7 +1,9 @@
 #include "Input.h"
+#include "Utils.h"
 
 Input* Input_create() {
-	Input* this = malloc(sizeof(this));
+	Input* this = malloc(sizeof(Input));
+	this->hotkeys = Vector_Create();
 
 	this->joysticks = Vector_Create();
 
@@ -29,30 +31,108 @@ Input* Input_create() {
 }
 
 void Input_destroy(Input* this) {
+	FREE_VECTOR_WITH_ELMENTS(this->hotkeys, free);
 	free(this);
 }
 
-void Input_initDefaultHotkeys(Input* this) {
-
+void Input_addHotkey(Input* this, InputHotkey* hotkey) {
+	Vector_InsertInFirstFreeSpace(this->hotkeys, hotkey);
+	printf("added hotkey %d for keycode %d \n", hotkey->id, hotkey->hotkey.key.key.sym);
 }
 
-int Input_getAxis(Input* this, int hotkeyId) {
+void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath) {
+	if (luaL_dofile(l, filePath)) {
+		printf("Could not execute Lua hotkeys file: %s\n", filePath);
+		printf("%s\n", lua_tostring(l, -1));
+		return;
+	}
+
+	lua_getglobal(l, "keyboardHotkeys");
+	lua_pushnil(l);
+	while (lua_next(l, 1)) {
+
+		lua_pushvalue(l, -2);
+		const char* key = lua_tostring(l, -1);
+		int actionId = Input_stringToActionId(key);
+//		printf("%s: {", key);
+
+		if (lua_istable(l, -2)) {
+			InputHotkey* hotkey = InputHotkey_create(HOTKEY_TYPE_KEYBOARD, actionId);
+
+			lua_pushnil(l);
+			while (lua_next(l, -3)) {
+				lua_pushvalue(l, -2);
+				const char* subKey = lua_tostring(l, -1);
+
+				if (strcmp(subKey, "key") == 0) {
+					hotkey->hotkey.key.key.sym = Input_stringToKeycode(lua_tostring(l, -2));
+				} else if (strcmp(subKey, "axisValue") == 0) {
+					hotkey->hotkey.key.axisValue = lua_tointeger(l, -2);
+				// mods
+				} else if (strcmp(subKey, "lshift") == 0) {
+					hotkey->hotkey.key.key.mod = hotkey->hotkey.key.key.mod | KMOD_LSHIFT;
+				} else if (strcmp(subKey, "rshift") == 0) {
+					hotkey->hotkey.key.key.mod = hotkey->hotkey.key.key.mod | KMOD_RSHIFT;
+				} else if (strcmp(subKey, "lctrl") == 0) {
+					hotkey->hotkey.key.key.mod = hotkey->hotkey.key.key.mod | KMOD_LCTRL;
+				} else if (strcmp(subKey, "rctrl") == 0) {
+					hotkey->hotkey.key.key.mod = hotkey->hotkey.key.key.mod | KMOD_RCTRL;
+				} else if (strcmp(subKey, "caps") == 0) {
+					hotkey->hotkey.key.key.mod = hotkey->hotkey.key.key.mod | KMOD_LCTRL;
+				} else {
+					printf("\nunknown key %s\n", subKey);
+				}
+
+				//printf("['%s']=%s ", subKey, subValue);
+				lua_pop(l, 2);
+			}
+
+			Input_addHotkey(this, hotkey);
+		}
+//		printf("}\n");
+		lua_pop(l,2);
+	}
+	stackDump(l);
+}
+
+SDLKey Input_stringToKeycode(const char* keyText) {
+	// lazy workaround to make at least ascii keys work
+	if (keyText[0] != '\0' && keyText[1] == '\0' && keyText[0] >= 97 && keyText[0] <= 122) {
+		return (SDLKey)keyText[0];
+	}
+	return SDLK_UNKNOWN;
+}
+
+ActionId Input_stringToActionId(const char* actionIdText) {
+	ENUM_TO_STRING_MATCH(left, actionIdText)
+	ENUM_TO_STRING_MATCH(right, actionIdText)
+	ENUM_TO_STRING_MATCH(up, actionIdText)
+	ENUM_TO_STRING_MATCH(down, actionIdText)
+	ENUM_TO_STRING_MATCH(kickLeft, actionIdText)
+	ENUM_TO_STRING_MATCH(kickRight, actionIdText)
+	ENUM_TO_STRING_MATCH(hitLeft, actionIdText)
+	ENUM_TO_STRING_MATCH(hitRight, actionIdText)
+	ENUM_TO_STRING_MATCH(action, actionIdText)
+	return none;
+}
+
+int Input_getAxis(Input* this, ActionId hotkeyId) {
 	int value = 0;
 	for (int i=0; i < this->hotkeys->usedElements; ++i) {
 		InputHotkey* it = this->hotkeys->elements[i];
 		if (it != NULL && it->id == hotkeyId) {
 
-			if (it->hotkeyType == HOTKEY_TYPE_KEYBOARD) {
-				value = MAX(value, it->hotkey.key.axisValue);
+			if (it->hotkeyType == HOTKEY_TYPE_KEYBOARD && Input_keysymIsDown(this, &it->hotkey.key.key)) {
+				value = MAX(abs(value), abs(it->hotkey.key.axisValue));
 			} else if(it->hotkeyType == HOTKEY_TYPE_JOYSTICK) {
-				value = MAX(value, SDL_JoystickGetAxis(it->hotkey.joystick.joystick, it->hotkey.joystick.axisNumber));
+				value = MAX(abs(value), abs(SDL_JoystickGetAxis(it->hotkey.joystick.joystick, it->hotkey.joystick.axisNumber)));
 			}
 		}
 	}
 	return value;
 }
 
-bool Input_isDown(Input* this, int hotkeyId) {
+bool Input_isDown(Input* this, ActionId hotkeyId) {
 	for (int i=0; i < this->hotkeys->usedElements; ++i) {
 		InputHotkey* it = this->hotkeys->elements[i];
 		if (it != NULL && it->id == hotkeyId) {
@@ -84,4 +164,11 @@ void Input_update(Input* this) {
 //
 //		}
 //	}
+}
+
+InputHotkey* InputHotkey_create(int type, int actionId) {
+	InputHotkey* this = malloc(sizeof(InputHotkey));
+	this->hotkeyType = type;
+	this->id = actionId;
+	return this;
 }

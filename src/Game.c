@@ -31,7 +31,7 @@ void Game_init(void* context) {
 	this->scene = Scene_create(this->engine, "scenes/stage1.lua");
 
 	memset(this->players, 0, sizeof(this->players));
-	this->players[0] = Player_create(Sprite_create(TextureCache_get(this->engine->textureCache, "images/person.png")));
+	this->players[0] = Player_create(Sprite_create(TextureCache_get(this->engine->textureCache, "images/person.png")), this->engine->input);
 
 	Scene_addEntity(this->scene, this->players[0]->entity);
 	this->scene->camera->trackedEntity = this->players[0]->entity;

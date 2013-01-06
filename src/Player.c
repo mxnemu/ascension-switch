@@ -1,9 +1,11 @@
 #include "Player.h"
 
-Player* Player_create(Sprite* sprite) {
+Player* Player_create(Sprite* sprite, Input* input) {
 	Player* this = malloc(sizeof(Player));
 	this->entity = Entity_create(this, sprite);
 	this->entity->draw = Player_draw;
+	this->entity->update = Player_update;
+	this->input = input;
 	return this;
 }
 
@@ -19,18 +21,18 @@ void Player_update(void* context, RawTime dt) {
 
 // TODO proper movement
 void Player_processInput(Player* this) {
-//	if (Input_keyDown(INPUT_P1_LEFT)) {
-//		this->entity->sprite->bounds.x -= 1;
-//	}
-//	if (Input_keyDown(INPUT_P1_RIGHT)) {
-//		this->entity->sprite->bounds.x += 1;
-//	}
-//	if (Input_keyDown(INPUT_P1_UP)) {
-//		this->entity->sprite->bounds.y += 1;
-//	}
-//	if (Input_keyDown(INPUT_P1_DOWN)) {
-//		this->entity->sprite->bounds.y -= 1;
-//	}
+	if (Input_getAxis(this->input, left) != 0) {
+		this->entity->sprite->bounds.x -= 1;
+	}
+	if (Input_getAxis(this->input, right) != 0) {
+		this->entity->sprite->bounds.x += 1;
+	}
+	if (Input_getAxis(this->input, up) != 0) {
+		this->entity->sprite->bounds.y -= 1;
+	}
+	if (Input_getAxis(this->input, down) != 0) {
+		this->entity->sprite->bounds.y += 1;
+	}
 }
 
 void Player_draw(void* context, SDL_Surface* screen, Camera* camera) {

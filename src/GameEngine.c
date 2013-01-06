@@ -24,6 +24,7 @@ GameEngine* GameEngine_create(void) {
 	luaL_openlibs(this->l);
 	LuaInit_initCustomTypes(this->l);
 	this->input = Input_create();
+	Input_loadHotkeys(this->input, this->l, "hotkeys.lua");
 	this->icon = icon;
 	this->module = NULL;
 	this->nextModule = NULL;
