@@ -27,3 +27,4 @@ void MainMenu_handleEvent(void* context, SDL_Event* event);
 
 // UiCallbacks
 void MainMenu_onStartButton(UiNode* button, void* callbackContext);
+void MainMenu_onExitButton(UiNode* button, void* callbackContext);

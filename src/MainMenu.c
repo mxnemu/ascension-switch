@@ -35,7 +35,7 @@ void MainMenu_init(void* context) {
 	UiMenuElement_create(menu, "Play", NULL, MainMenu_onStartButton, this);
 	UiMenuElement_create(menu, "Options", NULL, NULL, this);
 	UiMenuElement_create(menu, "Credits", NULL, NULL, this);
-	UiMenuElement_create(menu, "Exit", NULL, NULL, this);
+	UiMenuElement_create(menu, "Exit", NULL, MainMenu_onExitButton, this);
 
 	UiNode_moveTo(menu->node,
 				this->ui->bounds.w - menu->node->bounds.w - (this->ui->bounds.w/15),
@@ -48,8 +48,12 @@ void MainMenu_init(void* context) {
 
 void MainMenu_onStartButton(UiNode* button, void* callbackContext) {
 	MainMenu* this = callbackContext;
-	printf("OH NO SOMEBODY REALLY WANT'S TO PLAY THIS SHIT");
 	this->engine->nextModule = Game_create(this->engine)->module;
+}
+
+void MainMenu_onExitButton(UiNode* button, void* callbackContext) {
+	MainMenu* this = callbackContext;
+	this->engine->windowIsRunning = false;
 }
 
 void MainMenu_update(void* context, RawTime dt) {

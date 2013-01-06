@@ -31,8 +31,10 @@ UiMenuElement* UiMenuElement_create(UiMenuList* list, const char* text, Sprite* 
 
 	TTF_Font* font = TTF_OpenFont("fonts/Black-Chancery.ttf", 24);
 	SDL_Color color = {.r=255, .g = 255, .b= 255};
+	SDL_Color colorSelected = {.r=150, .g = 150, .b= 150};
 	this->icon = Sprite_create(NULL);
 	this->label = Sprite_create(TTF_RenderUTF8_Blended(font, text, color));
+	this->labelSelected = Sprite_create(TTF_RenderUTF8_Blended(font, text, colorSelected));
 	TTF_CloseFont(font);
 
 	// TODO won't somebody think about the icons?!
@@ -49,13 +51,18 @@ void UiMenuElement_destroy(void* context) {
 	UiMenuElement* this = context;
 	Sprite_destroy(this->icon);
 	Sprite_destroy(this->label);
+	Sprite_destroy(this->labelSelected);
 	free(this);
 }
 
 void UiMenuElement_draw(void* context, SDL_Surface* screen) {
 	UiMenuElement* this = context;
 
-	Sprite_drawRelative(this->label, screen, &this->node->bounds);
+	if (this->node->parent->selectedChild == this->node) {
+		Sprite_drawRelative(this->labelSelected, screen, &this->node->bounds);
+	} else {
+		Sprite_drawRelative(this->label, screen, &this->node->bounds);
+	}
 }
 
 bool UiMenuElement_handleEvent(void* context, SDL_Event* event) {
@@ -64,6 +71,10 @@ bool UiMenuElement_handleEvent(void* context, SDL_Event* event) {
 		if (event->type == SDL_MOUSEBUTTONUP) {
 			if (this->node->parent && this->actionCallback && SDL_Rect_isInside(&this->node->bounds, event->button.x, event->button.y)) {
 				this->actionCallback(this->node, this->node->callbackContext);
+			}
+		} else if (event->type == SDL_MOUSEMOTION) {
+			if (this->node->parent && SDL_Rect_isInside(&this->node->bounds, event->motion.x, event->motion.y)) {
+				this->node->parent->selectedChild = this->node;
 			}
 		}
 	}

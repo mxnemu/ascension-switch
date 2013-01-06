@@ -7,6 +7,7 @@
 CLASS(UiMenuElement) {
 	Sprite* icon;
 	Sprite* label;
+	Sprite* labelSelected;
 	void (*actionCallback)(UiNode*, void* callbackContext);
 	UiNode* node;
 };
