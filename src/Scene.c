@@ -80,7 +80,7 @@ void Scene_update(Scene* this, RawTime dt) {
 //	}
 	CollisionHandler_update(this->collisionHandler, this->entities);
 
-	for (int i=0; i < this->entities->allocatedElements; ++i) {
+	for (int i=0; i < this->entities->usedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
 			it->update(it->context, dt);
@@ -102,7 +102,7 @@ void Scene_addBackground(Scene* this, const char* background) {
 	Sprite* sprite = Sprite_create(TextureCache_get(this->engine->textureCache, background));
 	if (this->backgrounds->last) {
 		Sprite* lastSprite = this->backgrounds->last->data;
-		sprite->rect.x = lastSprite->rect.x + lastSprite->rect.w;
+		sprite->bounds.x = lastSprite->bounds.x + lastSprite->bounds.w;
 	}
 	List_pushBack(this->backgrounds, sprite);
 
@@ -112,7 +112,7 @@ void Scene_addBackground(Scene* this, const char* background) {
 	if (!this->rightBackground || this->rightBackground == this->leftBackground) {
 		this->rightBackground = sprite;
 	}
-	this->camera->bounds.w += sprite->rect.w;
+	this->camera->bounds.w += sprite->bounds.w;
 }
 
 

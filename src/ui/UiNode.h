@@ -8,6 +8,11 @@ CLASS(UiNode) {
 	void (*resize)(void* context, SDL_Surface* surface);
 	void (*draw)(void* context, SDL_Surface* surface);
 
+	bool selectable;
+	UiNode* selectedChild;
+	SDL_Rect bounds;
+
+	void* callbackContext;
 	void* context;
 	UiNode* parent;
 	Vector* children;
@@ -22,8 +27,10 @@ UiNode* UiNode_create(void* context, UiNode* parent);
 void UiNode_destroy(UiNode* this);
 
 void UiNode_draw(UiNode* this, SDL_Surface* surface);
-void UiNode_handleEvent(UiNode* this, SDL_Event* event);
+bool UiNode_handleEvent(UiNode* this, SDL_Event* event);
+void UiNode_eventDefaultActions(UiNode* this, SDL_Event* event);
 void UiNode_removeChild(UiNode* this, UiNode* child);
+void UiNode_moveTo(UiNode* this, int x, int y);
 
 void UiNode_emptyDestroy(void* context);
 void UiNode_emptyDraw(void* context, SDL_Surface* surface);

@@ -10,8 +10,8 @@
 Sprite* Sprite_create(SDL_Surface* image) {
 	Sprite* this = malloc(sizeof(Sprite));
 	this->image = image;
-	this->rect.x = 0;
-	this->rect.y = 0;
+	this->bounds.x = 0;
+	this->bounds.y = 0;
 	this->frame.x = 0;
 	this->frame.y = 0;
 	this->scrollX = 1;
@@ -34,23 +34,34 @@ void Sprite_destroyWithImage(Sprite* this) {
 }
 
 void Sprite_setFrameSize(Sprite* this, int w, int h) {
-	this->rect.w = w;
-	this->rect.h = h;
+	this->bounds.w = w;
+	this->bounds.h = h;
 	this->frame.w = w;
 	this->frame.h = h;
 }
 
 void Sprite_draw(Sprite* this, SDL_Surface* surface) {
-	SDL_BlitSurface(this->image, &this->frame, surface, &this->rect);
+	SDL_BlitSurface(this->image, &this->frame, surface, &this->bounds);
+}
+
+void Sprite_drawRelative(Sprite* this, SDL_Surface* surface, SDL_Rect* container) {
+	SDL_Rect translatedRect = {
+		.x = this->bounds.x + container->x,
+		.y = this->bounds.y + container->y,
+		.w = this->bounds.w,
+		.h = this->bounds.h
+	};
+
+	SDL_BlitSurface(this->image, &this->frame, surface, &translatedRect);
 }
 
 void Sprite_drawOnCamera(Sprite* this, SDL_Surface* surface, Camera* camera) {
 	// TODO only draw the the subrect that is acutally on cam
 	SDL_Rect translatedRect = {
-		.x = (this->rect.x - (camera->viewport.x * this->scrollX)),
-		.y = (this->rect.y - (camera->viewport.y * this->scrollY)),
-		.w = this->rect.w,
-		.h = this->rect.h
+		.x = (this->bounds.x - (camera->viewport.x * this->scrollX)),
+		.y = (this->bounds.y - (camera->viewport.y * this->scrollY)),
+		.w = this->bounds.w,
+		.h = this->bounds.h
 	};
 
 	SDL_BlitSurface(this->image, &this->frame, surface, &translatedRect);

@@ -15,7 +15,7 @@
 typedef struct {
     ElementType* elements;
     unsigned int usedElements;
-    unsigned int allocatedElements;
+    unsigned int _allocatedElements;
 } Vector;
 
 // public
@@ -29,4 +29,7 @@ void Vector_Destroy(Vector* this); ///< free array of elements, but not the elem
 // private
 void _Vector_AddElementWithoutSizeCheck(Vector* this, ElementType element);
 void _Vector_RecreateWithoutSizeCheck(Vector* this, unsigned int newallocatedElements);
+
+ElementType Vector_getLastElement(Vector* this);
+
 #endif

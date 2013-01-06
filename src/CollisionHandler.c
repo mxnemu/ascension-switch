@@ -1,11 +1,11 @@
 #include "CollisionHandler.h"
 
 void CollisionHandler_update(CollisionHandler* this, Vector* entities) {
-	for (int i=0; i < entities->allocatedElements; ++i) {
+	for (int i=0; i < entities->usedElements; ++i) {
 		Entity* it = entities->elements[i];
 		if (it != NULL) {
 
-			for (int j=0; j < entities->allocatedElements; ++j) {
+			for (int j=0; j < entities->usedElements; ++j) {
 				Entity* jt = entities->elements[j];
 				if (jt != NULL && jt != it && Entity_collides(it, jt)) {
 					CollisionHandler_handle(this, it, jt);
@@ -16,7 +16,7 @@ void CollisionHandler_update(CollisionHandler* this, Vector* entities) {
 }
 
 void CollisionHandler_handle(CollisionHandler* this, Entity* a, Entity* b) {
-	for (int i=0; i < this->collisions->allocatedElements; ++i) {
+	for (int i=0; i < this->collisions->usedElements; ++i) {
 		Collision* it = this->collisions->elements[i];
 		if (it != NULL && Collision_matches(it, a, b)) {
 			Collision_resolve(it); // TODO check if it has been resolved and remove it;
@@ -31,7 +31,7 @@ void CollisionHandler_handle(CollisionHandler* this, Entity* a, Entity* b) {
 }
 
 void CollisionHandler_removeCollisionsWithEntity(CollisionHandler* this, Entity* entity) {
-	for (int i=0; i < this->collisions->allocatedElements; ++i) {
+	for (int i=0; i < this->collisions->usedElements; ++i) {
 		Collision* it = this->collisions->elements[i];
 		if (it != NULL) {
 			if (it->a == entity) {
@@ -61,7 +61,7 @@ void Collision_destroy(Collision* this) {
 
 bool Collision_resolve(Collision* this) {
 	static const int repulsion = 1;
-	const bool aIsleft = this->a->sprite->rect.x < this->b->sprite->rect.x;
+	const bool aIsleft = this->a->physics.bounds.x < this->b->physics.bounds.x;
 //	const bool aIstop  = this->a->sprite->rect.y < this->b->sprite->rect.y;
 
 	if (aIsleft) {

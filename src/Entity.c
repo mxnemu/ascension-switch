@@ -26,7 +26,7 @@ void Entity_destroy(Entity* this) {
 }
 
 bool Entity_collides(Entity* this, Entity* other) {
-	if (SDL_Rect_touches(&this->sprite->rect, &other->sprite->rect)) {
+	if (SDL_Rect_touches(&this->physics.bounds, &other->physics.bounds)) {
 		bool hitboxCollision = false;
 		ListNode* it = this->hitboxes->first;
 		while (it) {

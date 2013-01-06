@@ -7,7 +7,7 @@ void* lua_checklightuserdata(lua_State* l, int idx);
 void lua_createLib(lua_State* l, const char* tableName, const char* globalName, const luaL_Reg* functions, const luaL_Reg* methods, lua_CFunction destructor);
 
 // SDL utils
-void initRect(SDL_Rect* rect);
+void SDL_Rect_init(SDL_Rect* rect);
 bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b);
 
 
@@ -18,7 +18,7 @@ bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b);
 
 
 #define FREE_VECTOR_WITH_ELMENTS(vector, destructor) \
-	for (int _i=0; _i < vector->allocatedElements; ++_i) { \
+	for (int _i=0; _i < vector->usedElements; ++_i) { \
 		void* it = vector->elements[_i]; \
 		if (it != NULL) { \
 			destructor(it); \

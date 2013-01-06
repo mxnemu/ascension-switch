@@ -56,9 +56,9 @@ void Intro_init(void *context) {
 	this->blendAlpha = 255;
 	this->blendSurface = NULL;
 
-	this->logo->rect.y = 20;
-	this->title->rect.y = this->logo->rect.y + this->logo->rect.h + 15;
-	this->slogan->rect.y = this->title->rect.y + this->title->rect.h + 15;
+	this->logo->bounds.y = 20;
+	this->title->bounds.y = this->logo->bounds.y + this->logo->bounds.h + 15;
+	this->slogan->bounds.y = this->title->bounds.y + this->title->bounds.h + 15;
 
 	Mix_PlayMusic(this->music, -1);
 }
@@ -77,9 +77,9 @@ void Intro_destroy(void* context) {
 
 void Intro_resize(void* context, SDL_Surface* surface) {
 	Intro* this = context;
-	this->logo->rect.x = (surface->w - this->logo->rect.w)/2;
-	this->title->rect.x = (surface->w - this->title->rect.w)/2;
-	this->slogan->rect.x = (surface->w - this->slogan->rect.w)/2;
+	this->logo->bounds.x = (surface->w - this->logo->bounds.w)/2;
+	this->title->bounds.x = (surface->w - this->title->bounds.w)/2;
+	this->slogan->bounds.x = (surface->w - this->slogan->bounds.w)/2;
 
 	if (this->blendSurface) {
 		SDL_FreeSurface(this->blendSurface);

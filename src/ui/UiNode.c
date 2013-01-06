@@ -1,15 +1,26 @@
 #include "UiNode.h"
+#include "../Utils.h"
 
 UiNode* UiNode_create(void* context, UiNode* parent) {
 	UiNode* this = malloc(sizeof(UiNode));
 	this->parent = parent;
 	this->context = context;
 	this->children = Vector_Create();
+	this->callbackContext = NULL;
 
 	this->destroy = UiNode_emptyDestroy;
 	this->draw = UiNode_emptyDraw;
 	this->handleEvent = UiNode_emptyHandleEvent;
 	this->resize = UiNode_emptyResize;
+
+	SDL_Rect_init(&this->bounds);
+
+	this->selectable = false;
+	this->selectedChild = NULL;
+
+	if (parent) {
+		Vector_AddElement(parent->children, this); // TODO call add funct
+	}
 
 	return this;
 }
@@ -23,7 +34,7 @@ void UiNode_destroy(UiNode* this) {
 
 void UiNode_draw(UiNode* this, SDL_Surface* surface) {
 	this->draw(this->context, surface);
-	for (unsigned int i=0; i < this->children->allocatedElements; ++i) {
+	for (unsigned int i=0; i < this->children->usedElements; ++i) {
 		UiNode* it = this->children->elements[i];
 		if (it != NULL) {
 			UiNode_draw(it, surface);
@@ -31,26 +42,62 @@ void UiNode_draw(UiNode* this, SDL_Surface* surface) {
 	}
 }
 
-void UiNode_handleEvent(UiNode* this, SDL_Event* event) {
+bool UiNode_handleEvent(UiNode* this, SDL_Event* event) {
 	if (this->handleEvent(this->context, event)) {
-		for (unsigned int i=0; i < this->children->allocatedElements; ++i) {
+		for (unsigned int i=0; i < this->children->usedElements; ++i) {
 			UiNode* it = this->children->elements[i];
 			if (it != NULL) {
-				UiNode_handleEvent(it, event);
-				//TODO maybe stop forwarding to neighbor nodes, if one node marks it as handled
-				// atm only child nodes won't be notified when a node marks an event as handled
+				if (!UiNode_handleEvent(it, event)) {
+					return false;
+				}
 			}
+		}
+	} else {
+		return false;
+	}
+
+	// Default actions if the event wasn't canceled until now
+	UiNode_eventDefaultActions(this, event);
+	return true;
+}
+
+void UiNode_eventDefaultActions(UiNode* this, SDL_Event* event) {
+	if (this->selectable) {
+		if (event->type == SDL_MOUSEBUTTONUP) {
+			if (this->parent) {
+				this->parent->selectedChild = this;
+			}
+		}
+	}
+
+	for (unsigned int i=0; i < this->children->usedElements; ++i) {
+		UiNode* it = this->children->elements[i];
+		if (it != NULL) {
+			UiNode_eventDefaultActions(it, event);
 		}
 	}
 }
 
 void UiNode_removeChild(UiNode* this, UiNode* child) {
-	for (unsigned int i=0; i < this->children->allocatedElements; ++i) {
+	for (unsigned int i=0; i < this->children->usedElements; ++i) {
 		UiNode* it = this->children->elements[i];
 		if (it == child) {
 			Vector_Set(this->children, i, NULL);
 		}
 	}
+}
+
+void UiNode_moveTo(UiNode* this, int x, int y) {
+	for (unsigned int i=0; i < this->children->usedElements; ++i) {
+		UiNode* it = this->children->elements[i];
+		if (it != NULL) {
+			int tx = x+(it->bounds.x - this->bounds.x);
+			int ty = y+(it->bounds.y - this->bounds.y);
+			UiNode_moveTo(it, tx, ty);
+		}
+	}
+	this->bounds.x = x;
+	this->bounds.y = y;
 }
 
 

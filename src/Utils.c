@@ -47,7 +47,7 @@ void* lua_checklightuserdata(lua_State* l, int idx){
 	return lua_touserdata(l, idx);
 }
 
-void initRect(SDL_Rect* rect) {
+void SDL_Rect_init(SDL_Rect* rect) {
 	rect->x = 0;
 	rect->y = 0;
 	rect->w = 0;

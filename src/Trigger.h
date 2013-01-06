@@ -10,7 +10,7 @@
 #include "Scene.h"
 
 CLASS(Trigger) {
-	SDL_Rect bounds;
+	Entity* entity;
 	int luaCallbackReference;
 };
 
