@@ -28,7 +28,7 @@ void Scene_update(Scene* this, RawTime dt);
 void Scene_draw(Scene* this, SDL_Surface* screen);
 
 void Scene_addBackground(Scene* this, const char* background);
-
+void Scene_addEntity(Scene* this, Entity* entity);
 
 // Lua stuff
 Scene* Scene_checkfromLua (lua_State *L, int idx);

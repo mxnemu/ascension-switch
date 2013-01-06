@@ -88,6 +88,7 @@ void Scene_update(Scene* this, RawTime dt) {
 			it->update(it->context, dt);
 		}
 	}
+	Camera_update(this->camera);
 }
 
 void Scene_draw(Scene* this, SDL_Surface* surface) {
@@ -97,6 +98,13 @@ void Scene_draw(Scene* this, SDL_Surface* surface) {
 	while (it) {
 		Sprite_drawOnCamera(it->data, surface, this->camera);
 		it = it->next;
+	}
+
+	for (int i=0; i < this->entities->usedElements; ++i) {
+		Entity* it = this->entities->elements[i];
+		if (it != NULL) {
+			it->draw(it->context, surface, this->camera);
+		}
 	}
 }
 
@@ -115,6 +123,10 @@ void Scene_addBackground(Scene* this, const char* background) {
 		this->rightBackground = sprite;
 	}
 	this->camera->bounds.w += sprite->bounds.w;
+}
+
+void Scene_addEntity(Scene* this, Entity* entity) {
+	Vector_InsertInFirstFreeSpace(this->entities, entity);
 }
 
 

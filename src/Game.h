@@ -5,10 +5,12 @@
 
 #include "Scene.h"
 #include "Entity.h"
+#include "Player.h"
 
 #include "ui/UiNode.h"
 
 CLASS(Game) {
+	Player* players[3];
 	Scene* scene;
 
 	GameModule* module;

@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "Sprite.h"
 #include "List.h"
+#include "Camera.h"
 
 #define COLLISION_GROUP_DEFAULT 1
 #define COLLISION_GROUP_PLAYER 1 << 2
@@ -23,7 +24,7 @@ CLASS(Entity) {
 
 	void (*destroy)(void* context);
 	void (*update)(void* context, RawTime dt);
-	void (*draw)(void* context, SDL_Surface*);
+	void (*draw)(void* context, SDL_Surface*, Camera* camera);
 	void* context;
 	List* hitboxes;
 };
@@ -34,3 +35,4 @@ void Entity_destroy(Entity* this);
 bool Entity_collides(Entity* this, Entity* other);
 
 void EntityPhysics_init(EntityPhysics* this);
+void Entity_emptyDraw(void* context, SDL_Surface* screen, Camera* camera);

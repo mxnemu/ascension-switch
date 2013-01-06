@@ -70,11 +70,8 @@ void lua_createLib(lua_State* l, const char* tableName, const char* globalName, 
 	lua_setfield(l, -2, "__gc"); // write top of stack into table -2 (before the functions)
 	lua_pop(l,1); // pop the table from stack, we no longer need it there
 
-	printf("lsize%d",lua_gettop(l));
-
     luaL_newlib(l, functions);
     luaL_setmetatable(l, tableName);
 
     lua_setglobal(l, globalName);
-    printf("lsize%d",lua_gettop(l));
 }

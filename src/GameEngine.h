@@ -10,10 +10,12 @@
 #include "Constants.h"
 #include "GameModule.h"
 #include "TextureCache.h"
+#include "Input.h"
 
 typedef struct GameEngine {
 	bool windowIsRunning;
 	SDL_Surface* screen;
+	Input* input;
 	lua_State* l;
 	GameModule* module;
 	GameModule* nextModule;

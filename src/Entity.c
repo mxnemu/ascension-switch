@@ -8,7 +8,8 @@ Entity* Entity_create(void* context, Sprite* sprite) {
 	this->destroyed = false;
 	EntityPhysics_init(&this->physics);
 	this->update = emptyUpdate;
-	this->draw = emptyDraw;
+	this->draw = Entity_emptyDraw;
+	this->destroy = emptyDestroy;
 	this->context = context;
 	this->hitboxes = List_create();
 
@@ -55,3 +56,5 @@ void EntityPhysics_init(EntityPhysics* this) {
 void EntityPhysics_destroy(EntityPhysics* this) {
 	free(this);
 }
+
+void Entity_emptyDraw(void* context, SDL_Surface* surface, Camera* camera) {}

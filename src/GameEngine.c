@@ -23,6 +23,7 @@ GameEngine* GameEngine_create(void) {
 	this->l = luaL_newstate();
 	luaL_openlibs(this->l);
 	LuaInit_initCustomTypes(this->l);
+	this->input = Input_create();
 	this->icon = icon;
 	this->module = NULL;
 	this->nextModule = NULL;
@@ -33,8 +34,9 @@ GameEngine* GameEngine_create(void) {
 
 void GameEngine_destroy(GameEngine* this) {
 	CANCEL_IF_FALSE(this);
-	lua_close(this->l);
 	GameModule_destroy(this->module);
+	lua_close(this->l);
+	Input_destroy(this->input);
 	TextureCache_destroy(this->textureCache);
 	SDL_FreeSurface(this->icon);
 	SDL_Quit();
@@ -91,7 +93,7 @@ int GameEngine_run(GameEngine* this) {
         		this->module->handleEvent(this->module->context, &event);
         	}
         }
-
+		Input_update(this->input);
 
         RawTime now = SDL_GetTicks();
         while (now - lastUpdate > UPDATE_TIME) {
