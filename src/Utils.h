@@ -5,7 +5,10 @@
 void stackDump (lua_State *L);
 void* lua_checklightuserdata(lua_State* l, int idx);
 void lua_createLib(lua_State* l, const char* tableName, const char* globalName, const luaL_Reg* functions, const luaL_Reg* methods, lua_CFunction destructor);
+
+// SDL utils
 void initRect(SDL_Rect* rect);
+bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b);
 
 
 #define CHECK_LUA_USERCLASS(l, clazz, metatable, idx) \
@@ -21,3 +24,8 @@ void initRect(SDL_Rect* rect);
 			destructor(it); \
 		} \
 	}
+
+void emptyInit(void* context);
+void emptyUpdate(void* context, RawTime dt);
+void emptyDraw(void* context, SDL_Surface* surface);
+void emptyDestroy(void* context);

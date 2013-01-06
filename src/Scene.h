@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "GameEngine.h"
 #include "Vector.h"
+#include "CollisionHandler.h"
 
 #define SCENE_LUA_MTABLE "yotm.Scene"
 
@@ -16,6 +17,7 @@ CLASS(Scene) {
 	Vector* entities;
 	Vector* triggers;
 	Camera* camera;
+	CollisionHandler* collisionHandler;
 	GameEngine* engine;
 };
 

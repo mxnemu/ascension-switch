@@ -2,21 +2,32 @@
 
 #include "Constants.h"
 #include "Entity.h"
+#include "Vector.h"
 
 typedef enum CollisionState {
 	started, presolve, solved, canceled
 }CollisionState;
 
 CLASS(Collision) {
-	Entity* a, b;
+	Entity* a;
+	Entity* b;
 	CollisionState state;
 };
 
 CLASS(CollisionHandler) {
-	Vector collisions;
+	Vector* collisions;
 };
 
 CollisionHandler* CollisionHandler_create();
 void CollisionHandler_destroy();
 
-void CollisionHandler_update(Vector* entities);
+void CollisionHandler_update(CollisionHandler* this, Vector* entities);
+void CollisionHandler_handle(CollisionHandler* this, Entity* a, Entity* b);
+void CollisionHandler_removeCollisionsWithEntity(CollisionHandler* this, Entity* entity);
+void CollisionHandler_removeCollisionByIndex(CollisionHandler* this, int index);
+
+Collision* Collision_create(Entity* a, Entity* b);
+void Collision_destroy();
+
+bool Collision_matches(Collision* this, Entity* a,Entity* b);
+bool Collision_resolve(Collision* this);

@@ -14,3 +14,5 @@ CLASS(Hitbox) {
 
 Hitbox* Hitbox_create();
 void Hitbox_destroy(Hitbox* this);
+
+bool Hitbox_collides(Hitbox* this, Hitbox* other);

@@ -30,6 +30,17 @@ void stackDump (lua_State *L) {
   printf("\n");  /* end the listing */
 }
 
+void emptyInit(void* context) {}
+void emptyUpdate(void* context, RawTime dt) {}
+void emptyDraw(void* context, SDL_Surface* surface) {}
+void emptyDestroy(void* context) {}
+
+bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b) {
+	return !(a->x      > b->x+b->w ||
+			  a->x+a->w < b->x      ||
+			  a->y      > b->y+b->h ||
+			  a->y+a->h < b->y);
+}
 
 void* lua_checklightuserdata(lua_State* l, int idx){
 	luaL_checktype(l, idx, LUA_TLIGHTUSERDATA);

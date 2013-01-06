@@ -13,3 +13,7 @@ Hitbox* Hitbox_create() {
 void Hitbox_destroy(Hitbox* this) {
 	free(this);
 }
+
+bool Hitbox_collides(Hitbox* this, Hitbox* other) {
+	return SDL_Rect_touches(&this->bounds, &other->bounds);
+}

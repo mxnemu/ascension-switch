@@ -21,7 +21,3 @@ typedef struct GameModule {
 GameModule* GameModule_create(void* context);
 void GameModule_destroy(GameModule* this);
 
-void emptyInit(void* context);
-void emptyUpdate(void* context, RawTime dt);
-void emptyDraw(void* context, SDL_Surface* surface);
-void emptyDestroy(void* context);

@@ -18,10 +18,16 @@ void CollisionHandler_update(CollisionHandler* this, Vector* entities) {
 void CollisionHandler_handle(CollisionHandler* this, Entity* a, Entity* b) {
 	for (int i=0; i < this->collisions->allocatedElements; ++i) {
 		Collision* it = this->collisions->elements[i];
-		if (it != NULL && Collison_matches(it, a, b)) {
-			Collision_handle(it);
+		if (it != NULL && Collision_matches(it, a, b)) {
+			Collision_resolve(it); // TODO check if it has been resolved and remove it;
+			return;
 		}
 	}
+	Collision* newCollision = Collision_create(a,b);
+	if (!Collision_resolve(newCollision)) {
+		Vector_InsertInFirstFreeSpace(this->collisions, newCollision);
+	}
+
 }
 
 void CollisionHandler_removeCollisionsWithEntity(CollisionHandler* this, Entity* entity) {
@@ -33,15 +39,40 @@ void CollisionHandler_removeCollisionsWithEntity(CollisionHandler* this, Entity*
 			} else if (it->b == entity) {
 				CollisionHandler_removeCollisionByIndex(this, i);
 			}
-			Collision_handle(it);
+			Collision_resolve(it);
 		}
 	}
 }
 
-CollisionHandler_removeCollisionByIndex(this, i) {
+void CollisionHandler_removeCollisionByIndex(CollisionHandler* this, int index) {
 	Collision* c = Vector_Get(this->collisions, index);
 	Collision_destroy(c);
 	Vector_Set(this->collisions, index, NULL);
+}
+
+Collision* Collision_create(Entity* a, Entity* b) {
+	Collision* this = malloc(sizeof(Collision));
+	return this;
+}
+
+void Collision_destroy(Collision* this) {
+	free(this);
+}
+
+bool Collision_resolve(Collision* this) {
+	static const int repulsion = 1;
+	const bool aIsleft = this->a->sprite->rect.x < this->b->sprite->rect.x;
+//	const bool aIstop  = this->a->sprite->rect.y < this->b->sprite->rect.y;
+
+	if (aIsleft) {
+		this->a->physics.dx -= repulsion;
+		this->b->physics.dx += repulsion;
+	} else {
+		this->a->physics.dx += repulsion;
+		this->b->physics.dx += repulsion;
+	}
+
+	return false;
 }
 
 bool Collision_matches(Collision* this, Entity* a,Entity* b) {

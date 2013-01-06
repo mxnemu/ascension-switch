@@ -6,6 +6,7 @@
  */
 
 #include "GameModule.h"
+#include "Utils.h"
 
 GameModule* GameModule_create(void* context) {
 	GameModule* this = malloc(sizeof(GameModule));
@@ -23,7 +24,3 @@ void GameModule_destroy(GameModule* this) {
 	this->destroy(this->context);
 	free(this);
 }
-void emptyInit(void* context) {}
-void emptyUpdate(void* context, RawTime dt) {}
-void emptyDraw(void* context, SDL_Surface* surface) {}
-void emptyDestroy(void* context) {}

@@ -1,25 +1,36 @@
 #pragma once
 
-#include "Scene.h"
+#include "Constants.h"
+#include "Sprite.h"
+#include "List.h"
 
-#define TEAM_NONE 0
-#define TEAM_PLAYER 1
-#define TEAM_EVILPLAYER 2
-#define TEAM_ENEMY 3
+#define COLLISION_GROUP_DEFAULT 1
+#define COLLISION_GROUP_PLAYER 1 << 2
+
+CLASS(EntityPhysics) {
+	int dx, dy;
+	SDL_Rect bounds;
+	int weight;
+
+	int groups;
+	int groupMask;
+};
 
 CLASS(Entity) {
 	Sprite* sprite;
 	bool destroyed;
-	int dx, dy;
+	EntityPhysics physics;
+
 	void (*destroy)(void* context);
 	void (*update)(void* context, RawTime dt);
 	void (*draw)(void* context, SDL_Surface*);
-	Scene* scene;
-	int team;
 	void* context;
 	List* hitboxes;
 };
 
-Entity* Entity_create(Scene* scene, void* context, Sprite* sprite);
+Entity* Entity_create(void* context, Sprite* sprite);
 void Entity_destroy(Entity* this);
 
+bool Entity_collides(Entity* this, Entity* other);
+
+void EntityPhysics_init(EntityPhysics* this);
