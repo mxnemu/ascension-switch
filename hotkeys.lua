@@ -13,12 +13,13 @@ keyboardHotkeys = {
     ["action"] = {["key"]="e"}
 }
 
+-- TODO remove the keys and use ["name"] in the 2nd table instead
 joystickHotkeys = {
     -- movement
-    ["left"] = {["axis"]=1, ["axisValue"]=-1},
-    ["right"] = {["axis"]="d", ["axisValue"]=1},
-    ["up"] = {["axis"]="w", ["axisValue"]=1},
-    ["down"] = {["axis"]="d", ["axisValue"]=-1},
+    ["left"] = {["axis"]=0},
+    ["right"] = {["axis"]=0},
+    ["up"] = {["axis"]=1},
+    ["down"] = {["axis"]=1},
     
     ["kickLeft"] = {["button"]= 0},
     ["kickRight"] = {["button"]=1},

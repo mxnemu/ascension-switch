@@ -41,8 +41,11 @@ CLASS(Input) {
 Input* Input_create();
 void Input_destroy(Input* this);
 void Input_update(Input* this);
-void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath);
 void Input_addHotkey(Input* this, InputHotkey* hotkey);
+void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath);
+void Input_parseKeyboardHotkeys(Input* this, lua_State* l);
+void Input_parseJoystickHotkeys(Input* this, lua_State* l);
+
 
 int Input_getAxis(Input* this, ActionId id);
 bool Input_isDown(Input* this, ActionId id);

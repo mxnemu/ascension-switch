@@ -46,7 +46,10 @@ void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath) {
 		printf("%s\n", lua_tostring(l, -1));
 		return;
 	}
+	Input_parseKeyboardHotkeys(this, l);
+}
 
+void Input_parseKeyboardHotkeys(Input* this, lua_State* l) {
 	lua_getglobal(l, "keyboardHotkeys");
 	lua_pushnil(l);
 	while (lua_next(l, 1)) {
@@ -92,8 +95,48 @@ void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath) {
 //		printf("}\n");
 		lua_pop(l,2);
 	}
-	stackDump(l);
 }
+
+void Input_parseJoystickHotkeys(Input* this, lua_State* l) {
+	lua_getglobal(l, "joystickHotkeys");
+	lua_pushnil(l);
+	while (lua_next(l, 1)) {
+
+		lua_pushvalue(l, -2);
+		const char* key = lua_tostring(l, -1);
+		int actionId = Input_stringToActionId(key);
+//		printf("%s: {", key);
+
+		if (lua_istable(l, -2)) {
+			InputHotkey* hotkey = InputHotkey_create(HOTKEY_TYPE_KEYBOARD, actionId);
+
+			lua_pushnil(l);
+			while (lua_next(l, -3)) {
+				lua_pushvalue(l, -2);
+				const char* subKey = lua_tostring(l, -1);
+
+				if (strcmp(subKey, "axis") == 0) {
+					hotkey->hotkey.joystick.axisNumber = lua_tointeger(l, -2);
+				} else if (strcmp(subKey, "button") == 0) {
+					hotkey->hotkey.joystick.buttonNumber = lua_tointeger(l, -2);
+				} else if (strcmp(subKey, "trackball") == 0) {
+					hotkey->hotkey.joystick.trackballNumber = lua_tointeger(l, -2);
+				} else {
+					printf("\nunknown key %s\n", subKey);
+				}
+
+				//printf("['%s']=%s ", subKey, subValue);
+				lua_pop(l, 2);
+			}
+
+			Input_addHotkey(this, hotkey);
+		}
+//		printf("}\n");
+		lua_pop(l,2);
+	}
+}
+
+
 
 SDLKey Input_stringToKeycode(const char* keyText) {
 	// lazy workaround to make at least ascii keys work
