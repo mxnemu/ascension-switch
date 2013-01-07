@@ -21,17 +21,13 @@ void Player_update(void* context, RawTime dt) {
 
 // TODO proper movement
 void Player_processInput(Player* this) {
-	if (Input_getAxis(this->input, left) != 0) {
-		this->entity->sprite->bounds.x -= 1;
+	int axis = Input_getAxis(this->input, horizontal);
+	if (axis != 0) {
+		this->entity->sprite->bounds.x += 1*(axis > 1 ? 1 : -1);
 	}
-	if (Input_getAxis(this->input, right) != 0) {
-		this->entity->sprite->bounds.x += 1;
-	}
-	if (Input_getAxis(this->input, up) != 0) {
-		this->entity->sprite->bounds.y -= 1;
-	}
-	if (Input_getAxis(this->input, down) != 0) {
-		this->entity->sprite->bounds.y += 1;
+	axis = Input_getAxis(this->input, vertical);
+	if (axis != 0) {
+		this->entity->sprite->bounds.y += 1*(axis > 0 ? 1 : -1);
 	}
 }
 

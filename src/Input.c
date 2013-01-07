@@ -47,30 +47,27 @@ void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath) {
 		return;
 	}
 	Input_parseKeyboardHotkeys(this, l);
+	Input_parseJoystickHotkeys(this, l);
 }
 
 void Input_parseKeyboardHotkeys(Input* this, lua_State* l) {
 	lua_getglobal(l, "keyboardHotkeys");
 	lua_pushnil(l);
-	while (lua_next(l, 1)) {
+	while (lua_next(l, -2)) {
 
-		lua_pushvalue(l, -2);
-		const char* key = lua_tostring(l, -1);
-		int actionId = Input_stringToActionId(key);
-//		printf("%s: {", key);
-
-		if (lua_istable(l, -2)) {
-			InputHotkey* hotkey = InputHotkey_create(HOTKEY_TYPE_KEYBOARD, actionId);
+		if (lua_istable(l, -1)) {
+			InputHotkey* hotkey = InputHotkey_create(HOTKEY_TYPE_KEYBOARD, none);
 
 			lua_pushnil(l);
-			while (lua_next(l, -3)) {
-				lua_pushvalue(l, -2);
-				const char* subKey = lua_tostring(l, -1);
+			while (lua_next(l, -2)) {
+				const char* subKey = lua_tostring(l, -2);
 
-				if (strcmp(subKey, "key") == 0) {
-					hotkey->hotkey.key.key.sym = Input_stringToKeycode(lua_tostring(l, -2));
+				if (strcmp(subKey, "name") == 0) {
+					hotkey->id = Input_stringToActionId(lua_tostring(l, -1));
+				} else if (strcmp(subKey, "key") == 0) {
+					hotkey->hotkey.key.key.sym = Input_stringToKeycode(lua_tostring(l, -1));
 				} else if (strcmp(subKey, "axisValue") == 0) {
-					hotkey->hotkey.key.axisValue = lua_tointeger(l, -2);
+					hotkey->hotkey.key.axisValue = lua_tointeger(l, -1);
 				// mods
 				} else if (strcmp(subKey, "lshift") == 0) {
 					hotkey->hotkey.key.key.mod = hotkey->hotkey.key.key.mod | KMOD_LSHIFT;
@@ -86,53 +83,55 @@ void Input_parseKeyboardHotkeys(Input* this, lua_State* l) {
 					printf("\nunknown key %s\n", subKey);
 				}
 
-				//printf("['%s']=%s ", subKey, subValue);
-				lua_pop(l, 2);
+				lua_pop(l, 1);
 			}
-
-			Input_addHotkey(this, hotkey);
+			if (hotkey->id != none) {
+				//printf("['%d']=%d ", hotkey->id, hotkey->hotkey.key.key.sym);
+				Input_addHotkey(this, hotkey);
+			} else {
+				free(hotkey);
+			}
 		}
 //		printf("}\n");
-		lua_pop(l,2);
+		lua_pop(l,1);
 	}
 }
 
 void Input_parseJoystickHotkeys(Input* this, lua_State* l) {
 	lua_getglobal(l, "joystickHotkeys");
 	lua_pushnil(l);
-	while (lua_next(l, 1)) {
+	while (lua_next(l, -2)) {
 
-		lua_pushvalue(l, -2);
-		const char* key = lua_tostring(l, -1);
-		int actionId = Input_stringToActionId(key);
-//		printf("%s: {", key);
-
-		if (lua_istable(l, -2)) {
-			InputHotkey* hotkey = InputHotkey_create(HOTKEY_TYPE_KEYBOARD, actionId);
+		if (lua_istable(l, -1)) {
+			InputHotkey* hotkey = InputHotkey_create(HOTKEY_TYPE_JOYSTICK, none);
 
 			lua_pushnil(l);
-			while (lua_next(l, -3)) {
-				lua_pushvalue(l, -2);
-				const char* subKey = lua_tostring(l, -1);
+			while (lua_next(l, -2)) {
+				const char* subKey = lua_tostring(l, -2);
 
-				if (strcmp(subKey, "axis") == 0) {
-					hotkey->hotkey.joystick.axisNumber = lua_tointeger(l, -2);
+				if (strcmp(subKey, "name") == 0) {
+					hotkey->id = Input_stringToActionId(lua_tostring(l, -1));
+				} else if (strcmp(subKey, "axis") == 0) {
+					hotkey->hotkey.joystick.axisNumber = lua_tointeger(l, -1);
 				} else if (strcmp(subKey, "button") == 0) {
-					hotkey->hotkey.joystick.buttonNumber = lua_tointeger(l, -2);
+					hotkey->hotkey.joystick.buttonNumber = lua_tointeger(l, -1);
 				} else if (strcmp(subKey, "trackball") == 0) {
-					hotkey->hotkey.joystick.trackballNumber = lua_tointeger(l, -2);
+					hotkey->hotkey.joystick.trackballNumber = lua_tointeger(l, -1);
 				} else {
-					printf("\nunknown key %s\n", subKey);
+					printf("\nunknown joystick key %s\n", subKey);
 				}
 
 				//printf("['%s']=%s ", subKey, subValue);
-				lua_pop(l, 2);
+				lua_pop(l, 1);
 			}
-
-			Input_addHotkey(this, hotkey);
+			if (hotkey->id != none) {
+				Input_addHotkey(this, hotkey);
+			} else {
+				free(hotkey);
+			}
 		}
 //		printf("}\n");
-		lua_pop(l,2);
+		lua_pop(l,1);
 	}
 }
 
@@ -147,10 +146,8 @@ SDLKey Input_stringToKeycode(const char* keyText) {
 }
 
 ActionId Input_stringToActionId(const char* actionIdText) {
-	ENUM_TO_STRING_MATCH(left, actionIdText)
-	ENUM_TO_STRING_MATCH(right, actionIdText)
-	ENUM_TO_STRING_MATCH(up, actionIdText)
-	ENUM_TO_STRING_MATCH(down, actionIdText)
+	ENUM_TO_STRING_MATCH(horizontal, actionIdText)
+	ENUM_TO_STRING_MATCH(vertical, actionIdText)
 	ENUM_TO_STRING_MATCH(kickLeft, actionIdText)
 	ENUM_TO_STRING_MATCH(kickRight, actionIdText)
 	ENUM_TO_STRING_MATCH(hitLeft, actionIdText)
@@ -166,13 +163,26 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 		if (it != NULL && it->id == hotkeyId) {
 
 			if (it->hotkeyType == HOTKEY_TYPE_KEYBOARD && Input_keysymIsDown(this, &it->hotkey.key.key)) {
-				value = MAX(abs(value), abs(it->hotkey.key.axisValue));
+				value += it->hotkey.key.axisValue*AXIS_MAX;
+				printf("keydown\n");
 			} else if(it->hotkeyType == HOTKEY_TYPE_JOYSTICK) {
-				value = MAX(abs(value), abs(SDL_JoystickGetAxis(it->hotkey.joystick.joystick, it->hotkey.joystick.axisNumber)));
+				int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
+				value += newValue; //TODO avoid gettan to fast with double hotkeys
+				if (abs(value) > AXIS_MIN_TRIGGER) {
+					printf("%d-%d ax %d\n", hotkeyId,it->hotkey.joystick.axisNumber,  value);
+				}
 			}
 		}
 	}
 	return value;
+}
+
+float Input_getAxisMultiplier(Input* this, ActionId hotkeyId) {
+	int axis = Input_getAxis(this, hotkeyId);
+	if (abs(axis) > AXIS_MIN_TRIGGER) {
+		return (float)AXIS_MAX/(float)axis;
+	}
+	return 0.f;
 }
 
 bool Input_isDown(Input* this, ActionId hotkeyId) {
@@ -211,6 +221,7 @@ void Input_update(Input* this) {
 
 InputHotkey* InputHotkey_create(int type, int actionId) {
 	InputHotkey* this = malloc(sizeof(InputHotkey));
+	memset(this, 0, sizeof(InputHotkey));
 	this->hotkeyType = type;
 	this->id = actionId;
 	return this;

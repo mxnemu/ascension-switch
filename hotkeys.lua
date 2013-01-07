@@ -1,30 +1,30 @@
 
 keyboardHotkeys = {
     -- movement
-    ["left"] = {["key"]="a", ["axisValue"]=-1},
-    ["right"] = {["key"]="d", ["axisValue"]=1},
-    ["up"] = {["key"]="w", ["axisValue"]=1},
-    ["down"] = {["key"]="s", ["axisValue"]=-1},
+    {["name"]="horizontal", ["key"]="a", ["axisValue"]=-1},
+    {["name"]="horizontal", ["key"]="d", ["axisValue"]=1},
+    {["name"]="vertical", ["key"]="w", ["axisValue"]=-1},
+    {["name"]="vertical", ["key"]="s", ["axisValue"]=1},
     
-    ["kickLeft"] = {["key"]="j"},
-    ["kickRight"] = {["key"]="k"},
-    ["hitLeft"] = {["key"]="s"},
-    ["hitRight"] = {["key"]="s"},
-    ["action"] = {["key"]="e"}
+    {["name"]="kickLeft", ["key"]="j"},
+    {["name"]="kickRight", ["key"]="k"},
+    {["name"]="hitLeft", ["key"]="s"},
+    {["name"]="hitRight", ["key"]="s"},
+    {["name"]="action", ["key"]="e"}
 }
 
 -- TODO remove the keys and use ["name"] in the 2nd table instead
 joystickHotkeys = {
     -- movement
-    ["left"] = {["axis"]=0},
-    ["right"] = {["axis"]=0},
-    ["up"] = {["axis"]=1},
-    ["down"] = {["axis"]=1},
+    {["name"]="horizontal", ["axis"]=0},
+    {["name"]="horizontal", ["axis"]=6},
+    {["name"]="vertical", ["axis"]=1},
+    {["name"]="vertical", ["axis"]=7},
     
-    ["kickLeft"] = {["button"]= 0},
-    ["kickRight"] = {["button"]=1},
-    ["hitLeft"] = {["button"]=2},
-    ["hitRight"] = {["button"]=3},
-    ["action"] = {["button"]=4}
+    {["name"]="kickLeft", ["button"]= 0},
+    {["name"]="kickRight", ["button"]=1},
+    {["name"]="hitLeft", ["button"]=2},
+    {["name"]="hitRight", ["button"]=3},
+    {["name"]="action", ["button"]=4}
 }
 print("hotkeys are valid");

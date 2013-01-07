@@ -2,9 +2,12 @@
 #include "Constants.h"
 #include "Vector.h"
 
+#define AXIS_MIN_TRIGGER 200
+#define AXIS_MAX 32767
+
 // TODO somehow differentiate the player. Store hotkeys in Player.c or something
 typedef enum ActionId {
-	none, left, right, up, down, kickLeft, kickRight, hitLeft, hitRight, action
+	none, horizontal, vertical, kickLeft, kickRight, hitLeft, hitRight, action
 } ActionId;
 
 CLASS(KeyHotkey) {
@@ -48,6 +51,7 @@ void Input_parseJoystickHotkeys(Input* this, lua_State* l);
 
 
 int Input_getAxis(Input* this, ActionId id);
+float Input_getAxisMultiplier(Input* this, ActionId hotkeyId);
 bool Input_isDown(Input* this, ActionId id);
 
 bool Input_keysymIsDown(Input* this, SDL_keysym* keysym);
