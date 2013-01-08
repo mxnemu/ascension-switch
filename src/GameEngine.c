@@ -7,6 +7,7 @@
 
 #include "GameEngine.h"
 #include "Intro.h"
+#include "Game.h"
 #include "LuaInit.h"
 
 GameEngine* GameEngine_create(void) {
@@ -28,8 +29,9 @@ GameEngine* GameEngine_create(void) {
 	this->icon = icon;
 	this->module = NULL;
 	this->nextModule = NULL;
-	GameEngine_setActiveModule(this, Intro_create(this)->module);
 	this->textureCache = TextureCache_create();
+	//GameEngine_setActiveModule(this, Intro_create(this)->module);
+	GameEngine_setActiveModule(this, Game_create(this)->module);
 	return this;
 }
 

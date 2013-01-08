@@ -4,15 +4,16 @@
 #define TRIGGER_MTABLE "yotm.Trigger"
 
 int Trigger_luaCreate(lua_State* l) {
+	Scene* scene = Scene_checkfromLua(l, 1);
+	int x = luaL_checkinteger(l, 2);
 	int luaCallback = luaL_ref(l, LUA_REGISTRYINDEX);
-	int x = luaL_checkinteger(l, 1);
 	lua_pop(l, 1);
 
 	Trigger* this = lua_newuserdata(l, sizeof(Trigger));
 	luaL_getmetatable(l, TRIGGER_MTABLE);
 	lua_setmetatable(l, -2);
 
-	this->entity = Entity_create(this, NULL);
+	this->entity = Entity_create(this, scene, NULL);
 	this->entity->physics.bounds.x = x;
 	this->luaCallbackReference = luaCallback;
 	stackDump(l);

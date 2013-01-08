@@ -8,10 +8,12 @@ typedef enum CollisionState {
 	started, presolve, solved, canceled
 }CollisionState;
 
+typedef struct Scene Scene;
 CLASS(Collision) {
 	Entity* a;
 	Entity* b;
 	CollisionState state;
+	Scene* s;
 };
 
 CLASS(CollisionHandler) {

@@ -22,9 +22,10 @@ void Camera_destroy(Camera* this) {
 
 void Camera_update(Camera* this) {
 	if (this->trackedEntity) {
-		SDL_Rect* entityBounds = &((Entity*)this->trackedEntity)->physics.bounds;
-		Camera_setTo(this, (entityBounds->x+entityBounds->w)/2 - this->viewport.w/2,
-						   (entityBounds->y+entityBounds->h)/2 - this->viewport.h/2);
+//		SDL_Rect* entityBounds = &((Entity*)this->trackedEntity)->physics.bounds;
+		SDL_Rect* entityBounds = &((Entity*)this->trackedEntity)->sprite->bounds;
+		Camera_setTo(this, entityBounds->x+entityBounds->w/2 - this->viewport.w/2,
+						   entityBounds->y+entityBounds->h/2 - this->viewport.h/2);
 	}
 }
 

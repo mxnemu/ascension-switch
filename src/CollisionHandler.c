@@ -1,4 +1,5 @@
 #include "CollisionHandler.h"
+#include "Scene.h"
 
 void CollisionHandler_update(CollisionHandler* this, Vector* entities) {
 	for (int i=0; i < entities->usedElements; ++i) {

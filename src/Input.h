@@ -2,7 +2,7 @@
 #include "Constants.h"
 #include "Vector.h"
 
-#define AXIS_MIN_TRIGGER 200
+#define AXIS_MIN_TRIGGER 260
 #define AXIS_MAX 32767
 
 // TODO somehow differentiate the player. Store hotkeys in Player.c or something

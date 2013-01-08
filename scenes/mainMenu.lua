@@ -18,7 +18,5 @@ function createNextTrigger(lastTrigger)
     scene:addTrigger(trigger);
 end
 
-trigger = Trigger.create(800, createNextTrigger);
-print(scene);
-scene.addTrigger(scene, trigger);
+trigger = Trigger.create(scene, 800, createNextTrigger);
 print(trigger);

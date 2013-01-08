@@ -85,7 +85,8 @@ void Scene_update(Scene* this, RawTime dt) {
 	for (int i=0; i < this->entities->usedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
-			it->update(it->context, dt);
+//			it->update(it->context, dt);
+			Entity_update(it, dt);
 		}
 	}
 	Camera_update(this->camera);
