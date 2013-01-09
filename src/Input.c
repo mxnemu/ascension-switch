@@ -19,9 +19,12 @@ Input* Input_create() {
 
 
 	for (int i=0; i < joysticksCount; ++i) {
-		printf("%d: %s\n", i, SDL_JoystickName(i));
 		SDL_Joystick* j = SDL_JoystickOpen(i);
+		int axes = SDL_JoystickNumAxes(j);
+		int buttons = SDL_JoystickNumButtons(j);
+		int hats = SDL_JoystickNumHats(j);
 		Vector_AddElement(this->joysticks, j);
+		printf("%d: %s | axes:%d buttons:%d hats:%d \n", i, SDL_JoystickName(i), axes, buttons, hats);
 	}
 
 //	SDL_JoystickEventState (SDL_IGNORE);
@@ -166,7 +169,7 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 				value += it->hotkey.key.axisValue*AXIS_MAX;
 			} else if(it->hotkeyType == HOTKEY_TYPE_JOYSTICK) {
 				int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
-				value += newValue; //TODO avoid getting too fast with double hotkeys
+				value = MIN(value + newValue, AXIS_MAX);
 			}
 		}
 	}
@@ -216,6 +219,7 @@ void Input_update(Input* this) {
 //
 //		}
 //	}
+	printf("hat %d\n", SDL_JoystickGetHat(this->joysticks->elements[0], 0));
 }
 
 InputHotkey* InputHotkey_create(int type, int actionId) {
