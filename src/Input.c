@@ -171,14 +171,19 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 				value += it->hotkey.key.axisValue*AXIS_MAX;
 			} else if(it->hotkeyType == HOTKEY_TYPE_JOYSTICK) {
 				int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
-				value = MIN(value + newValue, AXIS_MAX);
+				if (newValue < 0) {
+					value = MAX(value + newValue, -AXIS_MAX);
+				} else {
+					value = MIN(value + newValue, AXIS_MAX);
+				}
+
 			}
 		}
 	}
 	if (abs(value) < AXIS_MIN_TRIGGER) {
 		return 0;
 	}
-	return value;
+	return MIN(value, AXIS_MAX);
 }
 
 float Input_getAxisMultiplier(Input* this, ActionId hotkeyId) {
