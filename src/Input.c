@@ -164,13 +164,9 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 
 			if (it->hotkeyType == HOTKEY_TYPE_KEYBOARD && Input_keysymIsDown(this, &it->hotkey.key.key)) {
 				value += it->hotkey.key.axisValue*AXIS_MAX;
-				//printf("keydown\n");
 			} else if(it->hotkeyType == HOTKEY_TYPE_JOYSTICK) {
 				int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
-				value += newValue; //TODO avoid gettan to fast with double hotkeys
-				if (abs(value) > AXIS_MIN_TRIGGER) {
-					//printf("%d-%d ax %d\n", hotkeyId,it->hotkey.joystick.axisNumber,  value);
-				}
+				value += newValue; //TODO avoid getting too fast with double hotkeys
 			}
 		}
 	}

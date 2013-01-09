@@ -23,9 +23,9 @@ void Player_processInput(Player* this) {
 	int x = Input_getAxis(this->input, horizontal);
 	int y = Input_getAxis(this->input, vertical);
 	if (x != 0 || 0 != y) {
-		printf("%d, %d\n", -x*5 * PHYSICS_SCALE,-y*5 * PHYSICS_SCALE);
 		this->entity->physics.dx += (x*5 * PHYSICS_SCALE) / AXIS_MAX;
 		this->entity->physics.dy += (y*5 * PHYSICS_SCALE) / AXIS_MAX;
+		printf("%d, %d\n", this->entity->physics.dx,this->entity->physics.dy);
 	}
 }
 
