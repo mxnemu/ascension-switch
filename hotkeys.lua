@@ -13,13 +13,14 @@ keyboardHotkeys = {
     {["name"]="action", ["key"]="e"}
 }
 
--- TODO remove the keys and use ["name"] in the 2nd table instead
+-- TODO maybe use this for more control about different hat buttons
+--    {["name"]="horizontal", ["hat"]=0, ["hatDirection"]=4, ["hatAxisValue"]=1},
 joystickHotkeys = {
     -- movement
     {["name"]="horizontal", ["axis"]=0},
-    {["name"]="horizontal", ["axis"]=6},
     {["name"]="vertical", ["axis"]=1},
-    {["name"]="vertical", ["axis"]=7},
+    {["name"]="horizontal", ["hat"]=0, ["hatDirection"]="horizontal"},
+    {["name"]="vertical", ["hat"]=0, ["hatDirection"]="vertical"},
     
     {["name"]="kickLeft", ["button"]= 0},
     {["name"]="kickRight", ["button"]=1},

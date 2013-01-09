@@ -18,6 +18,7 @@ CLASS(KeyHotkey) {
 CLASS(JoystickHotkey) {
 	SDL_Joystick* joystick;
 	int axisNumber;
+	int hatNumber;
 	int buttonNumber;
 	int trackballNumber;
 };

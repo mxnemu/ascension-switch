@@ -116,6 +116,8 @@ void Input_parseJoystickHotkeys(Input* this, lua_State* l) {
 					hotkey->id = Input_stringToActionId(lua_tostring(l, -1));
 				} else if (strcmp(subKey, "axis") == 0) {
 					hotkey->hotkey.joystick.axisNumber = lua_tointeger(l, -1);
+				} else if (strcmp(subKey, "hat") == 0) {
+					hotkey->hotkey.joystick.hatNumber= lua_tointeger(l, -1);
 				} else if (strcmp(subKey, "button") == 0) {
 					hotkey->hotkey.joystick.buttonNumber = lua_tointeger(l, -1);
 				} else if (strcmp(subKey, "trackball") == 0) {
@@ -213,13 +215,6 @@ bool Input_keysymIsDown(Input* this, SDL_keysym* keysym) {
 void Input_update(Input* this) {
 	this->keystates = SDL_GetKeyState(NULL); // TODO do I have to free this?
 	this->keymods = SDL_GetModState();
-//	for (int i=0; i < this->joysticks->usedElements; ++i) {
-//		SDL_Joystick* it = this->joysticks->elements[i];
-//		if (it) {
-//
-//		}
-//	}
-	printf("hat %d\n", SDL_JoystickGetHat(this->joysticks->elements[0], 0));
 }
 
 InputHotkey* InputHotkey_create(int type, int actionId) {
