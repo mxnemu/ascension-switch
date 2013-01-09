@@ -183,7 +183,7 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 	if (abs(value) < AXIS_MIN_TRIGGER) {
 		return 0;
 	}
-	return MIN(value, AXIS_MAX);
+	return value;
 }
 
 float Input_getAxisMultiplier(Input* this, ActionId hotkeyId) {
