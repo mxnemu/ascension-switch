@@ -12,6 +12,10 @@ int Scene_luaCreate(lua_State* l) {
 
 	this->engine = engine;
 	this->camera = Camera_create(engine->screen->w, engine->screen->h);
+	this->walkableBounds.x = 0;
+	this->walkableBounds.w = 0;
+	this->walkableBounds.y = 295 * PHYSICS_SCALE;
+	this->walkableBounds.h = 185 * PHYSICS_SCALE;
 
 	//lua_pushvalue(l, -1);
 
@@ -124,6 +128,7 @@ void Scene_addBackground(Scene* this, const char* background) {
 		this->rightBackground = sprite;
 	}
 	this->camera->bounds.w += sprite->bounds.w;
+	this->walkableBounds.w += sprite->bounds.w * PHYSICS_SCALE;
 }
 
 void Scene_addEntity(Scene* this, Entity* entity) {

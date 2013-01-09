@@ -10,7 +10,7 @@
 #define SCENE_MTABLE "yotm.Scene"
 
 CLASS(Scene) {
-	const char* luaFile;
+	SDL_Rect walkableBounds;
 	Sprite* leftBackground;
 	Sprite* rightBackground;
 	List* backgrounds;

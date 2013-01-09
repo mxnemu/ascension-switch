@@ -32,6 +32,7 @@ void Game_init(void* context) {
 
 	memset(this->players, 0, sizeof(this->players));
 	this->players[0] = Player_create(this->scene, Sprite_create(TextureCache_get(this->engine->textureCache, "images/person.png")), this->engine->input);
+	this->players[0]->entity->physics.bounds.y = 320 * PHYSICS_SCALE;
 
 	Scene_addEntity(this->scene, this->players[0]->entity);
 	this->scene->camera->trackedEntity = this->players[0]->entity;

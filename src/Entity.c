@@ -8,7 +8,7 @@ Entity* Entity_create(void* context, Scene* scene, Sprite* sprite) {
 	this->scene = scene;
 	this->sprite = sprite;
 	this->destroyed = false;
-	EntityPhysics_init(&this->physics);
+	EntityPhysics_init(&this->physics, sprite);
 	this->update = emptyUpdate;
 	this->draw = Entity_emptyDraw;
 	this->destroy = emptyDestroy;
@@ -48,8 +48,15 @@ bool Entity_collides(Entity* this, Entity* other) {
 }
 
 
-void EntityPhysics_init(EntityPhysics* this) {
-	SDL_Rect_init(&this->bounds);
+void EntityPhysics_init(EntityPhysics* this, Sprite* sprite) {
+	if (sprite) {
+		this->bounds.x = 0;
+		this->bounds.y = 0;
+		this->bounds.w = sprite->bounds.w * PHYSICS_SCALE;
+		this->bounds.h = sprite->bounds.h * PHYSICS_SCALE;
+	} else {
+		SDL_Rect_init(&this->bounds);
+	}
 	this->dx = 0;
 	this->dy = 0;
 	this->groupMask = INT_MAX;
@@ -58,17 +65,18 @@ void EntityPhysics_init(EntityPhysics* this) {
 
 void Entity_update(Entity* this, RawTime dt) {
 	this->update(this->context, dt);
-	SDL_Rect newPosition = {
-		.x = this->physics.bounds.x + this->physics.dx,
-		.y = this->physics.bounds.y + this->physics.dy,
-		.w = this->physics.bounds.w,
-		.h = this->physics.bounds.h
-	};
-
+	SDL_Rect newPosition = this->physics.bounds;
+	newPosition.x += this->physics.dx;
 	if (!Entity_wouldCollide(this, &newPosition)) {
-		this->physics.bounds = newPosition;
-		this->physics.dx = this->physics.dy = 0;
+		this->physics.bounds.x += this->physics.dx;
 	}
+	newPosition.x -= this->physics.dx;
+	newPosition.y += this->physics.dy;
+	if (!Entity_wouldCollide(this, &newPosition)) {
+		this->physics.bounds.y += this->physics.dy;
+	}
+	this->physics.dx = this->physics.dy = 0;
+
 	if (this->sprite) {
 		this->sprite->bounds.x = this->physics.bounds.x / PHYSICS_SCALE;
 		this->sprite->bounds.y = this->physics.bounds.y / PHYSICS_SCALE;
@@ -76,6 +84,15 @@ void Entity_update(Entity* this, RawTime dt) {
 }
 
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
+	// test scene
+	if (rect->x < this->scene->walkableBounds.x ||
+		rect->x + rect->w > this->scene->walkableBounds.x + this->scene->walkableBounds.w ||
+		rect->y + rect->h < this->scene->walkableBounds.y ||
+		rect->y + rect->h > this->scene->walkableBounds.y + this->scene->walkableBounds.h
+		) {
+		return true;
+	}
+
 	// test entities
 	for (int i=0; i < this->scene->entities->usedElements; ++i) {
 		Entity* it = this->scene->entities->elements[i];
