@@ -170,13 +170,14 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 			if (it->hotkeyType == HOTKEY_TYPE_KEYBOARD && Input_keysymIsDown(this, &it->hotkey.key.key)) {
 				value += it->hotkey.key.axisValue*AXIS_MAX;
 			} else if(it->hotkeyType == HOTKEY_TYPE_JOYSTICK) {
-				int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
-				if (newValue < 0) {
-					value = MAX(value + newValue, -AXIS_MAX);
-				} else {
-					value = MIN(value + newValue, AXIS_MAX);
+				if (this->joysticks->usedElements > 0) {
+					int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
+					if (newValue < 0) {
+						value = MAX(value + newValue, -AXIS_MAX);
+					} else {
+						value = MIN(value + newValue, AXIS_MAX);
+					}
 				}
-
 			}
 		}
 	}
