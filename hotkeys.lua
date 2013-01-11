@@ -8,8 +8,8 @@ keyboardHotkeys = {
     
     {["name"]="kickLeft", ["key"]="j"},
     {["name"]="kickRight", ["key"]="k"},
-    {["name"]="hitLeft", ["key"]="s"},
-    {["name"]="hitRight", ["key"]="s"},
+    {["name"]="hitLeft", ["key"]="h"},
+    {["name"]="hitRight", ["key"]="l"},
     {["name"]="action", ["key"]="e"}
 }
 

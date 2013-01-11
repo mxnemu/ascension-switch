@@ -27,6 +27,19 @@ void Player_processInput(Player* this) {
 		this->entity->physics.dy += (y*5 * PHYSICS_SCALE) / AXIS_MAX;
 		printf("%d, %d\n", this->entity->physics.dx,this->entity->physics.dy);
 	}
+
+	if (Input_isDown(this->input, kickLeft)) {
+		printf("kickLeft\n");
+	}
+	if (Input_isDown(this->input, kickRight)) {
+		printf("kickRight\n");
+	}
+	if (Input_isDown(this->input, hitLeft)) {
+		printf("hitLeft\n");
+	}
+	if (Input_isDown(this->input, hitRight)) {
+		printf("hitRight\n");
+	}
 }
 
 void Player_draw(void* context, SDL_Surface* screen, Camera* camera) {
