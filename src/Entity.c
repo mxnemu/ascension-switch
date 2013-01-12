@@ -15,11 +15,15 @@ Entity* Entity_create(void* context, Scene* scene, Sprite* sprite) {
 	this->context = context;
 	this->hitboxes = List_create();
 
+	this->combos = Vector_Create();
+	this->currentCombo = NULL;
+	this->timeSinceLastComboAction = 0;
 	return this;
 }
 
 void Entity_destroy(Entity* this) {
 	this->destroy(this->context);
+	FREE_VECTOR_WITH_ELMENTS(this->combos, Combo_destroy);
 	ListNode* it = this->hitboxes->first;
 	while(it) {
 		Hitbox_destroy((Hitbox*)it->data);
@@ -81,6 +85,14 @@ void Entity_update(Entity* this, RawTime dt) {
 		this->sprite->bounds.x = this->physics.bounds.x / PHYSICS_SCALE;
 		this->sprite->bounds.y = this->physics.bounds.y / PHYSICS_SCALE;
 	}
+
+	this->timeSinceLastComboAction += dt;
+	if (this->currentCombo) {
+		if (this->currentCombo->timeUntilCancel > 0 &&
+			this->currentCombo->timeUntilCancel < this->timeSinceLastComboAction) {
+			this->currentCombo = NULL;
+		}
+	}
 }
 
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
@@ -107,6 +119,28 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 		}
 	}
 	return false;
+}
+
+void Entity_performComboAction(Entity* this, ActionId action) {
+	Combo* nextCombo = NULL;
+	Vector* combos = this->currentCombo ? this->currentCombo->followups : this->combos;
+	for (int i=0; i < combos->usedElements; ++i) {
+		Combo* it = combos->elements[i];
+		if (it->action == action && it->timeUntilReady >= this->timeSinceLastComboAction) {
+			nextCombo = it;
+			// TODO animations and stuff
+			break; //TODO find the best matching combo (by time passed) and choose it
+		}
+	}
+
+	if (!nextCombo && this->currentCombo && this->currentCombo->cancelOnWrongAction) {
+		this->currentCombo = NULL;
+		this->timeSinceLastComboAction = 0;
+	} else if (nextCombo) {
+		this->currentCombo = nextCombo;
+		this->timeSinceLastComboAction = 0;
+	}
+	// ignore if no new combo and the current doesn't care about wrong input buttons
 }
 
 void EntityPhysics_destroy(EntityPhysics* this) {

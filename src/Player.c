@@ -30,15 +30,19 @@ void Player_processInput(Player* this) {
 
 	if (Input_isDown(this->input, kickLeft)) {
 		printf("kickLeft\n");
+		Entity_performComboAction(this->entity, kickLeft);
 	}
 	if (Input_isDown(this->input, kickRight)) {
 		printf("kickRight\n");
+		Entity_performComboAction(this->entity, kickRight);
 	}
 	if (Input_isDown(this->input, hitLeft)) {
 		printf("hitLeft\n");
+		Entity_performComboAction(this->entity, hitLeft);
 	}
 	if (Input_isDown(this->input, hitRight)) {
 		printf("hitRight\n");
+		Entity_performComboAction(this->entity, hitRight);
 	}
 }
 

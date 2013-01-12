@@ -8,6 +8,7 @@ Combo* Combo_create() {
 	this->followups = Vector_Create();
 	this->timeUntilReady = 0;
 	this->timeUntilCancel = 2000;
+	this->cancelOnWrongAction = true;
 	return this;
 }
 
