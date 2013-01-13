@@ -37,6 +37,7 @@ CLASS(Entity) {
 	Vector* combos;
 	Combo* currentCombo;
 	RawTime timeSinceLastComboAction;
+	const char* currentComboName;
 };
 
 Entity* Entity_create(void* context, Scene* scene, Sprite* sprite);
@@ -45,6 +46,7 @@ void Entity_destroy(Entity* this);
 bool Entity_collides(Entity* this, Entity* other);
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
 void Entity_performComboAction(Entity* this, ActionId action);
+void Entity_resetComboProgress(Entity* this);
 
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
 void Entity_emptyDraw(void* context, SDL_Surface* screen, Camera* camera);
