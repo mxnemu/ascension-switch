@@ -91,6 +91,7 @@ void Entity_update(Entity* this, RawTime dt) {
 		if (this->currentCombo->timeUntilCancel > 0 &&
 			this->currentCombo->timeUntilCancel < this->timeSinceLastComboAction) {
 			this->currentCombo = NULL;
+			printf("reset combo tree\n");
 		}
 	}
 }
@@ -126,8 +127,9 @@ void Entity_performComboAction(Entity* this, ActionId action) {
 	Vector* combos = this->currentCombo ? this->currentCombo->followups : this->combos;
 	for (int i=0; i < combos->usedElements; ++i) {
 		Combo* it = combos->elements[i];
-		if (it->action == action && it->timeUntilReady >= this->timeSinceLastComboAction) {
+		if (it->action == action && it->timeUntilReady <= this->timeSinceLastComboAction) {
 			nextCombo = it;
+			printf("new combo stage: %s\n", it->name);
 			// TODO animations and stuff
 			break; //TODO find the best matching combo (by time passed) and choose it
 		}
@@ -136,6 +138,7 @@ void Entity_performComboAction(Entity* this, ActionId action) {
 	if (!nextCombo && this->currentCombo && this->currentCombo->cancelOnWrongAction) {
 		this->currentCombo = NULL;
 		this->timeSinceLastComboAction = 0;
+		printf("reset combo tree due to wrong action\n");
 	} else if (nextCombo) {
 		this->currentCombo = nextCombo;
 		this->timeSinceLastComboAction = 0;
