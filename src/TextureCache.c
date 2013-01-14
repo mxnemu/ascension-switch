@@ -46,7 +46,7 @@ SDL_Surface* TextureCache_loadImage(TextureCache* this, const char* path, bool s
 		}
 		return optimizedImage;
 	}
-	printf("Could not load image: %s", path);
+	printf("Could not load image: %s\n", path);
 	return NULL;
 }
 

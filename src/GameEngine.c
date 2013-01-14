@@ -30,8 +30,8 @@ GameEngine* GameEngine_create(void) {
 	this->module = NULL;
 	this->nextModule = NULL;
 	this->textureCache = TextureCache_create();
-	//GameEngine_setActiveModule(this, Intro_create(this)->module);
-	GameEngine_setActiveModule(this, Game_create(this)->module);
+	GameEngine_setActiveModule(this, Intro_create(this)->module);
+	//GameEngine_setActiveModule(this, Game_create(this)->module);
 	return this;
 }
 

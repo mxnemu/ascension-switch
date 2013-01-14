@@ -1,6 +1,7 @@
 #include "MainMenu.h"
 #include "ui/UiMenuList.h"
 #include "Game.h"
+#include "editor/EntityEditor.h"
 
 MainMenu* MainMenu_create(GameEngine* engine) {
 	MainMenu* this = malloc(sizeof(MainMenu));
@@ -35,6 +36,7 @@ void MainMenu_init(void* context) {
 	UiMenuElement_create(menu, "Play", NULL, MainMenu_onStartButton, this);
 	UiMenuElement_create(menu, "Options", NULL, NULL, this);
 	UiMenuElement_create(menu, "Credits", NULL, NULL, this);
+	UiMenuElement_create(menu, "Editor", NULL, MainMenu_onEditorButton, this);
 	UiMenuElement_create(menu, "Exit", NULL, MainMenu_onExitButton, this);
 
 	UiNode_moveTo(menu->node,
@@ -49,6 +51,11 @@ void MainMenu_init(void* context) {
 void MainMenu_onStartButton(UiNode* button, void* callbackContext) {
 	MainMenu* this = callbackContext;
 	this->engine->nextModule = Game_create(this->engine)->module;
+}
+
+void MainMenu_onEditorButton(UiNode* button, void* callbackContext) {
+	MainMenu* this = callbackContext;
+	this->engine->nextModule = EntityEditor_create(this->engine)->module;
 }
 
 void MainMenu_onExitButton(UiNode* button, void* callbackContext) {

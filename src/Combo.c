@@ -11,6 +11,12 @@ Combo* Combo_create() {
 	this->timeUntilReady = 0;
 	this->timeUntilCancel = 2000;
 	this->cancelOnWrongAction = false;
+
+	this->minSpeedX = 0;
+	this->maxSpeedX = 0;
+	this->minSpeedY = 0;
+	this->maxSpeedY = 0;
+
 	return this;
 }
 
