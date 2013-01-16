@@ -1,3 +1,14 @@
+.spriteSheetContainer {
+    position:relative;
+}
+
 .spriteSheet {
     background-color: #FF00FF;
+}
+
+.spriteSheetSelection {
+    position:absolute;
+    top:0;
+    left:0;
+    opacity: 0.6;
 }
