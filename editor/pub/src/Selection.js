@@ -10,12 +10,22 @@ Selection.prototype.draw = function(context) {
     context.fillRect(this.x, this.y, this.w, this.h);
 }
 
-Selection.prototype.isValid = function(context) {
+Selection.prototype.validate = function(context) {
+    if (this.w < 0) {
+        this.x += this.w;
+        this.w = -this.w;
+    }
+    
+    if (this.h < 0) {
+        this.y += this.h;
+        this.h = -this.h;
+    }
+    
     return this.w > 0 && this.h > 0;
 }
 
 Selection.prototype.snapToAlpha = function(context) {
-    if (!this.isValid()) {
+    if (!this.validate()) {
         return;
     }
 
@@ -38,7 +48,7 @@ Selection.prototype.snapToAlpha = function(context) {
         
         if (!columnHasAlpha) {
             offsets[0] += 1;
-            console.log("shrink x");
+            //console.log("shrink x");
         } else {
             break;
         }
@@ -59,7 +69,7 @@ Selection.prototype.snapToAlpha = function(context) {
         
         if (!rowHasAlpha) {
             offsets[1] += 1;
-            console.log("shrink y");
+            //console.log("shrink y");
         } else {
             break;
         }
@@ -79,7 +89,7 @@ Selection.prototype.snapToAlpha = function(context) {
         
         if (!columnHasAlpha) {
             offsets[2] -= 1;
-            console.log("shrink w");
+            //console.log("shrink w");
         } else {
             break;
         }
@@ -101,12 +111,12 @@ Selection.prototype.snapToAlpha = function(context) {
         
         if (!rowHasAlpha) {
             offsets[3] -= 1;
-            console.log("shrink h");
+            //console.log("shrink h");
         } else {
             break;
         }
     }
-    console.log(offsets);
+    //console.log(offsets);
     this.x += offsets[0];
     this.y += offsets[1];
     this.w += offsets[2];

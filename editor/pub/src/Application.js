@@ -1,6 +1,7 @@
 function Application() {
     this.options = new Options();
-    this.frameSelector = new FrameSelector();
+    this.comboList = new ComboList();
+    this.frameSelector = new FrameSelector(this.comboList);
 }
 
 Application.prototype.init = function() {
