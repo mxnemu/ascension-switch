@@ -1,3 +1,11 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    color: #FFF;
+}
+
 .spriteSheetContainer {
     position:relative;
 }
@@ -11,4 +19,19 @@
     top:0;
     left:0;
     opacity: 0.6;
+}
+
+.main {
+    background-color: #343434;
+    min-height: 100%;
+}
+
+.comboListContainer {
+    float: right;
+    min-height: 100%;
+    background-color: #333;
+    border-left: 2px solid #444;
+    padding-left: 1em;
+    padding-right: 1em;
+    
 }
