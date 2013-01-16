@@ -1,10 +1,11 @@
 function Combo(selection, name) {
     this.name = name || "";
+    this.parent = null;
     this.timeUntilReady = 0;
     this.timeUntilReset = 2000;
     this.followUps = [];
-    this.parent = null;
     this.selection = selection;
+    this.hitboxSelections = [];
 }
 
 Combo.prototype.getIndexInParent = function() {
