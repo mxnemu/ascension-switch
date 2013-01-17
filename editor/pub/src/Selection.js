@@ -5,6 +5,22 @@ function Selection(x,y) {
     this.h = 0;
 }
 
+Selection.prototype.serialize = function() {
+    return {
+        x: this.x,
+        y: this.y,
+        w: this.w,
+        h: this.h
+    };
+}
+
+Selection.prototype.resetore = function(serialized) {
+    this.x = serialized.x;
+    this.y = serialized.y;
+    this.w = serialized.w;
+    this.h = serialized.h;
+}
+
 Selection.prototype.draw = function(context) {
     context.fillStyle = "rgba(200, 170, 20, 0.8)";
     context.fillRect(this.x, this.y, this.w, this.h);
