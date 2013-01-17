@@ -49,12 +49,19 @@ ComboList.prototype.addFrame = function(selection) {
 }
 
 ComboList.prototype.addComboNode = function(combo) {
-    var comboNode = $("<li></li>");
+    var parentNode = combo.parent ? combo.parent.node : $(".comboList");
+    combo.node = $("<li></li>");
+
     if (combo.name.length > 0) {
-        comboNode.text(combo.name);
+        var nextList = $("<ul></ul>");
+        combo.node.text(combo.name);
+        parentNode.append(combo.node);
+        combo.node.append(nextList);
+        combo.node = nextList;
     } else {
-        comboNode.text(combo.getIndexInParent());
+        combo.node.text(combo.getIndexInParent());
+        parentNode.append(combo.node);
     }
+       
     
-    $(".comboList").append(comboNode);
 }
