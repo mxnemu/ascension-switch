@@ -15,3 +15,4 @@ http.createServer(function(req, res) {
         fileSever.sendFile(res, uri.pathname);
     }
 }).listen(port, "localhost");
+console.log("started server on port " + port + " for local access");
