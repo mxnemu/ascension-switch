@@ -5,26 +5,47 @@
         <script src="src/Utils.js"></script>
         <script src="src/Options.js"></script>
         <script src="src/Selection.js"></script>
+        <script src="src/Combo.js"></script>
+        <script src="src/ComboDetails.js"></script>
         <script src="src/ComboList.js"></script>
         <script src="src/FrameSelector.js"></script>
         <script src="src/FrameEditor.js"></script>
         <script src="src/Application.js"></script>
-        
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" title="no title" charset="utf-8"></link>
     </head>
     <body>
-        <div class="comboListContainer">
-            <h1>Combolist</h1>
-            <ul class="comboList">
-            </ul>
-        </div>
-        <div class="main">
-            <canvas class="currentFrame"> currentSprite </canvas><br/>
-            
-            <div class="spriteSheetContainer">
-                <canvas class="spriteSheet"> SpriteSheet </canvas>
-                <canvas class="spriteSheetSelection"> SpriteSheetSelection </canvas>
+        <div class="sidebar">
+            <div class="comboDetails">
+                <h1>Combo</h1>
+                <span class="label">Name: </span><input class="name"/><br/>
+                <span class="label">ReadyTime: </span><input class="timeUntilReady" size="4"/><br/>
+                <span class="label">CancelTime: </span><input class="timeUntilReady" size="4"/><br/>
+                <span class="label">Action: </span><select class="action">
+                    <option>leftKick</option>
+                    <option>rightKick</option>
+                    <option>leftHit</option>
+                    <option>rightHit</option>
+                    <option>action</option>
+                </select><br/>
+                <hr/>
+                <input type="button" value="↑Up"></input>
+                <input type="button" value="↓Down"></input>
+                <input type="button" value="⌫Delete"></input>
             </div>
+        
+            <div class="comboListContainer">
+                <h1>Combolist</h1>
+                <ul class="comboList">
+                </ul>
+            </div>
+        </div> <!-- /sidebar -->
+        
+        
+        <canvas class="currentFrame"> currentSprite </canvas><br/>
+        <div class="spriteSheetContainer">
+            <canvas class="spriteSheet"> SpriteSheet </canvas>
+            <canvas class="spriteSheetSelection"> SpriteSheetSelection </canvas>
         </div>
     </body>
 </html>
