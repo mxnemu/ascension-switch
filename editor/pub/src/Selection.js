@@ -104,7 +104,7 @@ Selection.prototype.snapToAlpha = function(context) {
         }
         
         if (!columnHasAlpha) {
-            offsets[2] -= 1;
+            offsets[2] += 1;
             //console.log("shrink w");
         } else {
             break;
@@ -126,7 +126,7 @@ Selection.prototype.snapToAlpha = function(context) {
         }
         
         if (!rowHasAlpha) {
-            offsets[3] -= 1;
+            offsets[3] += 1;
             //console.log("shrink h");
         } else {
             break;
@@ -135,6 +135,6 @@ Selection.prototype.snapToAlpha = function(context) {
     //console.log(offsets);
     this.x += offsets[0];
     this.y += offsets[1];
-    this.w += offsets[2] - offsets[1];
-    this.h += offsets[3] - offsets[0];
+    this.w -= offsets[2] + offsets[0];
+    this.h -= offsets[3] + offsets[1];
 }
