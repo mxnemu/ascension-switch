@@ -135,6 +135,6 @@ Selection.prototype.snapToAlpha = function(context) {
     //console.log(offsets);
     this.x += offsets[0];
     this.y += offsets[1];
-    this.w += offsets[2];
-    this.h += offsets[3];
+    this.w += offsets[2] - offsets[1];
+    this.h += offsets[3] - offsets[0];
 }
