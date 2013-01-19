@@ -11,8 +11,24 @@ function FrameSelector(comboList) {
     this.selections = [];
 
     $(".spriteSheetSelection").mousedown(function(event) {
-        _this.currentSelection = new Selection(event.offsetX, event.offsetY);
-        _this.selections.push(_this.currentSelection);
+        // close open selection
+        if (_this.currentSelection) {
+            _this.currentSelection.w = event.offsetX - _this.currentSelection.x;
+            _this.currentSelection.h = event.offsetY - _this.currentSelection.y;
+            if (app.options.snapToAlpha) {
+                _this.currentSelection.snapToAlpha(_this.context);
+            }
+            if (_this.currentSelection.validate()) {        
+                _this.comboList.addFrame(_this.currentSelection);
+            } else {
+                _this.removeSelection(_this.currentSelection);
+            }
+            _this.currentSelection = null; 
+        } else {
+            // create new selection
+            _this.currentSelection = new Selection(event.offsetX, event.offsetY);
+            _this.selections.push(_this.currentSelection);
+        }
     });
     
     $(".spriteSheetSelection").mousemove(function(event) {
@@ -20,20 +36,6 @@ function FrameSelector(comboList) {
             _this.currentSelection.w = event.offsetX - _this.currentSelection.x;
             _this.currentSelection.h = event.offsetY - _this.currentSelection.y;
         }
-    });
-    
-    $(".spriteSheetSelection").click(function(event) {
-        _this.currentSelection.w = event.offsetX - _this.currentSelection.x;
-        _this.currentSelection.h = event.offsetY - _this.currentSelection.y;
-        if (app.options.snapToAlpha) {
-            _this.currentSelection.snapToAlpha(_this.context);
-        }
-        if (_this.currentSelection.validate()) {        
-            _this.comboList.addFrame(_this.currentSelection);
-        } else {
-            _this.removeSelection(_this.currentSelection);
-        }
-        _this.currentSelection = null;
     });
 }
 
