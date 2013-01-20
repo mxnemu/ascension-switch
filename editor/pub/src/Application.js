@@ -1,6 +1,7 @@
 function Application() {
     this.options = new Options();
-    this.comboList = new ComboList();
+    this.comboDetails = new ComboDetails();
+    this.comboList = new ComboList(this.comboDetails);
     this.frameSelector = new FrameSelector(this.comboList);
 }
 

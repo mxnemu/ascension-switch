@@ -1,5 +1,8 @@
-function ComboList() {
+function ComboList(comboDetails) {
     this.combos = [];
+    this.selectedBranch = null;
+    this.selectedCombo = null;
+    this.comboDetails = comboDetails;
 }
 
 ComboList.prototype.serialize = function() {
@@ -19,11 +22,12 @@ ComboList.prototype.hasCollidingFrame = function(selection) {
 
 ComboList.prototype.addFrame = function(selection) {
     var combo;
-    if (this.selectedCombo) {
+    if (this.selectedBranch) {
         combo = new Combo(selection);
-        this.selectedCombo.addFollowUp(combo);
+        this.selectedBranch.addFollowUp(combo);
     } else {
         combo = new Combo(selection, "new combo");
+        this.selectedBranch = combo;
         this.selectedCombo = combo;
         this.combos.push(combo);
     }
@@ -34,20 +38,31 @@ ComboList.prototype.addFrame = function(selection) {
 }
 
 ComboList.prototype.addComboNode = function(combo) {
-    var parentNode = combo.parent ? combo.parent.node : $(".comboList");
-    combo.node = $("<li class='combo'></li>");
+    var _this = this;
+    var parentNode = combo.parent ? combo.parent.listNode : $(".comboList");
+    combo.node = $("<li></li>");
+    
+    combo.nameNode = $("<span class='combo'></span>");
+    
 
     if (combo.name.length > 0) {
         var nextList = $("<ul></ul>");
-        combo.node.addClass("branchedCombo");
-        combo.node.text(combo.name);
-        parentNode.append(combo.node);
+        combo.nameNode.addClass("branchedCombo");
+        combo.nameNode.text(combo.name);
+        combo.node.append(combo.nameNode);
         combo.node.append(nextList);
-        combo.node = nextList;
+        combo.listNode = nextList;
     } else {
-        combo.node.text("step "+combo.getIndexInParent());
-        parentNode.append(combo.node);
+        combo.nameNode.text("step "+combo.getIndexInParent());
+        combo.node.append(combo.nameNode);
     }
+    
+    combo.nameNode.click(function() {
+        _this.selectedCombo = combo;
+        _this.updateNodeSelection();
+    });
+    
+    parentNode.append(combo.node);
 }
 
 ComboList.prototype.updateNodeSelection = function() {
@@ -55,6 +70,7 @@ ComboList.prototype.updateNodeSelection = function() {
         $(".combo").removeClass("selected");
     } else if (this.selectedCombo.node) {
         $(".combo").removeClass("selected");
-        this.selectedCombo.node.addClass("selected");
+        
+        this.selectedCombo.nameNode.addClass("selected");
     }
 }

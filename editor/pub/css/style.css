@@ -9,6 +9,7 @@ html, body {
 
 .spriteSheetContainer {
     position:relative;
+    width: 65%;
 }
 
 .spriteSheet {
@@ -25,6 +26,7 @@ html, body {
 .sidebar {
     float: right;
     min-height: 100%;
+    width: 30%;
     background-color: #333;
     border-left: 2px solid #444;
     padding-left: 1em;
