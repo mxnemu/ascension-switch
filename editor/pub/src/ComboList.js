@@ -70,7 +70,7 @@ ComboList.prototype.updateNodeSelection = function() {
         $(".combo").removeClass("selected");
     } else if (this.selectedCombo.node) {
         $(".combo").removeClass("selected");
-        
         this.selectedCombo.nameNode.addClass("selected");
     }
+    this.comboDetails.setCombo(this.selectedCombo);
 }
