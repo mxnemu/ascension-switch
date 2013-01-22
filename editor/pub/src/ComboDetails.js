@@ -3,6 +3,9 @@ function ComboDetails() {
 }
 
 ComboDetails.prototype.setCombo = function(combo) {
+    var _this = this;
+    this.saveCombo();
+    this.combo = combo;
     if (combo) {
         $(".comboDetails input").removeAttr("disabled", "false");
         $(".comboDetails select").removeAttr("disabled", "false");
@@ -11,6 +14,11 @@ ComboDetails.prototype.setCombo = function(combo) {
         $(".comboDetails .timeUntilReady").val(combo.timeUntilReady);
         $(".comboDetails .timeUntilReset").val(combo.timeUntilReset);
         $(".comboDetails .action").val(combo.action);
+        
+        $(".comboDetails input").bind("input", function() {
+            _this.saveCombo();
+        });
+        
     } else {
         $(".comboDetails input").attr("disabled", "true");
         $(".comboDetails select").attr("disabled", "true");
@@ -19,5 +27,24 @@ ComboDetails.prototype.setCombo = function(combo) {
         $(".comboDetails .timeUntilReady").val("");
         $(".comboDetails .timeUntilReset").val("");
         $(".comboDetails .action").val("");
+    }
+}
+
+ComboDetails.prototype.saveCombo = function() {
+    if (!this.combo) {
+        return;
+    }
+    
+    this.combo.name = $(".comboDetails .name").val();
+    this.combo.timeUntilReady = $(".comboDetails .timeUntilReady").val();
+    this.combo.timeUntilReset = $(".comboDetails .timeUntilReset").val();
+    this.combo.action = $(".comboDetails .action").val();
+    
+    if (this.combo.nameNode) {
+        if (this.combo.name.length > 0) {
+            this.combo.nameNode.text(this.combo.name);
+        } else {
+            this.combo.nameNode.text("step " + this.combo.getIndexInParent());
+        }
     }
 }
