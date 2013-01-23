@@ -54,6 +54,7 @@ ComboList.prototype.addFrame = function(selection) {
     if (this.selectedBranch) {
         combo = new Combo(selection);
         this.selectedBranch.addFollowUp(combo);
+        this.selectedCombo = combo;
     } else {
         combo = new Combo(selection, "new combo");
         this.selectedBranch = combo;

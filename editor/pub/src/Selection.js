@@ -21,8 +21,9 @@ Selection.prototype.resetore = function(serialized) {
     this.h = serialized.h;
 }
 
-Selection.prototype.draw = function(context) {
-    context.fillStyle = "rgba(200, 170, 20, 0.8)";
+Selection.prototype.draw = function(context, color) {
+    color = color || "rgba(200, 170, 20, 0.8)";
+    context.fillStyle = color;
     context.fillRect(this.x, this.y, this.w, this.h);
 }
 

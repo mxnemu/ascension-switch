@@ -57,14 +57,19 @@ FrameSelector.prototype.draw = function() {
     
     var drawCombos = function(combos) {
         for (var i=0; i < combos.length; ++i) {
-            combos[i].selection.draw(_this.selectionContext);
+            
+            if (_this.comboList.selectedCombo != combos[i]) {
+                combos[i].selection.draw(_this.selectionContext);
+            } else {
+                combos[i].selection.draw(_this.selectionContext, "rgba(10,40,240,0.9)");
+            }
             drawCombos(combos[i].followUps);
         }
     }
     drawCombos(this.comboList.combos);
     
     if (this.currentSelection) {
-        this.currentSelection.draw(this.selectionContext);
+        this.currentSelection.draw(this.selectionContext, "rgba(10,40,240,0.9)");
     }
 }
 
