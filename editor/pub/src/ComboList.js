@@ -33,6 +33,13 @@ ComboList.prototype.removeCombo = function(combo) {
     removeCombo(this.combos);
     
     if (removed) {
+        if (this.selectedCombo == combo) {
+            this.selectedCombo = null;
+        }
+        if (this.selectedBranch == combo) {
+            this.selectedBranch = null;
+        }
+    
         this.rebuildHtmlTree();
     }
     return removed;
@@ -69,6 +76,7 @@ ComboList.prototype.rebuildHtmlTree = function() {
         }
     }
     rebuildChildNodes(this.combos);
+    this.updateNodeSelection();
 }
 
 ComboList.prototype.addComboNode = function(combo) {
