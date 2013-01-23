@@ -44,7 +44,7 @@ ComboDetails.prototype.saveCombo = function() {
         if (this.combo.name.length > 0) {
             this.combo.nameNode.text(this.combo.name);
         } else {
-            this.combo.nameNode.text("step " + this.combo.getIndexInParent());
+            this.combo.nameNode.text("followUp " + this.combo.getIndexInParent());
         }
     }
 }

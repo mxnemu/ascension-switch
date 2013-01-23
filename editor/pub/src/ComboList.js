@@ -36,10 +36,6 @@ ComboList.prototype.removeCombo = function(combo) {
         if (this.selectedCombo == combo) {
             this.selectedCombo = null;
         }
-        if (this.selectedBranch == combo) {
-            this.selectedBranch = null;
-        }
-    
         this.rebuildHtmlTree();
     }
     return removed;
@@ -51,17 +47,14 @@ ComboList.prototype.hasCollidingFrame = function(selection) {
 
 ComboList.prototype.addFrame = function(selection) {
     var combo;
-    if (this.selectedBranch) {
+    if (this.selectedCombo) {
         combo = new Combo(selection);
-        this.selectedBranch.addFollowUp(combo);
-        this.selectedCombo = combo;
+        this.selectedCombo.addFollowUp(combo);
     } else {
         combo = new Combo(selection, "new combo");
-        this.selectedBranch = combo;
-        this.selectedCombo = combo;
         this.combos.push(combo);
     }
-    
+    this.selectedCombo = combo;
     this.addComboNode(combo);
     this.updateNodeSelection();
     console.log(JSON.stringify(this.serialize()));
@@ -87,18 +80,16 @@ ComboList.prototype.addComboNode = function(combo) {
     
     combo.nameNode = $("<span class='combo'></span>");
     
-
     if (combo.name.length > 0) {
-        var nextList = $("<ul></ul>");
-        combo.nameNode.addClass("branchedCombo");
         combo.nameNode.text(combo.name);
-        combo.node.append(combo.nameNode);
-        combo.node.append(nextList);
-        combo.listNode = nextList;
     } else {
-        combo.nameNode.text("step "+combo.getIndexInParent());
-        combo.node.append(combo.nameNode);
+        combo.nameNode.text("followUp "+combo.getIndexInParent());
     }
+    
+     var nextList = $("<ul></ul>");
+    combo.node.append(combo.nameNode);
+    combo.node.append(nextList);
+    combo.listNode = nextList;
     
     combo.nameNode.click(function() {
         _this.selectedCombo = combo;
