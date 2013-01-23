@@ -8,7 +8,6 @@ function FrameSelector(comboList) {
     this.selectionContext = this.selectionCanvas.getContext("2d");
 
     this.currentSelection = null;
-    this.selections = [];
 
     $(".spriteSheetSelection").mousedown(function(event) {
         // close open selection
@@ -27,7 +26,6 @@ function FrameSelector(comboList) {
         } else {
             // create new selection
             _this.currentSelection = new Selection(event.offsetX, event.offsetY);
-            _this.selections.push(_this.currentSelection);
         }
     });
     
@@ -35,15 +33,6 @@ function FrameSelector(comboList) {
         if (_this.currentSelection) {
             _this.currentSelection.w = event.offsetX - _this.currentSelection.x;
             _this.currentSelection.h = event.offsetY - _this.currentSelection.y;
-        }
-    });
-}
-
-FrameSelector.prototype.removeSelection = function(selection) {
-    var _this = this;
-    $.each(this.selections, function(key) {
-        if (this == selection) {
-            _this.selections.splice(key, 1);
         }
     });
 }
@@ -63,9 +52,19 @@ FrameSelector.prototype.loadSpriteSheet = function(path) {
 }
 
 FrameSelector.prototype.draw = function() {
+    var _this = this;
     this.selectionContext.clearRect(0,0,this.selectionCanvas.width, this.selectionCanvas.height);
-    for (var i=0; i < this.selections.length; ++i) {
-        this.selections[i].draw(this.selectionContext);
+    
+    var drawCombos = function(combos) {
+        for (var i=0; i < combos.length; ++i) {
+            combos[i].selection.draw(_this.selectionContext);
+            drawCombos(combos[i].followUps);
+        }
+    }
+    drawCombos(this.comboList.combos);
+    
+    if (this.currentSelection) {
+        this.currentSelection.draw(this.selectionContext);
     }
 }
 
