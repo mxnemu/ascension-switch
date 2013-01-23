@@ -16,6 +16,28 @@ ComboList.prototype.serialize = function() {
     };
 }
 
+ComboList.prototype.removeCombo = function(combo) {
+    var _this = this;
+    var removed = false;
+    var removeCombo = function (array) {
+        for (var i=0; i < array.length; ++i) {
+            if (array[i] == combo) {
+                array.splice(i, 1);
+                removed = true;
+                break;
+            } else {
+                removeCombo(array[i].followUps);
+            }
+        }
+    }
+    removeCombo(this.combos);
+    
+    if (removed) {
+        this.rebuildHtmlTree();
+    }
+    return removed;
+}
+
 ComboList.prototype.hasCollidingFrame = function(selection) {
 
 }
@@ -35,6 +57,18 @@ ComboList.prototype.addFrame = function(selection) {
     this.addComboNode(combo);
     this.updateNodeSelection();
     console.log(JSON.stringify(this.serialize()));
+}
+
+ComboList.prototype.rebuildHtmlTree = function() {
+    var _this = this;
+    $(".comboList").empty();
+    var rebuildChildNodes = function (array) {
+        for (var i=0; i < array.length; ++i) {
+            _this.addComboNode(array[i]);
+            rebuildChildNodes(array[i].followUps);
+        }
+    }
+    rebuildChildNodes(this.combos);
 }
 
 ComboList.prototype.addComboNode = function(combo) {
@@ -61,6 +95,11 @@ ComboList.prototype.addComboNode = function(combo) {
         _this.selectedCombo = combo;
         _this.updateNodeSelection();
         $(".comboDetails .name").get(0).focus();
+    });
+    
+    combo.nameNode.bind('contextmenu', function(e) {
+        _this.removeCombo(combo);
+        return false;
     });
     
     parentNode.append(combo.node);
