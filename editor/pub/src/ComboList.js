@@ -60,6 +60,7 @@ ComboList.prototype.addComboNode = function(combo) {
     combo.nameNode.click(function() {
         _this.selectedCombo = combo;
         _this.updateNodeSelection();
+        $(".comboDetails .name").get(0).focus();
     });
     
     parentNode.append(combo.node);
