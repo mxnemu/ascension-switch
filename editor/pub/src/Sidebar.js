@@ -18,4 +18,6 @@ Sidebar.prototype.init = function() {
 Sidebar.prototype.showTab = function(tabName) {
     $(".sidebar .content").hide("slow");
     $(".sidebar .content." + tabName).show("slow");
+    $(".sidebar .tabs .tabButton").removeClass("selected");
+    $(".sidebar .tabs .tabButton." + tabName).addClass("selected");
 }
