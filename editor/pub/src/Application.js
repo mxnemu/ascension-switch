@@ -1,11 +1,13 @@
 function Application() {
     this.options = new Options();
+    this.sidebar = new Sidebar();
     this.comboDetails = new ComboDetails();
     this.comboList = new ComboList(this.comboDetails);
     this.frameSelector = new FrameSelector(this.comboList);
 }
 
 Application.prototype.init = function() {
+    this.sidebar.init();
     this.frameSelector.loadSpriteSheet("images/person.png");
 }
 

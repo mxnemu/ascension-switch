@@ -33,6 +33,23 @@ html, body {
     padding-right: 1em;
 }
 
+.sidebar .tabs {
+    padding-top: 0.125em;
+    padding-bottom: 0.25em;
+    border-bottom: 2px #666 inset;
+}
+
+.sidebar .tabs .tabButton {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border-right: 2px #555 inset;
+}
+
+.sidebar .tabs .tabButton.selected {
+    background-color: #666;
+    border-right: 4px #434343 inset;
+}
+
 .comboDetails {
     border-bottom: 2px dotted #222;
     padding-bottom: 1em;
