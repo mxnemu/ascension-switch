@@ -1,6 +1,7 @@
 function FrameSelector(comboList) {
     var _this = this;
     this.comboList = comboList;
+    this.entity = null;
     
     this.canvas = $(".spriteSheet").get(0);
     this.context = this.canvas.getContext("2d");
@@ -19,8 +20,6 @@ function FrameSelector(comboList) {
             }
             if (_this.currentSelection.validate()) {        
                 _this.comboList.addFrame(_this.currentSelection);
-            } else {
-                _this.removeSelection(_this.currentSelection);
             }
             _this.currentSelection = null; 
         } else {
@@ -49,6 +48,11 @@ FrameSelector.prototype.loadSpriteSheet = function(path) {
     }
     this.image.src = path;
     
+    if (this.entity) {
+        this.entity.save();
+    }
+    this.entity = new Entity();
+    this.comboList.entity = this.entity;
 }
 
 FrameSelector.prototype.draw = function() {
@@ -66,7 +70,7 @@ FrameSelector.prototype.draw = function() {
             drawCombos(combos[i].followUps);
         }
     }
-    drawCombos(this.comboList.combos);
+    drawCombos(this.entity.combos);
     
     if (this.currentSelection) {
         this.currentSelection.draw(this.selectionContext, "rgba(10,40,240,0.9)");

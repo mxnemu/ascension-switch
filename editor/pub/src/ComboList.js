@@ -1,44 +1,18 @@
 function ComboList(comboDetails) {
-    this.combos = [];
+    this.entity = null;
     this.selectedBranch = null;
     this.selectedCombo = null;
     this.comboDetails = comboDetails;
 }
 
-ComboList.prototype.serialize = function() {
-    var serializedCombos = [];
-    for (var key in this.combos) {
-        serializedCombos.push(this.combos[key].serialize());
-    }
-    
-    return {
-        combos: serializedCombos
-    };
-}
-
+// TODO call via event
 ComboList.prototype.removeCombo = function(combo) {
-    var _this = this;
-    var removed = false;
-    var removeCombo = function (array) {
-        for (var i=0; i < array.length; ++i) {
-            if (array[i] == combo) {
-                array.splice(i, 1);
-                removed = true;
-                break;
-            } else {
-                removeCombo(array[i].followUps);
-            }
-        }
-    }
-    removeCombo(this.combos);
-    
-    if (removed) {
-        if (this.selectedCombo == combo) {
-            this.selectedCombo = null;
-        }
+    if (this.entity.removeCombo(combo)) {
+        this.selectedCombo = null; //TODO only reset if affected
         this.rebuildHtmlTree();
+        return true;
     }
-    return removed;
+    return false;
 }
 
 ComboList.prototype.hasCollidingFrame = function(selection) {
@@ -52,12 +26,12 @@ ComboList.prototype.addFrame = function(selection) {
         this.selectedCombo.addFollowUp(combo);
     } else {
         combo = new Combo(selection, "new combo");
-        this.combos.push(combo);
+        this.entity.combos.push(combo);
     }
     this.selectedCombo = combo;
     this.addComboNode(combo);
     this.updateNodeSelection();
-    console.log(JSON.stringify(this.serialize()));
+    console.log(JSON.stringify(this.entity.serialize()));
 }
 
 ComboList.prototype.rebuildHtmlTree = function() {
@@ -69,7 +43,7 @@ ComboList.prototype.rebuildHtmlTree = function() {
             rebuildChildNodes(array[i].followUps);
         }
     }
-    rebuildChildNodes(this.combos);
+    rebuildChildNodes(this.entity.combos);
     this.updateNodeSelection();
 }
 
