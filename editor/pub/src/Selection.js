@@ -27,6 +27,11 @@ Selection.prototype.draw = function(context, color) {
     context.fillRect(this.x, this.y, this.w, this.h);
 }
 
+Selection.prototype.isInside = function(x, y) {
+    return x >= this.x && x <= (this.x + this.w) &&
+           y >= this.y && y <= (this.y + this.h);
+}
+
 Selection.prototype.validate = function(context) {
     if (this.w < 0) {
         this.x += this.w;

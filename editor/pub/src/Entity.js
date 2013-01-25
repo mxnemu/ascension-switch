@@ -48,3 +48,12 @@ Entity.prototype.removeCombo = function(combo) {
     
     return removed;
 }
+
+Entity.prototype.getFrameForPosition = function(x, y) {
+    for (var i=0; i < this.frames.length; ++i) {
+        if (this.frames[i].isInside(x,y)) {
+            return this.frames[i];
+        }
+    }
+    return null;
+}

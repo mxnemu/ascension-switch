@@ -19,7 +19,7 @@ ComboList.prototype.hasCollidingFrame = function(selection) {
 
 }
 
-ComboList.prototype.addFrame = function(selection) {
+ComboList.prototype.selectFrame = function(selection) {
     var combo;
     if (this.selectedCombo) {
         combo = new Combo(selection);

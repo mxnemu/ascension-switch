@@ -24,7 +24,7 @@ function FrameSelector(sidebar) {
                 // simple click
                 var frame = _this.entity.getFrameForPosition(event.offsetX, event.offsetY);
                 if (frame) {
-                    _this.sidebar.selectFrame(frame)
+                    _this.sidebar.selectFrame(frame);
                 }
             }
             _this.currentSelection = null; 

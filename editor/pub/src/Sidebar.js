@@ -38,3 +38,9 @@ Sidebar.prototype.addFrame = function(frame) {
         this.content.addFrame(frame);
     }
 }
+
+Sidebar.prototype.selectFrame = function(frame) {
+    if (this.content.selectFrame) {
+        this.content.selectFrame(frame);
+    }
+}
