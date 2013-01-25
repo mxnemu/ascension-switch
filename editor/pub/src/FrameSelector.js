@@ -1,6 +1,6 @@
-function FrameSelector(comboList) {
+function FrameSelector(sidebar) {
     var _this = this;
-    this.comboList = comboList;
+    this.sidebar = sidebar;
     this.entity = null;
     
     this.canvas = $(".spriteSheet").get(0);
@@ -19,7 +19,13 @@ function FrameSelector(comboList) {
                 _this.currentSelection.snapToAlpha(_this.context);
             }
             if (_this.currentSelection.validate()) {        
-                _this.comboList.addFrame(_this.currentSelection);
+                _this.sidebar.addFrame(_this.currentSelection);
+            } else {
+                // simple click
+                var frame = _this.entity.getFrameForPosition(event.offsetX, event.offsetY);
+                if (frame) {
+                    _this.sidebar.selectFrame(frame)
+                }
             }
             _this.currentSelection = null; 
         } else {
@@ -52,7 +58,7 @@ FrameSelector.prototype.loadSpriteSheet = function(path) {
         this.entity.save();
     }
     this.entity = new Entity();
-    this.comboList.entity = this.entity;
+    this.sidebar.entity = this.entity;
 }
 
 FrameSelector.prototype.draw = function() {

@@ -1,5 +1,7 @@
 function Sidebar() {
-
+    this.content = new FrameList();
+    this.entity = null;
+    this.tabName = "frames";
 }
 
 Sidebar.prototype.init = function() {
@@ -20,4 +22,19 @@ Sidebar.prototype.showTab = function(tabName) {
     $(".sidebar .content." + tabName).show("slow");
     $(".sidebar .tabs .tabButton").removeClass("selected");
     $(".sidebar .tabs .tabButton." + tabName).addClass("selected");
+    this.tabName = tabName;
+    
+    if (tabName == "frames") {
+        this.content = new FrameList();
+    } else if (tabName == "combos") {
+        this.content = new ComboList();
+    } else if (tabName == "animations") {
+        //this.content = new AnimationList(); TODO implement
+    }
+}
+
+Sidebar.prototype.addFrame = function(frame) {
+    if (this.content.addFrame) {
+        this.content.addFrame(frame);
+    }
 }

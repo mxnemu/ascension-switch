@@ -1,9 +1,7 @@
 function Application() {
     this.options = new Options();
     this.sidebar = new Sidebar();
-    this.comboDetails = new ComboDetails();
-    this.comboList = new ComboList(this.comboDetails);
-    this.frameSelector = new FrameSelector(this.comboList);
+    this.frameSelector = new FrameSelector(this.sidebar);
 }
 
 Application.prototype.init = function() {
@@ -20,7 +18,6 @@ Application.prototype.startDraw = function() {
     };
     
     window.requestAnimFrame(drawFunction);
-
 }
 
 $(function() {

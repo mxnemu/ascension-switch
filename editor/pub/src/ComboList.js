@@ -2,7 +2,7 @@ function ComboList(comboDetails) {
     this.entity = null;
     this.selectedBranch = null;
     this.selectedCombo = null;
-    this.comboDetails = comboDetails;
+    this.comboDetails = new ComboDetails();
 }
 
 // TODO call via event
