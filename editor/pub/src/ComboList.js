@@ -57,10 +57,14 @@ ComboList.prototype.addComboNode = function(combo) {
     if (combo.name.length > 0) {
         combo.nameNode.text(combo.name);
     } else {
-        combo.nameNode.text("followUp "+combo.getIndexInParent());
+        if (combo.parent) {
+            combo.nameNode.text("followUp "+$.inArray(combo, combo.parent.followUps));
+        } else {
+            combo.nameNode.text("followUp -1");
+        }
     }
     
-     var nextList = $("<ul></ul>");
+    var nextList = $("<ul></ul>");
     combo.node.append(combo.nameNode);
     combo.node.append(nextList);
     combo.listNode = nextList;

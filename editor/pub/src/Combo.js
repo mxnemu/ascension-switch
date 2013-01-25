@@ -54,19 +54,6 @@ Combo.prototype.restore = function(serialized) {
     this.hitboxSelections = restoredHitboxes;
 }
 
-Combo.prototype.getIndexInParent = function() {
-    if (!this.parent) {
-        return -1;
-    }
-    
-    for (var i=0; i < this.parent.followUps.length; ++i) {
-        if (this.parent.followUps[i] == this) {
-            return i;
-        }
-    }
-    return -2;
-}
-
 Combo.prototype.addFollowUp = function(nextCombo) {
     this.followUps.push(nextCombo);
     nextCombo.parent = this;
