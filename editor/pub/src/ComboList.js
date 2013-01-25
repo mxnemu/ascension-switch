@@ -1,5 +1,5 @@
-function ComboList(comboDetails) {
-    this.entity = null;
+function ComboList(entity) {
+    this.entity = entity;
     this.selectedBranch = null;
     this.selectedCombo = null;
     this.comboDetails = new ComboDetails();

@@ -59,24 +59,20 @@ FrameSelector.prototype.loadSpriteSheet = function(path) {
     }
     this.entity = new Entity();
     this.sidebar.entity = this.entity;
+    this.sidebar.content.entity = this.entity;
 }
 
 FrameSelector.prototype.draw = function() {
     var _this = this;
     this.selectionContext.clearRect(0,0,this.selectionCanvas.width, this.selectionCanvas.height);
     
-    var drawCombos = function(combos) {
-        for (var i=0; i < combos.length; ++i) {
-            
-            if (_this.comboList.selectedCombo != combos[i]) {
-                combos[i].selection.draw(_this.selectionContext);
-            } else {
-                combos[i].selection.draw(_this.selectionContext, "rgba(10,40,240,0.9)");
-            }
-            drawCombos(combos[i].followUps);
+    for (var i=0; i < this.entity.frames.length; ++i) {
+        if (this.sidebar.content.selectedFrame != this.entity.frames[i]) {
+            this.entity.frames[i].draw(this.selectionContext);
+        } else {
+            this.entity.frames[i].draw(this.selectionContext, "rgba(10,40,240,0.9)");
         }
     }
-    drawCombos(this.entity.combos);
     
     if (this.currentSelection) {
         this.currentSelection.draw(this.selectionContext, "rgba(10,40,240,0.9)");

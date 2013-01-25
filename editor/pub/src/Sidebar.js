@@ -25,9 +25,9 @@ Sidebar.prototype.showTab = function(tabName) {
     this.tabName = tabName;
     
     if (tabName == "frames") {
-        this.content = new FrameList();
+        this.content = new FrameList(this.entity);
     } else if (tabName == "combos") {
-        this.content = new ComboList();
+        this.content = new ComboList(this.entity);
     } else if (tabName == "animations") {
         //this.content = new AnimationList(); TODO implement
     }
