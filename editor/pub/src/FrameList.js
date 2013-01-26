@@ -3,7 +3,6 @@ function FrameList(entity) {
 }
 
 FrameList.prototype.addFrame = function(frame) {
-    this.entity.frames.push(frame);
     this.addHtmlNode(frame);
 }
 

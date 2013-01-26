@@ -19,18 +19,18 @@ function FrameSelector(sidebar) {
                 _this.currentSelection.snapToAlpha(_this.context);
             }
             if (_this.currentSelection.validate()) {        
+                _this.entity.frames.push(_this.currentSelection);
                 _this.sidebar.addFrame(_this.currentSelection);
-            } else {
-                // simple click
-                var frame = _this.entity.getFrameForPosition(event.offsetX, event.offsetY);
-                if (frame) {
-                    _this.sidebar.selectFrame(frame);
-                }
             }
             _this.currentSelection = null; 
         } else {
-            // create new selection
-            _this.currentSelection = new Selection(event.offsetX, event.offsetY);
+            // create new selection or select frame under the mouse
+            var frame = _this.entity.getFrameForPosition(event.offsetX, event.offsetY);
+            if (frame) {
+                _this.sidebar.selectFrame(frame);
+            } else {
+                _this.currentSelection = new Selection(event.offsetX, event.offsetY);
+            }
         }
     });
     
