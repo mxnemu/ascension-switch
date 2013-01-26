@@ -21,6 +21,7 @@ function FrameSelector(sidebar) {
             if (_this.currentSelection.validate()) {        
                 _this.entity.frames.push(_this.currentSelection);
                 _this.sidebar.addFrame(_this.currentSelection);
+                _this.sidebar.selectFrame(_this.currentSelection);
             }
             _this.currentSelection = null; 
         } else {
