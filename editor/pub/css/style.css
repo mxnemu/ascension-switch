@@ -50,6 +50,10 @@ html, body {
     border-right: 4px #434343 inset;
 }
 
+.hint {
+    font-size: 0.85em;
+}
+
 .comboDetails {
     border-bottom: 2px dotted #222;
     padding-bottom: 1em;
