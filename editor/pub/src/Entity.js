@@ -6,6 +6,10 @@ function Entity() {
 
 Entity.prototype.save = function() {
     //TODO call nodejs api to save json
+    $.getJSON("api/saveEntity?name=testEntity&data=" + 
+              JSON.stringify(this.serialize()), function(data) {
+        console.log(data);
+    });
 }
 
 Entity.prototype.serialize = function() {

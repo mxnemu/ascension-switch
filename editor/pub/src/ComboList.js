@@ -19,19 +19,20 @@ ComboList.prototype.hasCollidingFrame = function(selection) {
 
 }
 
-ComboList.prototype.selectFrame = function(selection) {
+ComboList.prototype.selectFrame = function(frame) {
     var combo;
     if (this.selectedCombo) {
-        combo = new Combo(selection);
+        combo = new Combo(frame);
         this.selectedCombo.addFollowUp(combo);
     } else {
-        combo = new Combo(selection, "new combo");
+        combo = new Combo(frame, "new combo");
         this.entity.combos.push(combo);
     }
     this.selectedCombo = combo;
     this.addComboNode(combo);
     this.updateNodeSelection();
-    console.log(JSON.stringify(this.entity.serialize()));
+    //console.log(JSON.stringify(this.entity.serialize()));
+    this.entity.save();
 }
 
 ComboList.prototype.rebuildHtmlTree = function() {
@@ -54,15 +55,7 @@ ComboList.prototype.addComboNode = function(combo) {
     
     combo.nameNode = $("<span class='combo'></span>");
     
-    if (combo.name.length > 0) {
-        combo.nameNode.text(combo.name);
-    } else {
-        if (combo.parent) {
-            combo.nameNode.text("followUp "+$.inArray(combo, combo.parent.followUps));
-        } else {
-            combo.nameNode.text("followUp -1");
-        }
-    }
+    combo.nameNode.text(combo.displayName);
     
     var nextList = $("<ul></ul>");
     combo.node.append(combo.nameNode);

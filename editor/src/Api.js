@@ -13,11 +13,11 @@ Api.prototype.isApiUrl = function(url) {
 
 // ugly
 Api.prototype.handleUri = function(res, uri) {
-    
-    if(uri.pathname == "/api/sumthing") {
-
-    } else if (uri.pathname == "/api/somethingElse") {
-
+    var query = querystring.parse(uri.query || "");
+    console.log(query);
+    console.log(uri.pathname);
+    if(uri.pathname == "/api/saveEntity" && query["name"] && query["data"]) {
+        this.saveEntity(res, query["name"], query["data"]);
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +
@@ -26,9 +26,19 @@ Api.prototype.handleUri = function(res, uri) {
                 uri.query +
                 '"}');
     }
-    
 }
 
+Api.prototype.saveEntity = function(res, name, data) {
+    // TODO unsafe bullshit
+    fs.writeFile("../scripts/" + name, data, function(error) {
+        if (error) {
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.end('{"error": "could not write ' + name + '"}');
+        }
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end('{"status": "writing finished fine"}');
+    });
+}
 
 // exported instance
 var api = new Api();

@@ -8,6 +8,21 @@ function Combo(selection, name) {
     this.hitboxSelections = [];
 }
 
+Object.defineProperty(Combo.prototype, "displayName", {
+    get: function() {
+        if (this.name.length > 0) {
+            return this.name;
+        }
+        if (this.parent) {
+            return "followUp " + $.inArray(this, this.parent.followUps);
+        }
+        return "unnamed root combo";
+    },
+    set: function(val) {
+        alert("Thy must not set readonly values!");
+    }
+});
+
 Combo.prototype.serialize = function() {
     var serializedFollowUps = [];
     for (var key in this.followUps) {
