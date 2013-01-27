@@ -59,7 +59,7 @@ html, body {
     padding-bottom: 1em;
 }
 
-.combo.selected {
+.combo.selected, .name.selected {
     background-color: #666
 }
 
