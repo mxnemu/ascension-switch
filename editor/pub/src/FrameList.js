@@ -1,6 +1,9 @@
 function FrameList(entity) {
     this.entity = entity;
     this.selectedFrame = null;
+    if (this.entity) {
+        this.rebuildHtmlTree();
+    }
 }
 
 FrameList.prototype.addFrame = function(frame) {
@@ -10,10 +13,9 @@ FrameList.prototype.addFrame = function(frame) {
 
 FrameList.prototype.rebuildHtmlTree = function() {
     $(".frameList").empty();
-    for (var i=0; i < this.enttiy.frames.length; ++i) {
-        this.addHtmlNode(this.enttiy.frames[i]);
+    for (var i=0; i < this.entity.frames.length; ++i) {
+        this.addHtmlNode(this.entity.frames[i]);
     }
-    this.setHtmlSelection();
 }
 
 
