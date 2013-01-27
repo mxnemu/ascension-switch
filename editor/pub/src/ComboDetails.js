@@ -36,8 +36,8 @@ ComboDetails.prototype.saveCombo = function() {
     }
     
     this.combo.name = $(".comboDetails .name").val();
-    this.combo.timeUntilReady = $(".comboDetails .timeUntilReady").val();
-    this.combo.timeUntilReset = $(".comboDetails .timeUntilReset").val();
+    this.combo.timeUntilReady = parseInt($(".comboDetails .timeUntilReady").val());
+    this.combo.timeUntilReset = parseInt($(".comboDetails .timeUntilReset").val());
     this.combo.action = $(".comboDetails .action").val();
     
     if (this.combo.nameNode) {
