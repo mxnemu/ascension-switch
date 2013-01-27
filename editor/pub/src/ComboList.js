@@ -77,11 +77,12 @@ ComboList.prototype.addComboNode = function(combo) {
 }
 
 ComboList.prototype.updateNodeSelection = function() {
-    if (!this.selectedCombo) {
-        $(".combo").removeClass("selected");
-    } else if (this.selectedCombo.node) {
-        $(".combo").removeClass("selected");
+    $(".combo").removeClass("selected");
+    if (this.selectedCombo.node) {
         this.selectedCombo.nameNode.addClass("selected");
+        this.selectedFrame = this.selectedCombo.selection;
+    } else {
+        this.selectedFrame = null;   
     }
     this.comboDetails.setCombo(this.selectedCombo);
 }
