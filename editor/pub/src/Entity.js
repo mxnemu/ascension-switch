@@ -53,6 +53,14 @@ Entity.prototype.removeCombo = function(combo) {
     return removed;
 }
 
+Entity.prototype.removeFrame = function(frame) {
+    for (var i=0; i < this.frames.length; ++i) {
+        if (this.frames[i] == frame) {
+            this.frames.splice(i, 1);
+        }
+    }
+}
+
 Entity.prototype.getFrameForPosition = function(x, y) {
     for (var i=0; i < this.frames.length; ++i) {
         if (this.frames[i].isInside(x,y)) {
