@@ -43,6 +43,7 @@ CLASS(Entity) {
 Entity* Entity_create(void* context, Scene* scene, Sprite* sprite);
 void Entity_destroy(Entity* this);
 
+void Entity_update(Entity* this, RawTime dt);
 bool Entity_collides(Entity* this, Entity* other);
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
 void Entity_performComboAction(Entity* this, ActionId action);
