@@ -24,3 +24,10 @@ ListNode* List_getNodeForData(List* this, void* data);
 
 ListNode* ListNode_create();
 void ListNode_destroy(ListNode* this); ///< warning this does not delete data
+
+#define List_destroyWithContent(this, destructor) \
+	void* _it = this->first; \
+	while (_it) { \
+		destructor(this); \
+		_it = _it->next; \
+	}
