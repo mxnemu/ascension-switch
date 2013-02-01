@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Constants.h"
-#include "Sprite.h"
+#include "AnimatedSprite.h"
 #include "List.h"
 #include "Camera.h"
 #include "Combo.h"
@@ -23,7 +23,7 @@ CLASS(EntityPhysics) {
 };
 
 CLASS(Entity) {
-	Sprite* sprite;
+	AnimatedSprite* animatedSprite;
 	bool destroyed;
 	EntityPhysics physics;
 
@@ -40,7 +40,7 @@ CLASS(Entity) {
 	const char* currentComboName;
 };
 
-Entity* Entity_create(void* context, Scene* scene, Sprite* sprite);
+Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
 void Entity_destroy(Entity* this);
 
 void Entity_update(Entity* this, RawTime dt);

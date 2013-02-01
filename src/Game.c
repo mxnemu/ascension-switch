@@ -30,9 +30,20 @@ void Game_init(void* context) {
 
 	this->scene = Scene_create(this->engine, "scenes/stage1.lua");
 
+	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(this->engine->textureCache, "images/person.png")));
+	Animation* idleAnimation = Animation_create("idle");
+	List_pushBack(idleAnimation->frames, Frame_create(0,0, 64, 128, 1000));
+	List_pushBack(idleAnimation->frames, Frame_create(64,0, 64, 128, 1000));
+	List_pushBack(idleAnimation->frames, Frame_create(0,128, 64, 128, 1000));
+	List_pushBack(idleAnimation->frames, Frame_create(64,128, 64, 128, 1000));
+	List_pushBack(sprite->animations, idleAnimation);
+	AnimatedSprite_setFrame(sprite, ((Frame*)idleAnimation->frames->first->data)->rect);
+	sprite->progress.animation = idleAnimation;
+
 	memset(this->players, 0, sizeof(this->players));
-	this->players[0] = Player_create(this->scene, Sprite_create(TextureCache_get(this->engine->textureCache, "images/person.png")), this->engine->input);
+	this->players[0] = Player_create(this->scene, sprite, this->engine->input);
 	this->players[0]->entity->physics.bounds.y = 320 * PHYSICS_SCALE;
+
 
 	Scene_addEntity(this->scene, this->players[0]->entity);
 	this->scene->camera->trackedEntity = this->players[0]->entity;

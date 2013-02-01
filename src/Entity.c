@@ -3,12 +3,12 @@
 #include "Utils.h"
 #include "Scene.h"
 
-Entity* Entity_create(void* context, Scene* scene, Sprite* sprite) {
+Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	Entity* this = malloc(sizeof(Entity));
 	this->scene = scene;
-	this->sprite = sprite;
+	this->animatedSprite = sprite;
 	this->destroyed = false;
-	EntityPhysics_init(&this->physics, sprite);
+	EntityPhysics_init(&this->physics, sprite ? sprite->sprite : NULL);
 	this->update = emptyUpdate;
 	this->draw = Entity_emptyDraw;
 	this->destroy = emptyDestroy;
@@ -69,6 +69,11 @@ void EntityPhysics_init(EntityPhysics* this, Sprite* sprite) {
 
 void Entity_update(Entity* this, RawTime dt) {
 	this->update(this->context, dt);
+
+	if (this->animatedSprite) {
+		AnimationProgress_update(&this->animatedSprite->progress, dt);
+	}
+
 	SDL_Rect newPosition = this->physics.bounds;
 	newPosition.x += this->physics.dx;
 	if (!Entity_wouldCollide(this, &newPosition)) {
@@ -81,9 +86,9 @@ void Entity_update(Entity* this, RawTime dt) {
 	}
 	this->physics.dx = this->physics.dy = 0;
 
-	if (this->sprite) {
-		this->sprite->bounds.x = this->physics.bounds.x / PHYSICS_SCALE;
-		this->sprite->bounds.y = this->physics.bounds.y / PHYSICS_SCALE;
+	if (this->animatedSprite) {
+		this->animatedSprite->sprite->bounds.x = this->physics.bounds.x / PHYSICS_SCALE;
+		this->animatedSprite->sprite->bounds.y = this->physics.bounds.y / PHYSICS_SCALE;
 	}
 
 	this->timeSinceLastComboAction += dt;

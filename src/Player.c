@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player* Player_create(Scene* scene, Sprite* sprite, Input* input) {
+Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input) {
 	Player* this = malloc(sizeof(Player));
 	this->entity = Entity_create(this, scene, sprite);
 	this->entity->draw = Player_draw;
@@ -65,5 +65,5 @@ void Player_processInput(Player* this) {
 
 void Player_draw(void* context, SDL_Surface* screen, Camera* camera) {
 	Player* this = context;
-	Sprite_drawOnCamera(this->entity->sprite, screen, camera);
+	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, screen, camera);
 }
