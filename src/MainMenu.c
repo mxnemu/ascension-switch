@@ -54,8 +54,8 @@ void MainMenu_onStartButton(UiNode* button, void* callbackContext) {
 }
 
 void MainMenu_onEditorButton(UiNode* button, void* callbackContext) {
-	MainMenu* this = callbackContext;
-	this->engine->nextModule = EntityEditor_create(this->engine)->module;
+//	MainMenu* this = callbackContext;
+//	this->engine->nextModule = EntityEditor_create(this->engine)->module;
 }
 
 void MainMenu_onExitButton(UiNode* button, void* callbackContext) {
