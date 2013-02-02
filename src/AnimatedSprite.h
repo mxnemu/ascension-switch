@@ -11,6 +11,7 @@ CLASS(Frame) {
 CLASS(Animation) {
 	const char* name;
 	List* frames;
+	bool loop;
 };
 
 typedef struct AnimatedSprite AnimatedSprite;

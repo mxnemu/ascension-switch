@@ -38,21 +38,25 @@ void AnimationProgress_update(AnimationProgress* this, RawTime dt) {
 			AnimatedSprite_setFrame(this->owner, this->frame->rect);
 			this->progress = 0;
 		} else {
-			AnimationProgress_resetFrameLoop(this);
+			if (this->animation->loop) {
+				AnimationProgress_resetFrameLoop(this);
+			}
 		}
 	}
 }
 
 void AnimationProgress_resetFrameLoop(AnimationProgress* this) {
+	this->progress = 0;
 	this->frameNode = this->animation->frames->first;
 	CANCEL_IF_FALSE(this->frameNode);
 	this->frame = this->frameNode->data;
-	this->progress = 0;
+	AnimatedSprite_setFrame(this->owner, this->frame->rect);
 }
 
 Animation* Animation_create(const char* name) {
 	Animation* this = malloc(sizeof(Animation));
 	this->frames = List_create();
+	this->loop = true;
 	return this;
 }
 
