@@ -1,2 +1,4 @@
 got a basic window
 not sure what kind of game I'm going to make;
+
+requires SDL2, SDL2_image, SDL2_net SDL_2_ttf and lua to build
