@@ -32,11 +32,12 @@ void MainMenu_init(void* context) {
 	SDL_RenderGetLogicalSize(this->engine->renderer, &this->ui->bounds.w, &this->ui->bounds.h);
 	UiMenuList* menu = UiMenuList_create(this->ui);
 
-	UiMenuElement_create(menu, "Play", NULL, MainMenu_onStartButton, this);
-	UiMenuElement_create(menu, "Options", NULL, NULL, this);
-	UiMenuElement_create(menu, "Credits", NULL, NULL, this);
-	UiMenuElement_create(menu, "Editor", NULL, MainMenu_onEditorButton, this);
-	UiMenuElement_create(menu, "Exit", NULL, MainMenu_onExitButton, this);
+	SDL_Renderer* r = this->engine->renderer;
+	UiMenuElement_create(menu, r, "Play", NULL, MainMenu_onStartButton, this);
+	UiMenuElement_create(menu, r, "Options", NULL, NULL, this);
+	UiMenuElement_create(menu, r, "Credits", NULL, NULL, this);
+	UiMenuElement_create(menu, r, "Editor", NULL, MainMenu_onEditorButton, this);
+	UiMenuElement_create(menu, r, "Exit", NULL, MainMenu_onExitButton, this);
 
 	UiNode_moveTo(menu->node,
 				this->ui->bounds.w - menu->node->bounds.w - (this->ui->bounds.w/15),

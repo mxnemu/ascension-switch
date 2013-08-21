@@ -16,9 +16,7 @@ Sprite* Sprite_create(SDL_Texture* image) {
 	this->frame.y = 0;
 	this->scrollX = 1;
 	this->scrollY = 1;
-	if (image) {
-		Sprite_setFrameSizeFromImage(this, image);
-	} else {
+	if (!image || !Sprite_setFrameSizeFromImage(this, image)) {
 		Sprite_setFrameSize(this, 0,0);
 	}
 	return this;
@@ -33,11 +31,14 @@ void Sprite_destroyWithImage(Sprite* this) {
 	Sprite_destroy(this);
 }
 
-void Sprite_setFrameSizeFromImage(Sprite* this, SDL_Texture* image) {
+bool Sprite_setFrameSizeFromImage(Sprite* this, SDL_Texture* image) {
 	int w, h;
-	if (0 < SDL_QueryTexture(image, NULL, NULL, &w, &h)) {
+	if (SDL_QueryTexture(image, NULL, NULL, &w, &h) >= 0) {
 		Sprite_setFrameSize(this, w,h);
+		return true;
 	}
+	puts(SDL_GetError());
+	return false;
 }
 
 void Sprite_setFrameSize(Sprite* this, int w, int h) {

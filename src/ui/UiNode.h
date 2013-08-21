@@ -5,7 +5,7 @@
 CLASS(UiNode) {
 	void (*destroy)(void* context);
 	bool (*handleEvent)(void* context, SDL_Event* event);
-	void (*resize)(void* context, SDL_Surface* surface);
+	void (*resize)(void* context, SDL_Point size);
 	void (*draw)(void* context, SDL_Renderer* surface);
 
 	bool selectable;
@@ -35,4 +35,4 @@ void UiNode_moveTo(UiNode* this, int x, int y);
 void UiNode_emptyDestroy(void* context);
 void UiNode_emptyDraw(void* context, SDL_Renderer* surface);
 bool UiNode_emptyHandleEvent(void* context, SDL_Event* event);
-void UiNode_emptyResize(void* context, SDL_Surface* surface);
+void UiNode_emptyResize(void* context, SDL_Point size);

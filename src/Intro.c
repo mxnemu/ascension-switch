@@ -83,11 +83,11 @@ void Intro_destroy(void* context) {
 	free(this);
 }
 
-void Intro_resize(void* context, SDL_Surface* surface) {
+void Intro_resize(void* context, SDL_Point size) {
 	Intro* this = context;
-	this->logo->bounds.x = (surface->w - this->logo->bounds.w)/2;
-	this->title->bounds.x = (surface->w - this->title->bounds.w)/2;
-	this->slogan->bounds.x = (surface->w - this->slogan->bounds.w)/2;
+	this->logo->bounds.x = (size.x - this->logo->bounds.w)/2;
+	this->title->bounds.x = (size.x - this->title->bounds.w)/2;
+	this->slogan->bounds.x = (size.x - this->slogan->bounds.w)/2;
 
 	if (this->blendSurface) {
 		SDL_FreeSurface(this->blendSurface);
@@ -114,12 +114,12 @@ void Intro_draw(void* context, SDL_Renderer* renderer) {
 	Intro* this = context;
 
 	SDL_Rect screenSize = {.x=0, .y=0};
-	SDL_RenderGetLogicalSize(this->engine->renderer, &screenSize.x, &screenSize.y);
+	SDL_RenderGetLogicalSize(this->engine->renderer, &screenSize.w, &screenSize.h);
 
 	Sprite_draw(this->logo, renderer);
 	Sprite_draw(this->title, renderer);
 	Sprite_draw(this->slogan, renderer);
 	SDL_SetRenderDrawBlendMode(this->engine->renderer, SDL_BLENDMODE_ADD);
 	SDL_SetRenderDrawColor(this->engine->renderer, 0, 0, 0, this->blendAlpha);
-	SDL_RenderDrawRect(this->engine->renderer, &screenSize);
+	SDL_RenderDrawRect(this->engine->renderer, &screenSize); // TODO draw above
 }

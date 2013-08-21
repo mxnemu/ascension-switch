@@ -22,8 +22,8 @@ void UiMenuList_destroy(void* context);
 
 void UiMenuList_addElement(UiMenuList* this, UiMenuElement* element);
 
-UiMenuElement* UiMenuElement_create(UiMenuList* list, const char* text, Sprite* icon, void (*clickCallback)(UiNode* node, void* acc), void* callbackContext);
+UiMenuElement* UiMenuElement_create(UiMenuList* list, SDL_Renderer* renderer, const char* text, Sprite* icon, void (*clickCallback)(UiNode* node, void* acc), void* callbackContext);
 void UiMenuElement_destroy(void* context);
 
-void UiMenuElement_draw(void* context, SDL_Surface* screen);
+void UiMenuElement_draw(void* context, SDL_Renderer* screen);
 bool UiMenuElement_handleEvent(void* context, SDL_Event* event);

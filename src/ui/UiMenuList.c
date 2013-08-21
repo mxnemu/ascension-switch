@@ -21,7 +21,7 @@ void UiMenuList_addElement(UiMenuList* this, UiMenuElement* element) {
 	this->node->bounds.h += element->node->bounds.h;
 }
 
-UiMenuElement* UiMenuElement_create(UiMenuList* list, const char* text, Sprite* icon, void (*actionCallback)(UiNode*, void*), void* callbackContext) {
+UiMenuElement* UiMenuElement_create(UiMenuList* list, SDL_Renderer* renderer, const char* text, Sprite* icon, void (*actionCallback)(UiNode*, void*), void* callbackContext) {
 	UiMenuElement* this = malloc(sizeof(UiMenuElement));
 	this->node = UiNode_create(this, list->node);
 	this->node->draw = UiMenuElement_draw;
@@ -33,8 +33,18 @@ UiMenuElement* UiMenuElement_create(UiMenuList* list, const char* text, Sprite* 
 	SDL_Color color = {.r=255, .g = 255, .b= 255};
 	SDL_Color colorSelected = {.r=150, .g = 150, .b= 150};
 	this->icon = Sprite_create(NULL);
-	this->label = Sprite_create(TTF_RenderUTF8_Blended(font, text, color));
-	this->labelSelected = Sprite_create(TTF_RenderUTF8_Blended(font, text, colorSelected));
+	this->label = Sprite_create(
+		SDL_CreateTextureFromSurface(
+			renderer,
+			TTF_RenderUTF8_Blended(font, text, color)
+		)
+	);
+	this->labelSelected = Sprite_create(
+			SDL_CreateTextureFromSurface(
+				renderer,
+				TTF_RenderUTF8_Blended(font, text, colorSelected)
+			)
+	);
 	TTF_CloseFont(font);
 
 	// TODO won't somebody think about the icons?!
@@ -55,7 +65,7 @@ void UiMenuElement_destroy(void* context) {
 	free(this);
 }
 
-void UiMenuElement_draw(void* context, SDL_Surface* screen) {
+void UiMenuElement_draw(void* context, SDL_Renderer* screen) {
 	UiMenuElement* this = context;
 
 	if (this->node->parent->selectedChild == this->node) {
