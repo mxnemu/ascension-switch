@@ -14,13 +14,14 @@ GameEngine* GameEngine_create(void) {
 
 	GameEngine_initSubsystems();
 
-	SDL_Surface* icon = SDL_LoadBMP("images/icon.bmp");
-	SDL_WM_SetCaption("Year Of The Maya", NULL);
-	SDL_WM_SetIcon(icon, NULL);
-
 	GameEngine* this = malloc(sizeof(GameEngine));
 	this->windowIsRunning = true;
-	this->screen = SDL_SetVideoMode(800,480,DEFAULT_BPP,DEFAULT_WINDOW_FLAGS);
+	this->screen = SDL_CreateWindow("Year Of The Maya", 0,0, YOM_WINDOW_W, YOM_WINDOW_H, SDL_WINDOW_OPENGL|SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+	this->renderer = SDL_CreateRenderer(this->screen, 0, SDL_RENDERER_ACCELERATED);
+	SDL_Surface* icon = SDL_LoadBMP("images/icon.bmp");
+	SDL_SetWindowIcon(this->screen, icon);
+	SDL_RenderSetLogicalSize(this->renderer, YOM_WINDOW_W, YOM_WINDOW_H);
+
 	this->l = luaL_newstate();
 	luaL_openlibs(this->l);
 	LuaInit_initCustomTypes(this->l);
@@ -29,7 +30,7 @@ GameEngine* GameEngine_create(void) {
 	this->icon = icon;
 	this->module = NULL;
 	this->nextModule = NULL;
-	this->textureCache = TextureCache_create();
+	this->textureCache = TextureCache_create(this->renderer);
 	GameEngine_setActiveModule(this, Intro_create(this)->module);
 	//GameEngine_setActiveModule(this, Game_create(this)->module);
 	return this;
@@ -66,7 +67,8 @@ void GameEngine_setActiveModule(GameEngine* this, GameModule* module) {
 		GameModule_destroy(this->module);
 	}
 	module->init(module->context);
-	module->resize(module->context, this->screen);
+	//TODO
+	//module->resize(module->context, this->screen);
 	this->module = module;
 }
 
@@ -75,7 +77,8 @@ void GameEngine_setActiveModule(GameEngine* this, GameModule* module) {
 #define MAX_UPDATE_TIME UPDATE_TIME*UPDATES_PER_SECOND*5
 int GameEngine_run(GameEngine* this) {
 
-	SDL_Rect screenRect = {.w=this->screen->w, .h=this->screen->h};
+	SDL_Rect screenRect = {.x=0, .y=0};
+	SDL_RenderGetLogicalSize(this->renderer, &screenRect.w, &screenRect.h);
 	SDL_Event event;
 	RawTime lastUpdate = SDL_GetTicks();
 	while(this->windowIsRunning) {
@@ -88,10 +91,10 @@ int GameEngine_run(GameEngine* this) {
 		while (SDL_PollEvent(&event)) {
         	if (event.type == SDL_QUIT) {
         		this->windowIsRunning = false;
-        	} else if (event.type == SDL_VIDEORESIZE) {
-        		SDL_FreeSurface(this->screen);
-        		this->screen = SDL_SetVideoMode(event.resize.w,event.resize.h, DEFAULT_BPP, DEFAULT_WINDOW_FLAGS);
-        		this->module->resize(this->module->context, this->screen);
+        	} else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+        		SDL_RenderSetLogicalSize(this->renderer, event.window.data1, event.window.data2);
+        		// TODO
+        		//this->module->resize(this->module->context, this->screen);
         	} else {
         		this->module->handleEvent(this->module->context, &event);
         	}
@@ -104,10 +107,10 @@ int GameEngine_run(GameEngine* this) {
         	lastUpdate += UPDATE_TIME;
         }
 
-        SDL_FillRect(this->screen, &screenRect, 0x000000); // clear screen
-        this->module->draw(this->module->context, this->screen);
+        SDL_RenderClear(this->renderer);
+        this->module->draw(this->module->context, this->renderer);
 
-		SDL_Flip(this->screen);
+        SDL_RenderPresent(this->renderer);
 	}
 	GameEngine_destroy(this); // destroy yourself
 	puts("Closed fine without errors");

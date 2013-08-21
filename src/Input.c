@@ -24,7 +24,7 @@ Input* Input_create() {
 		int buttons = SDL_JoystickNumButtons(j);
 		int hats = SDL_JoystickNumHats(j);
 		Vector_AddElement(this->joysticks, j);
-		printf("%d: %s | axes:%d buttons:%d hats:%d \n", i, SDL_JoystickName(i), axes, buttons, hats);
+		printf("%d: %s | axes:%d buttons:%d hats:%d \n", i, SDL_JoystickName(j), axes, buttons, hats);
 	}
 
 //	SDL_JoystickEventState (SDL_IGNORE);
@@ -142,10 +142,10 @@ void Input_parseJoystickHotkeys(Input* this, lua_State* l) {
 
 
 
-SDLKey Input_stringToKeycode(const char* keyText) {
+SDL_Keycode Input_stringToKeycode(const char* keyText) {
 	// lazy workaround to make at least ascii keys work
 	if (keyText[0] != '\0' && keyText[1] == '\0' && keyText[0] >= 97 && keyText[0] <= 122) {
-		return (SDLKey)keyText[0];
+		return (SDL_Keycode)keyText[0];
 	}
 	return SDLK_UNKNOWN;
 }
@@ -214,12 +214,12 @@ bool Input_isDown(Input* this, ActionId hotkeyId) {
 	return false;
 }
 
-bool Input_keysymIsDown(Input* this, SDL_keysym* keysym) {
+bool Input_keysymIsDown(Input* this, SDL_Keysym* keysym) {
 	return this->keystates[keysym->sym] && (this->keymods & keysym->mod) == keysym->mod;
 }
 
 void Input_update(Input* this) {
-	this->keystates = SDL_GetKeyState(NULL); // TODO do I have to free this?
+	this->keystates = SDL_GetKeyboardState(NULL); // TODO do I have to free this?
 	this->keymods = SDL_GetModState();
 }
 

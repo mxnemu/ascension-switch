@@ -7,9 +7,10 @@
 
 #include "TextureCache.h"
 
-TextureCache* TextureCache_create(void) {
+TextureCache* TextureCache_create(SDL_Renderer* renderer) {
 	TextureCache* this = malloc(sizeof(TextureCache));
 	this->images = Vector_Create();
+	this->renderer = renderer;
 	return this;
 }
 
@@ -25,7 +26,7 @@ void TextureCache_destroy(TextureCache* this) {
 	free(this);
 }
 
-SDL_Surface* TextureCache_get(TextureCache* this, const char* path) {
+SDL_Texture* TextureCache_get(TextureCache* this, const char* path) {
 
 	for (int i=0; i < this->images->usedElements; ++i) {
 		TextureEntry* it = this->images->elements[i];
@@ -36,21 +37,21 @@ SDL_Surface* TextureCache_get(TextureCache* this, const char* path) {
 	return TextureCache_loadImage(this, path, true);
 }
 
-SDL_Surface* TextureCache_loadImage(TextureCache* this, const char* path, bool store) {
-	SDL_Surface* originalImage = IMG_Load(path);
+SDL_Texture* TextureCache_loadImage(TextureCache* this, const char* path, bool store) {
+	SDL_Texture* originalImage = IMG_LoadTexture(this->renderer, path);
 	if (originalImage) {
-		SDL_Surface* optimizedImage = SDL_DisplayFormatAlpha(originalImage);
-		SDL_FreeSurface(originalImage);
+		//SDL_Texture* optimizedImage = SDL_DisplayFormatAlpha(originalImage);
+		//SDL_FreeSurface(originalImage);
 		if (this && store) {
-			Vector_AddElement(this->images, TextureEntry_create(path, optimizedImage , true));
+			Vector_AddElement(this->images, TextureEntry_create(path, originalImage , true));
 		}
-		return optimizedImage;
+		return originalImage;
 	}
 	printf("Could not load image: %s\n", path);
 	return NULL;
 }
 
-TextureEntry* TextureEntry_create(const char* key, SDL_Surface* image, bool ownsImage) {
+TextureEntry* TextureEntry_create(const char* key, SDL_Texture* image, bool ownsImage) {
 	TextureEntry* this = malloc(sizeof(TextureEntry));
 	this->key = key;
 	this->image = image;
@@ -61,7 +62,7 @@ TextureEntry* TextureEntry_create(const char* key, SDL_Surface* image, bool owns
 void TextureEntry_destroy(TextureEntry* this) {
 	CANCEL_IF_FALSE(this);
 	if (this->ownsImage) {
-		SDL_FreeSurface(this->image);
+		SDL_DestroyTexture(this->image);
 	}
 	free(this);
 }

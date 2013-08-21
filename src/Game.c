@@ -58,7 +58,7 @@ void Game_update(void* context, RawTime dt) {
 	Scene_update(this->scene, dt);
 }
 
-void Game_draw(void* context, SDL_Surface* surface) {
+void Game_draw(void* context, SDL_Renderer* renderer) {
 	Game* this = context;
-	Scene_draw(this->scene, surface);
+	Scene_draw(this->scene, renderer);
 }

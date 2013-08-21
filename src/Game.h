@@ -21,5 +21,5 @@ Game* Game_create(GameEngine* engine);
 void Game_init(void* context);
 void Game_destroy(void* context);
 void Game_update(void* context, RawTime dt);
-void Game_draw(void* context, SDL_Surface* surface);
+void Game_draw(void* context, SDL_Renderer* renderer);
 

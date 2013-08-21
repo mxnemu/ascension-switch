@@ -11,7 +11,9 @@ int Scene_luaCreate(lua_State* l) {
 	luaL_argcheck(l, (engine != NULL), 1, "please set the global 'gameEngine' as first argument of Scene.create");
 
 	this->engine = engine;
-	this->camera = Camera_create(engine->screen->w, engine->screen->h);
+	SDL_Point screenSize;
+	SDL_RenderGetLogicalSize(engine->renderer, &screenSize.x, &screenSize.y);
+	this->camera = Camera_create(screenSize.x, screenSize.y);
 	this->walkableBounds.x = 0;
 	this->walkableBounds.w = 0;
 	this->walkableBounds.y = 295 * PHYSICS_SCALE;
@@ -96,19 +98,19 @@ void Scene_update(Scene* this, RawTime dt) {
 	Camera_update(this->camera);
 }
 
-void Scene_draw(Scene* this, SDL_Surface* surface) {
+void Scene_draw(Scene* this, SDL_Renderer* renderer) {
 //	Sprite_drawOnCamera(this->leftBackground, surface, this->camera);
 //	Sprite_drawOnCamera(this->rightBackground, surface, this->camera);
 	ListNode* it = this->backgrounds->first;
 	while (it) {
-		Sprite_drawOnCamera(it->data, surface, this->camera);
+		Sprite_drawOnCamera(it->data, renderer, this->camera);
 		it = it->next;
 	}
 
 	for (int i=0; i < this->entities->usedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
-			it->draw(it->context, surface, this->camera);
+			it->draw(it->context, renderer, this->camera);
 		}
 	}
 }

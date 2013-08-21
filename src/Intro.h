@@ -31,4 +31,4 @@ void Intro_destroy(void* context);
 
 void Intro_resize(void* context, SDL_Surface* surface);
 void Intro_update(void* context, RawTime dt);
-void Intro_draw(void* context, SDL_Surface* surface);
+void Intro_draw(void* context, SDL_Renderer* renderer);

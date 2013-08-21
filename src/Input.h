@@ -11,7 +11,7 @@ typedef enum ActionId {
 } ActionId;
 
 CLASS(KeyHotkey) {
-	SDL_keysym key;
+	SDL_Keysym key;
 	int axisValue;
 };
 
@@ -35,8 +35,8 @@ CLASS(InputHotkey) {
 };
 
 CLASS(Input) {
-	Uint8* keystates;
-	SDLMod keymods;
+	const Uint8* keystates;
+	SDL_Keymod keymods;
 	Vector* joysticks;
 
 	Vector* hotkeys;
@@ -55,12 +55,12 @@ int Input_getAxis(Input* this, ActionId id);
 float Input_getAxisMultiplier(Input* this, ActionId hotkeyId);
 bool Input_isDown(Input* this, ActionId id);
 
-bool Input_keysymIsDown(Input* this, SDL_keysym* keysym);
+bool Input_keysymIsDown(Input* this, SDL_Keysym* keysym);
 
 
 InputHotkey* InputHotkey_create(int type, int actionId);
 
 // Utils
-SDLKey Input_stringToKeycode(const char* keyText);
+SDL_Keycode Input_stringToKeycode(const char* keyText);
 ActionId Input_stringToActionId(const char* actionIdText);
 

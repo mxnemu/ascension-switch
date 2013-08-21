@@ -63,7 +63,7 @@ void Player_processInput(Player* this) {
 	}
 }
 
-void Player_draw(void* context, SDL_Surface* screen, Camera* camera) {
+void Player_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 	Player* this = context;
-	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, screen, camera);
+	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, renderer, camera);
 }

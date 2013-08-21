@@ -41,16 +41,24 @@ void Intro_init(void *context) {
 	SDL_Color fontColor =  {.r=255, .g=255, .b=255};
 	SDL_Color fontShadeColor = {.r=0, .g=0, .b=0};
 
-	SDL_Surface* vanillaLogo = IMG_Load("images/agdg-logo.png");
-	SDL_Surface* transformedLogo = rotozoomSurface(vanillaLogo,0, 1, SMOOTHING_ON);
-	SDL_FreeSurface(vanillaLogo);
-	this->logo = Sprite_create(transformedLogo);
+	SDL_Texture* vanillaLogo = IMG_LoadTexture(this->engine->renderer, "images/agdg-logo.png");
+	this->logo = Sprite_create(vanillaLogo);
 
 	this->font = TTF_OpenFont("fonts/Black-Chancery.ttf", 30);
 //	this->title = Sprite_create(TTF_RenderUTF8_Blended(this->font, "Amateur Game Dev. Games", fontColor));
 //	this->slogan = Sprite_create(TTF_RenderUTF8_Blended(this->font, " - just like make game -",  fontColor));
-	this->title = Sprite_create(TTF_RenderUTF8_Shaded(this->font, "Amateur Game Dev. Games", fontColor, fontShadeColor));
-	this->slogan = Sprite_create(TTF_RenderUTF8_Shaded(this->font, " - just like make game -",  fontColor, fontShadeColor));
+	this->title = Sprite_create(
+		SDL_CreateTextureFromSurface(
+			this->engine->renderer,
+			TTF_RenderUTF8_Shaded(this->font, "Amateur Game Dev. Games", fontColor, fontShadeColor)
+		)
+	);
+	this->slogan = Sprite_create(
+		SDL_CreateTextureFromSurface(
+			this->engine->renderer,
+			TTF_RenderUTF8_Shaded(this->font, " - just like make game -",  fontColor, fontShadeColor)
+		)
+	);
 	this->music = Mix_LoadMUS("music/TheLoomingBattle.ogg");
 	this->timePassed = 0;
 	this->blendAlpha = 255;
@@ -84,10 +92,7 @@ void Intro_resize(void* context, SDL_Surface* surface) {
 	if (this->blendSurface) {
 		SDL_FreeSurface(this->blendSurface);
 	}
-	SDL_Rect fillRect = {.x=0, .y=0, .w=surface->w, .h=surface->h};
-	this->blendSurface = SDL_CreateRGBSurface(0, surface->w, surface->h, DEFAULT_BPP, 0, 0, 0, 0);
-	SDL_FillRect(this->blendSurface, &fillRect, 0x000000);
-	SDL_SetAlpha(this->blendSurface, SDL_SRCALPHA, this->blendAlpha);
+	// TODO
 }
 
 void Intro_update(void* context, RawTime dt) {
@@ -103,14 +108,18 @@ void Intro_update(void* context, RawTime dt) {
 	} else {
 		this->engine->nextModule = MainMenu_create(this->engine)->module;
 	}
-	SDL_SetAlpha(this->blendSurface, SDL_SRCALPHA, this->blendAlpha);
 }
 
-void Intro_draw(void* context, SDL_Surface* surface) {
+void Intro_draw(void* context, SDL_Renderer* renderer) {
 	Intro* this = context;
 
-	Sprite_draw(this->logo, surface);
-	Sprite_draw(this->title, surface);
-	Sprite_draw(this->slogan, surface);
-	SDL_BlitSurface(this->blendSurface, NULL, surface, NULL);
+	SDL_Rect screenSize = {.x=0, .y=0};
+	SDL_RenderGetLogicalSize(this->engine->renderer, &screenSize.x, &screenSize.y);
+
+	Sprite_draw(this->logo, renderer);
+	Sprite_draw(this->title, renderer);
+	Sprite_draw(this->slogan, renderer);
+	SDL_SetRenderDrawBlendMode(this->engine->renderer, SDL_BLENDMODE_ADD);
+	SDL_SetRenderDrawColor(this->engine->renderer, 0, 0, 0, this->blendAlpha);
+	SDL_RenderDrawRect(this->engine->renderer, &screenSize);
 }

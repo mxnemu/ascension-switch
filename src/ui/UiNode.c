@@ -32,12 +32,12 @@ void UiNode_destroy(UiNode* this) {
 	free(this);
 }
 
-void UiNode_draw(UiNode* this, SDL_Surface* surface) {
-	this->draw(this->context, surface);
+void UiNode_draw(UiNode* this, SDL_Renderer* renderer) {
+	this->draw(this->context, renderer);
 	for (unsigned int i=0; i < this->children->usedElements; ++i) {
 		UiNode* it = this->children->elements[i];
 		if (it != NULL) {
-			UiNode_draw(it, surface);
+			UiNode_draw(it, renderer);
 		}
 	}
 }
@@ -102,6 +102,6 @@ void UiNode_moveTo(UiNode* this, int x, int y) {
 
 
 void UiNode_emptyDestroy(void* context) {}
-void UiNode_emptyDraw(void* context, SDL_Surface* surface) {}
+void UiNode_emptyDraw(void* context, SDL_Renderer* renderer) {}
 bool UiNode_emptyHandleEvent(void* context, SDL_Event* event) { return true; }
 void UiNode_emptyResize(void* context, SDL_Surface* surface) {}

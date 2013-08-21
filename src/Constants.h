@@ -9,19 +9,20 @@
 
 #include <stdbool.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_rotozoom.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_joystick.h>
-#include <SDL/SDL_ttf.h>
-#include <SDL/SDL_net.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_net.h>
+#include <SDL2/SDL_mixer.h>
 
 #include <lua5.2/lua.h>
 #include <lua5.2/lauxlib.h>   /* utils*/
 #include <lua5.2/lualib.h>    /* libs */
 
 typedef Uint32 RawTime;
+
+#define YOM_WINDOW_W 800
+#define YOM_WINDOW_H 480
 
 #define DEFAULT_BPP 24
 #define DEFAULT_WINDOW_FLAGS SDL_HWSURFACE|SDL_DOUBLEBUF

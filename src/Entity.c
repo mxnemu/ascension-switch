@@ -172,4 +172,4 @@ void EntityPhysics_destroy(EntityPhysics* this) {
 	free(this);
 }
 
-void Entity_emptyDraw(void* context, SDL_Surface* surface, Camera* camera) {}
+void Entity_emptyDraw(void* context, SDL_Renderer* surface, Camera* camera) {}

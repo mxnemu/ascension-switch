@@ -22,7 +22,7 @@ MainMenu* MainMenu_create(GameEngine* engine);
 void MainMenu_init(void* context);
 void MainMenu_destroy(void* context);
 void MainMenu_update(void* context, RawTime dt);
-void MainMenu_draw(void* context, SDL_Surface* surface);
+void MainMenu_draw(void* context, SDL_Renderer* renderer);
 void MainMenu_handleEvent(void* context, SDL_Event* event);
 
 // UiCallbacks

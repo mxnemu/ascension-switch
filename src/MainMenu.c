@@ -29,8 +29,7 @@ void MainMenu_init(void* context) {
 	this->scene = Scene_create(this->engine, "scenes/mainMenu.lua");
 
 	this->ui = UiNode_create(NULL, NULL);
-	this->ui->bounds.w = this->engine->screen->w;
-	this->ui->bounds.h = this->engine->screen->h;
+	SDL_RenderGetLogicalSize(this->engine->renderer, &this->ui->bounds.w, &this->ui->bounds.h);
 	UiMenuList* menu = UiMenuList_create(this->ui);
 
 	UiMenuElement_create(menu, "Play", NULL, MainMenu_onStartButton, this);
@@ -72,10 +71,10 @@ void MainMenu_update(void* context, RawTime dt) {
 	}
 }
 
-void MainMenu_draw(void* context, SDL_Surface* surface) {
+void MainMenu_draw(void* context, SDL_Renderer* renderer) {
 	MainMenu* this = context;
-	Scene_draw(this->scene, surface);
-	UiNode_draw(this->ui, surface);
+	Scene_draw(this->scene, renderer);
+	UiNode_draw(this->ui, renderer);
 }
 
 void MainMenu_handleEvent(void* context, SDL_Event* event) {

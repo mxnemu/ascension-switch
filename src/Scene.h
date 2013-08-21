@@ -25,7 +25,7 @@ Scene* Scene_create(GameEngine* engine, const char* filePath);
 int Scene_luaDestroy(lua_State* l);
 
 void Scene_update(Scene* this, RawTime dt);
-void Scene_draw(Scene* this, SDL_Surface* screen);
+void Scene_draw(Scene* this, SDL_Renderer* renderer);
 
 void Scene_addBackground(Scene* this, const char* background);
 void Scene_addEntity(Scene* this, Entity* entity);

@@ -29,7 +29,7 @@ CLASS(Entity) {
 
 	void (*destroy)(void* context);
 	void (*update)(void* context, RawTime dt);
-	void (*draw)(void* context, SDL_Surface*, Camera* camera);
+	void (*draw)(void* context, SDL_Renderer*, Camera* camera);
 	Scene* scene;
 	void* context;
 	List* hitboxes;
@@ -50,4 +50,4 @@ void Entity_performComboAction(Entity* this, ActionId action);
 void Entity_resetComboProgress(Entity* this);
 
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
-void Entity_emptyDraw(void* context, SDL_Surface* screen, Camera* camera);
+void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);
