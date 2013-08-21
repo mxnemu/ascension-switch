@@ -52,7 +52,7 @@ void Sprite_draw(Sprite* this, SDL_Renderer* renderer) {
 	SDL_RenderCopy(renderer, this->image, &this->frame, &this->bounds);
 }
 
-void Sprite_drawRelative(Sprite* this, SDL_Surface* surface, SDL_Rect* container) {
+void Sprite_drawRelative(Sprite* this, SDL_Renderer* renderer, SDL_Rect* container) {
 	SDL_Rect translatedRect = {
 		.x = this->bounds.x + container->x,
 		.y = this->bounds.y + container->y,
@@ -60,7 +60,7 @@ void Sprite_drawRelative(Sprite* this, SDL_Surface* surface, SDL_Rect* container
 		.h = this->bounds.h
 	};
 
-	SDL_BlitSurface(this->image, &this->frame, surface, &translatedRect);
+	SDL_RenderCopy(renderer, this->image, &this->frame, &translatedRect);
 }
 
 void Sprite_drawOnCamera(Sprite* this, SDL_Renderer* renderer, Camera* camera) {
