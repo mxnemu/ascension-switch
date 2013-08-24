@@ -69,6 +69,9 @@ void Game_setupPlayer(Game* this, int i, Scene* scene) {
 	player = Player_create(scene, sprite, this->engine->input);
 	player->entity->physics.bounds.y = 320 * PHYSICS_SCALE;
 	player->entity->physics.bounds.x = 20 * PHYSICS_SCALE;
+	player->entity->physics.bounds.w = 15 * PHYSICS_SCALE; // Make sure Mr. Fatty get's though those slim trapdoors
+	player->entity->offset.x = -10;
+	player->entity->offset.y = 3;
 
 	Scene_addEntity(scene, player->entity);
 	scene->camera->trackedEntity = player->entity;

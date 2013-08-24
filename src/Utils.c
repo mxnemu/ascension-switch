@@ -32,7 +32,8 @@ void stackDump (lua_State *L) {
 
 void emptyInit(void* context) {}
 void emptyUpdate(void* context, RawTime dt) {}
-void emptyDraw(void* context, SDL_Surface* surface) {}
+void emptyDraw(void* context, SDL_Renderer* surface) {}
+void emptyResize(void* context, SDL_Point size) {}
 void emptyDestroy(void* context) {}
 void emptyHandleEvent(void* context, SDL_Event*event) {}
 
@@ -41,6 +42,10 @@ bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b) {
 			  a->x+a->w < b->x      ||
 			  a->y      > b->y+b->h ||
 			  a->y+a->h < b->y);
+}
+
+bool SDL_Rect_above(SDL_Rect* a, SDL_Rect* b) {
+	return a->y + a->h > b->y;
 }
 
 bool SDL_Rect_isInside(SDL_Rect* a, int x, int y) {

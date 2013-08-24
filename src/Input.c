@@ -154,6 +154,7 @@ ActionId Input_stringToActionId(const char* actionIdText) {
 	ENUM_TO_STRING_MATCH(vertical, actionIdText)
 	ENUM_TO_STRING_MATCH(attackSword, actionIdText)
 	ENUM_TO_STRING_MATCH(attackBow, actionIdText)
+	ENUM_TO_STRING_MATCH(jump, actionIdText)
 	ENUM_TO_STRING_MATCH(action, actionIdText)
 	return none;
 }

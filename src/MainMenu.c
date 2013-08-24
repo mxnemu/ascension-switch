@@ -1,7 +1,6 @@
 #include "MainMenu.h"
 #include "ui/UiMenuList.h"
 #include "Game.h"
-#include "editor/EntityEditor.h"
 
 MainMenu* MainMenu_create(GameEngine* engine) {
 	MainMenu* this = malloc(sizeof(MainMenu));

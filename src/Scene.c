@@ -38,7 +38,7 @@ int Scene_luaCreate(lua_State* l) {
 	this->background = Sprite_create(TextureCache_getForUnconstantPath(engine->textureCache, path));
 	free(path);
 
-	_Vector_RecreateWithoutSizeCheck(this->tiles, SCENE_TILES_X*SCENE_TILES_Y);
+	//_Vector_RecreateWithoutSizeCheck(this->tiles, SCENE_TILES_X*SCENE_TILES_Y);
 	for (int i=0; i < SCENE_TILES_X*SCENE_TILES_Y; ++i) {
 		Vector_AddElement(this->tiles, NULL);
 	}
@@ -137,12 +137,13 @@ void Scene_setTile(Scene* this, const int tileId, const int tileType) {
 		Tile_destroy(oldTile);
 	}
 	Tile* t = Tile_create(tileType, this->engine->textureCache, this->colorPrefix);
-	Vector_Set(this->tiles, tileId, t);
 
 	if (t) {
 		SDL_Point p = Scene_positionForTileId(this, tileId);
-		t->sprite->bounds.x = p.x * TILE_W;
-		t->sprite->bounds.y = p.y * TILE_H;
+		p.x *= TILE_W;
+		p.y *= TILE_H;
+		Tile_setPosition(t, p);
+		Vector_Set(this->tiles, tileId, t);
 	}
 
 	printf("%d,", tileType);
@@ -162,7 +163,6 @@ SDL_Point Scene_positionForTileId(Scene* this, const int tileId) {
 	}
 	return p;
 }
-
 
 // Lua
 

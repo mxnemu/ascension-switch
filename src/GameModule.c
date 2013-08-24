@@ -12,7 +12,7 @@ GameModule* GameModule_create(void* context) {
 	GameModule* this = malloc(sizeof(GameModule));
 	this->init = emptyInit;
 	this->draw = emptyDraw;
-	this->resize = emptyDraw;
+	this->resize = emptyResize;
 	this->update = emptyUpdate;
 	this->destroy = emptyDestroy;
 	this->handleEvent = emptyHandleEvent;

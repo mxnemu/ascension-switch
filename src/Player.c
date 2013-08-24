@@ -37,8 +37,7 @@ void Player_processInput(Player* this) {
 	}
 
 	if (Input_isDown(this->input, jump)) {
-		this->entity->physics.dy += (32*4) * PHYSICS_SCALE;
-		puts("jump\n");
+		this->entity->physics.dy -= (32*10) / PHYSICS_SCALE;
 	}
 }
 

@@ -5,6 +5,7 @@ Tile* Tile_create(const int type, TextureCache* tc, const char* colorPrefix) {
 	Tile* this = malloc(sizeof(Tile));
 	this->type = type;
 	this->blocks = true;
+	SDL_RectEmpty(&this->physics.bounds);
 	if (!Tile_initByType(this, tc, colorPrefix)) {
 		free(this);
 		return NULL;
@@ -30,4 +31,14 @@ bool Tile_initByType(Tile* this, TextureCache* tc, const char* colorPrefix) {
 		return false;
 	}
 	return true;
+}
+
+void Tile_setPosition(Tile* this, SDL_Point p) {
+	this->sprite->bounds.x = p.x;
+	this->sprite->bounds.y = p.y;
+
+	this->physics.bounds.x = p.x * PHYSICS_SCALE;
+	this->physics.bounds.y = p.y * PHYSICS_SCALE;
+	this->physics.bounds.w = this->sprite->bounds.w * PHYSICS_SCALE; // TODO set directly when setting the sprite
+	this->physics.bounds.h = this->sprite->bounds.h * PHYSICS_SCALE;
 }

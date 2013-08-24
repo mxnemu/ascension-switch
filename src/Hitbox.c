@@ -1,5 +1,6 @@
 
 #include "Hitbox.h"
+#include "Utils.h"
 
 Hitbox* Hitbox_create() {
 	Hitbox* this = malloc(sizeof(Hitbox));

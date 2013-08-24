@@ -9,6 +9,7 @@ void lua_createLib(lua_State* l, const char* tableName, const char* globalName, 
 // SDL utils
 void SDL_Rect_init(SDL_Rect* rect);
 bool SDL_Rect_touches(SDL_Rect* a, SDL_Rect* b);
+bool SDL_Rect_above(SDL_Rect* a, SDL_Rect* b);
 bool SDL_Rect_isInside(SDL_Rect* a, int x, int y);
 
 
@@ -31,6 +32,7 @@ bool SDL_Rect_isInside(SDL_Rect* a, int x, int y);
 
 void emptyInit(void* context);
 void emptyUpdate(void* context, RawTime dt);
-void emptyDraw(void* context, SDL_Surface* surface);
+void emptyDraw(void* context, SDL_Renderer* surface);
+void emptyResize(void* context, SDL_Point size);
 void emptyDestroy(void* context);
 void emptyHandleEvent(void* context, SDL_Event*);

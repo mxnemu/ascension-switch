@@ -76,7 +76,9 @@ void _Vector_RecreateWithoutSizeCheck(Vector* this, unsigned int newallocatedEle
     for (unsigned int i=0; i < this->usedElements; ++i) {
         copy[i] = this->elements[i];
     }
-    free(this->elements);
+    if (this->elements) {
+    	free(this->elements);
+    }
     this->elements = copy;
     this->_allocatedElements = newallocatedElements;
 }

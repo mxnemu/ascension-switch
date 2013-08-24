@@ -2,6 +2,7 @@
 #include "Hitbox.h"
 #include "Utils.h"
 #include "Scene.h"
+#include "Tile.h"
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	Entity* this = malloc(sizeof(Entity));
@@ -15,6 +16,9 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->context = context;
 	this->hitboxes = List_create();
 	this->speedMultiplier = 5;
+	this->inFrontOfLadder = false;
+	this->offset.x = 0;
+	this->offset.y = 0;
 	return this;
 }
 
@@ -61,6 +65,7 @@ void EntityPhysics_init(EntityPhysics* this, Sprite* sprite) {
 	this->dy = 0;
 	this->groupMask = INT_MAX;
 	this->groups = COLLISION_GROUP_DEFAULT;
+	this->groundedStatus = inAir;
 }
 
 void Entity_update(Entity* this, RawTime dt) {
@@ -83,8 +88,8 @@ void Entity_update(Entity* this, RawTime dt) {
 	this->physics.dx = this->physics.dy = 0;
 
 	if (this->animatedSprite) {
-		this->animatedSprite->sprite->bounds.x = this->physics.bounds.x / PHYSICS_SCALE;
-		this->animatedSprite->sprite->bounds.y = this->physics.bounds.y / PHYSICS_SCALE;
+		this->animatedSprite->sprite->bounds.x = this->offset.x + (this->physics.bounds.x / PHYSICS_SCALE);
+		this->animatedSprite->sprite->bounds.y = this->offset.y + (this->physics.bounds.y / PHYSICS_SCALE);
 	}
 }
 
@@ -92,9 +97,11 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 	// test scene
 	if (rect->x < this->scene->walkableBounds.x ||
 		rect->x + rect->w > this->scene->walkableBounds.x + this->scene->walkableBounds.w ||
-		rect->y + rect->h < this->scene->walkableBounds.y ||
-		rect->y + rect->h > this->scene->walkableBounds.y + this->scene->walkableBounds.h
-		) {
+		rect->y + rect->h < this->scene->walkableBounds.y) {
+		return true;
+	}
+	if (rect->y + rect->h > this->scene->walkableBounds.y + this->scene->walkableBounds.h) {
+		this->physics.groundedStatus = grounded;
 		return true;
 	}
 
@@ -111,6 +118,27 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 			}
 		}
 	}
+
+	this->inFrontOfLadder = false;
+	// ineffective lazy check of all tiles
+	for (int i=0; i < this->scene->tiles->usedElements; ++i) {
+		Tile* tile = Vector_Get(this->scene->tiles, i);
+		if (NULL != tile) {
+			SDL_Rect tr = tile->physics.bounds;
+			if (SDL_Rect_touches(rect, &tr)) {
+				if (tile->blocks && SDL_Rect_above(rect, &tile->physics.bounds)) {
+					this->physics.groundedStatus = grounded;
+				}
+				if (tile->type == TILE_LADDER) {
+					this->inFrontOfLadder = true;
+				}
+				if (tile->blocks) {
+					return true;
+				}
+			}
+		}
+	}
+
 	return false;
 }
 

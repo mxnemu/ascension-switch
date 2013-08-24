@@ -8,7 +8,9 @@
 #define COLLISION_GROUP_DEFAULT 1
 #define COLLISION_GROUP_PLAYER 1 << 2
 
-#define PHYSICS_SCALE 6
+enum GroundedStatus {
+	grounded, inAir, onLadder
+};
 
 typedef struct Scene Scene;
 CLASS(EntityPhysics) {
@@ -19,6 +21,7 @@ CLASS(EntityPhysics) {
 
 	int groups;
 	int groupMask;
+	enum GroundedStatus groundedStatus;
 };
 
 CLASS(Entity) {
@@ -33,6 +36,8 @@ CLASS(Entity) {
 	void* context;
 	List* hitboxes;
 	int speedMultiplier;
+	bool inFrontOfLadder;
+	SDL_Point offset;
 };
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
