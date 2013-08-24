@@ -4,5 +4,5 @@ print("Hello world from lua");
 -- This is probably evil.
 scene = Scene.create(gameEngine);
 
-print("adding da backgrounds");
+print("adding the bg");
 scene:setBackground("images/bgRed.png");

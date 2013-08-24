@@ -9,9 +9,12 @@
 
 #include "ui/UiNode.h"
 
+#define PLAYER_COUNT 2
+
 CLASS(Game) {
-	Player* players[3];
-	Scene* scene;
+	Player* players[PLAYER_COUNT];
+	Scene* leftScene;
+	Scene* rightScene;
 
 	GameModule* module;
 	GameEngine* engine;
@@ -23,3 +26,4 @@ void Game_destroy(void* context);
 void Game_update(void* context, RawTime dt);
 void Game_draw(void* context, SDL_Renderer* renderer);
 
+void Game_setupPlayer(Game* this, int i, Scene* scene);

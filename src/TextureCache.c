@@ -34,7 +34,11 @@ SDL_Texture* TextureCache_get(TextureCache* this, const char* path) {
 			return it->image;
 		}
 	}
-	return TextureCache_loadImage(this, path, true);
+	SDL_Texture* tex = TextureCache_loadImage(this, path, true);
+	if (!tex && strcmp(path, SAFE_TEXTURE_PATH) != 0) {
+		tex = TextureCache_get(this, SAFE_TEXTURE_PATH);
+	}
+	return tex;
 }
 
 SDL_Texture* TextureCache_loadImage(TextureCache* this, const char* path, bool store) {

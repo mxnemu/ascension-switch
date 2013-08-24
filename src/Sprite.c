@@ -66,8 +66,8 @@ void Sprite_drawRelative(Sprite* this, SDL_Renderer* renderer, SDL_Rect* contain
 void Sprite_drawOnCamera(Sprite* this, SDL_Renderer* renderer, Camera* camera) {
 	// TODO only draw the the subrect that is acutally on cam
 	SDL_Rect translatedRect = {
-		.x = (this->bounds.x - (camera->viewport.x * this->scrollX)),
-		.y = (this->bounds.y - (camera->viewport.y * this->scrollY)),
+		.x = ((this->bounds.x + camera->translation.x) - (camera->viewport.x * this->scrollX)),
+		.y = ((this->bounds.y + camera->translation.y) - (camera->viewport.y * this->scrollY)),
 		.w = this->bounds.w,
 		.h = this->bounds.h
 	};

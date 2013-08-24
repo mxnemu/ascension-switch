@@ -4,7 +4,6 @@
 #include "AnimatedSprite.h"
 #include "List.h"
 #include "Camera.h"
-#include "Combo.h"
 
 #define COLLISION_GROUP_DEFAULT 1
 #define COLLISION_GROUP_PLAYER 1 << 2
@@ -33,11 +32,6 @@ CLASS(Entity) {
 	Scene* scene;
 	void* context;
 	List* hitboxes;
-
-	Vector* combos;
-	Combo* currentCombo;
-	RawTime timeSinceLastComboAction;
-	const char* currentComboName;
 };
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
@@ -46,8 +40,6 @@ void Entity_destroy(Entity* this);
 void Entity_update(Entity* this, RawTime dt);
 bool Entity_collides(Entity* this, Entity* other);
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
-void Entity_performComboAction(Entity* this, ActionId action);
-void Entity_resetComboProgress(Entity* this);
 
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
 void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);

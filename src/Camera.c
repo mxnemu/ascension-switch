@@ -13,6 +13,9 @@ Camera* Camera_create(int w, int h) {
 	this->bounds.y = 0;
 	this->bounds.w = 0;
 	this->bounds.h = 0;
+
+	this->translation.x = 0;
+	this->translation.y = 0;
 	return this;
 }
 

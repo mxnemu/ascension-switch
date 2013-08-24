@@ -5,6 +5,7 @@
 typedef struct Camera {
 	SDL_Rect viewport;
 	SDL_Rect bounds;
+	SDL_Point translation;
 	void* trackedEntity; // TODO get proper forwarddeclaration
 } Camera;
 

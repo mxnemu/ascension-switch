@@ -7,6 +7,7 @@
 
 #include "GameEngine.h"
 #include "Intro.h"
+#include "MainMenu.h"
 #include "Game.h"
 #include "LuaInit.h"
 
@@ -31,7 +32,8 @@ GameEngine* GameEngine_create(void) {
 	this->module = NULL;
 	this->nextModule = NULL;
 	this->textureCache = TextureCache_create(this->renderer);
-	GameEngine_setActiveModule(this, Intro_create(this)->module);
+	//GameEngine_setActiveModule(this, Intro_create(this)->module);
+	GameEngine_setActiveModule(this, MainMenu_create(this)->module);
 	//GameEngine_setActiveModule(this, Game_create(this)->module);
 	return this;
 }
@@ -93,7 +95,7 @@ int GameEngine_run(GameEngine* this) {
         	if (event.type == SDL_QUIT) {
         		this->windowIsRunning = false;
         	} else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
-        		SDL_RenderSetLogicalSize(this->renderer, event.window.data1, event.window.data2);
+        		//SDL_RenderSetLogicalSize(this->renderer, event.window.data1, event.window.data2);
         		// TODO
         		//this->module->resize(this->module->context, this->screen);
         	} else {

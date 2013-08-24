@@ -11,6 +11,8 @@
 #include "Vector.h"
 
 
+#define SAFE_TEXTURE_PATH "images/noImg.png"
+
 typedef struct TextureCache {
 	Vector* images;
 	SDL_Renderer* renderer;

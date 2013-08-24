@@ -20,10 +20,7 @@ int Scene_luaCreate(lua_State* l) {
 	this->walkableBounds.h = 185 * PHYSICS_SCALE;
 
 	//lua_pushvalue(l, -1);
-
-	this->backgrounds = List_create();
-	this->leftBackground = NULL;
-	this->rightBackground = NULL;
+	this->background = NULL;
 	this->entities = Vector_Create();
 	this->triggers = Vector_Create();
 
@@ -58,34 +55,13 @@ int Scene_luaDestroy(lua_State* l) {
 	//FREE_VECTOR_WITH_ELMENTS(this->triggers, Trigger_destroy);
 	Vector_Destroy(this->triggers);
 
-	ListNode* it = this->backgrounds->first;
-	while (it) {
-		Sprite_destroy(it->data);
-		it = it->next;
-	}
-	List_destroy(this->backgrounds);
+	Sprite_destroy(this->background);
 //	free(this); // lua does this now
 	printf("destroyed scene via gc\n");
 	return 0;
 }
 
 void Scene_update(Scene* this, RawTime dt) {
-//	// load new right background when the left leaves the screen
-//	if (this->leftBackground->rect.x + this->leftBackground->rect.w < this->camera->viewport.x) {
-//		printf("left out\n");
-//		ListNode* node = List_getNodeForData(this->backgrounds, this->rightBackground);
-//		node = node->previous ? node->previous : this->backgrounds->first;
-//		this->leftBackground = this->rightBackground;
-//		this->rightBackground = node->data;
-//	}
-//	// load new left background when the right leaves the screen
-//	if (this->rightBackground->rect.x > this->camera->viewport.x + this->camera->viewport.w) {
-//		printf("right out\n");
-//		ListNode* node = List_getNodeForData(this->backgrounds, this->leftBackground);
-//		node = node->previous ? node->previous : this->backgrounds->last;
-//		this->rightBackground = this->leftBackground;
-//		this->leftBackground = node->data;
-//	}
 	CollisionHandler_update(this->collisionHandler, this->entities);
 
 	for (int i=0; i < this->entities->usedElements; ++i) {
@@ -99,14 +75,7 @@ void Scene_update(Scene* this, RawTime dt) {
 }
 
 void Scene_draw(Scene* this, SDL_Renderer* renderer) {
-//	Sprite_drawOnCamera(this->leftBackground, surface, this->camera);
-//	Sprite_drawOnCamera(this->rightBackground, surface, this->camera);
-	ListNode* it = this->backgrounds->first;
-	while (it) {
-		Sprite_drawOnCamera(it->data, renderer, this->camera);
-		it = it->next;
-	}
-
+	Sprite_drawOnCamera(this->background, renderer, this->camera);
 	for (int i=0; i < this->entities->usedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
@@ -115,26 +84,19 @@ void Scene_draw(Scene* this, SDL_Renderer* renderer) {
 	}
 }
 
-void Scene_addBackground(Scene* this, const char* background) {
-	Sprite* sprite = Sprite_create(TextureCache_get(this->engine->textureCache, background));
-	if (this->backgrounds->last) {
-		Sprite* lastSprite = this->backgrounds->last->data;
-		sprite->bounds.x = lastSprite->bounds.x + lastSprite->bounds.w;
-	}
-	List_pushBack(this->backgrounds, sprite);
-
-	if (!this->leftBackground) {
-		this->leftBackground = sprite;
-	}
-	if (!this->rightBackground || this->rightBackground == this->leftBackground) {
-		this->rightBackground = sprite;
-	}
-	this->camera->bounds.w += sprite->bounds.w;
-	this->walkableBounds.w += sprite->bounds.w * PHYSICS_SCALE;
-}
-
 void Scene_addEntity(Scene* this, Entity* entity) {
 	Vector_InsertInFirstFreeSpace(this->entities, entity);
+}
+
+void Scene_setBounds(Scene* this, int x, int y, int w, int h) {
+	this->walkableBounds.x = x * PHYSICS_SCALE;
+	this->walkableBounds.y = y * PHYSICS_SCALE;
+	this->walkableBounds.w = w * PHYSICS_SCALE;
+	this->walkableBounds.h = h * PHYSICS_SCALE;
+	this->camera->bounds.x = x;
+	this->camera->bounds.y = y;
+	this->camera->bounds.w = w;
+	this->camera->bounds.h = h;
 }
 
 
@@ -142,7 +104,7 @@ void Scene_addEntity(Scene* this, Entity* entity) {
 
 void Scene_luaExport(lua_State *l) {
 	static struct luaL_Reg methods[] = {
-		{"addBackground", Scene_luaAddBackground},
+		{"setBackground", Scene_luaSetBackground},
 		{"addTrigger", Scene_luaAddTrigger},
 		//{"__gc", Scene_luaDestroy},
 		{NULL, NULL}
@@ -162,10 +124,13 @@ Scene* Scene_checkfromLua (lua_State *L, int idx) {
 	return (Scene*) userData;
 }
 
-int Scene_luaAddBackground(lua_State* l) {
+int Scene_luaSetBackground(lua_State* l) {
 	Scene* this = Scene_checkfromLua(l, 1);
 	const char* background = luaL_checkstring(l, 2);
-	Scene_addBackground(this, background);
+	if (!this->background) {
+		Sprite_destroy(this->background);
+	}
+	this->background = Sprite_create(TextureCache_get(this->engine->textureCache, background));
 	lua_pop(l,2);
 	return 0;
 }

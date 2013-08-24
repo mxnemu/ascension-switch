@@ -70,7 +70,6 @@ void UiMenuElement_draw(void* context, SDL_Renderer* screen) {
 
 	if (this->node->parent->selectedChild == this->node) {
 		Sprite_drawRelative(this->labelSelected, screen, &this->node->bounds);
-		puts("hover");
 	} else {
 		Sprite_drawRelative(this->label, screen, &this->node->bounds);
 	}

@@ -29,7 +29,6 @@ Input* Input_create() {
 
 //	SDL_JoystickEventState (SDL_IGNORE);
 
-
 	return this;
 }
 
@@ -153,10 +152,8 @@ SDL_Keycode Input_stringToKeycode(const char* keyText) {
 ActionId Input_stringToActionId(const char* actionIdText) {
 	ENUM_TO_STRING_MATCH(horizontal, actionIdText)
 	ENUM_TO_STRING_MATCH(vertical, actionIdText)
-	ENUM_TO_STRING_MATCH(kickLeft, actionIdText)
-	ENUM_TO_STRING_MATCH(kickRight, actionIdText)
-	ENUM_TO_STRING_MATCH(hitLeft, actionIdText)
-	ENUM_TO_STRING_MATCH(hitRight, actionIdText)
+	ENUM_TO_STRING_MATCH(attackSword, actionIdText)
+	ENUM_TO_STRING_MATCH(attackBow, actionIdText)
 	ENUM_TO_STRING_MATCH(action, actionIdText)
 	return none;
 }
@@ -215,11 +212,11 @@ bool Input_isDown(Input* this, ActionId hotkeyId) {
 }
 
 bool Input_keysymIsDown(Input* this, SDL_Keysym* keysym) {
-	return this->keystates[keysym->sym] && (this->keymods & keysym->mod) == keysym->mod;
+	return this->keystates[SDL_GetScancodeFromKey(keysym->sym)] && (this->keymods & keysym->mod) == keysym->mod;
 }
 
 void Input_update(Input* this) {
-	this->keystates = SDL_GetKeyboardState(NULL); // TODO do I have to free this?
+	this->keystates = SDL_GetKeyboardState(NULL);
 	this->keymods = SDL_GetModState();
 }
 

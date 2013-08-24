@@ -15,15 +15,11 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->context = context;
 	this->hitboxes = List_create();
 
-	this->combos = Vector_Create();
-	this->currentCombo = NULL;
-	this->timeSinceLastComboAction = 0;
 	return this;
 }
 
 void Entity_destroy(Entity* this) {
 	this->destroy(this->context);
-	FREE_VECTOR_WITH_ELMENTS(this->combos, Combo_destroy);
 	ListNode* it = this->hitboxes->first;
 	while(it) {
 		Hitbox_destroy((Hitbox*)it->data);
@@ -90,14 +86,6 @@ void Entity_update(Entity* this, RawTime dt) {
 		this->animatedSprite->sprite->bounds.x = this->physics.bounds.x / PHYSICS_SCALE;
 		this->animatedSprite->sprite->bounds.y = this->physics.bounds.y / PHYSICS_SCALE;
 	}
-
-	this->timeSinceLastComboAction += dt;
-	if (this->currentCombo) {
-		if (this->currentCombo->timeUntilCancel > 0 &&
-			this->currentCombo->timeUntilCancel < this->timeSinceLastComboAction) {
-			Entity_resetComboProgress(this);
-		}
-	}
 }
 
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
@@ -124,48 +112,6 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 		}
 	}
 	return false;
-}
-
-void Entity_performComboAction(Entity* this, ActionId action) {
-	Combo* nextCombo = NULL;
-	Vector* combos = this->currentCombo ? this->currentCombo->followups : this->combos;
-	for (int i=0; i < combos->usedElements; ++i) {
-		Combo* it = combos->elements[i];
-		if (it->action == action && it->timeUntilReady <= this->timeSinceLastComboAction) {
-			nextCombo = it;
-
-			if (it->name && it->name[0] !=  '\0') {
-				this->currentComboName = it->name;
-				printf("starting new combo: %s", it->name);
-			} else {
-				printf("new step on combo: %s", this->currentComboName);
-			}
-			printf("\n");
-
-			// TODO animations and stuff
-			break; //TODO find the best matching combo (by time passed) and choose it
-		}
-	}
-
-	if (!nextCombo && this->currentCombo && this->currentCombo->cancelOnWrongAction) {
-		Entity_resetComboProgress(this);
-	} else if (nextCombo) {
-		this->currentCombo = nextCombo;
-		this->timeSinceLastComboAction = 0;
-	}
-
-	if (nextCombo && nextCombo->followups->usedElements == 0) {
-		printf("Combo cleared!\n");
-		Entity_resetComboProgress(this); // TODO wait for the amazing animations to finish!
-	}
-	// ignore if no new combo and the current doesn't care about wrong input buttons
-}
-
-void Entity_resetComboProgress(Entity* this) {
-	this->currentCombo = NULL;
-	this->timeSinceLastComboAction = 0;
-	this->currentComboName = "";
-	printf("rest combo progress\n");
 }
 
 void EntityPhysics_destroy(EntityPhysics* this) {

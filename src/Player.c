@@ -7,30 +7,11 @@ Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input) {
 	this->entity->update = Player_update;
 	this->input = input;
 
-	// test combo
-	Combo* c = Combo_create();
-	c->action = kickLeft;
-	c->name = "left right kick combo";
-	Vector_AddElement(this->entity->combos, c);
-
-	Combo* n = Combo_create();
-	n->action = kickRight;
-	Vector_AddElement(c->followups, n);
-	c = n;
-
-	n = Combo_create();
-	n->action = kickLeft;
-	Vector_AddElement(c->followups, n);
-	c = n;
-
-	n = Combo_create();
-	n->action = kickRight;
-	Vector_AddElement(c->followups, n);
-
 	return this;
 }
 
 void Player_destroy(void* context) {
+	CANCEL_IF_FALSE(context);
 	Player* this = context;
 	free(this);
 }
@@ -49,17 +30,8 @@ void Player_processInput(Player* this) {
 		printf("%d, %d\n", this->entity->physics.dx,this->entity->physics.dy);
 	}
 
-	if (Input_isDown(this->input, kickLeft)) {
-		Entity_performComboAction(this->entity, kickLeft);
-	}
-	if (Input_isDown(this->input, kickRight)) {
-		Entity_performComboAction(this->entity, kickRight);
-	}
-	if (Input_isDown(this->input, hitLeft)) {
-		Entity_performComboAction(this->entity, hitLeft);
-	}
-	if (Input_isDown(this->input, hitRight)) {
-		Entity_performComboAction(this->entity, hitRight);
+	if (Input_isDown(this->input, attackSword)) {
+		// TODO attack
 	}
 }
 

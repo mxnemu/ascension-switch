@@ -6,8 +6,8 @@ keyboardHotkeys = {
     {["name"]="vertical", ["key"]="w", ["axisValue"]=-1},
     {["name"]="vertical", ["key"]="s", ["axisValue"]=1},
     
-    {["name"]="kickLeft", ["key"]="j"},
-    {["name"]="kickRight", ["key"]="k"},
+    {["name"]="attackSword", ["key"]="j"},
+    {["name"]="attackBow", ["key"]="k"},
     {["name"]="hitLeft", ["key"]="h"},
     {["name"]="hitRight", ["key"]="l"},
     {["name"]="action", ["key"]="e"}

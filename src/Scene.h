@@ -11,14 +11,13 @@
 
 CLASS(Scene) {
 	SDL_Rect walkableBounds;
-	Sprite* leftBackground;
-	Sprite* rightBackground;
-	List* backgrounds;
+	Sprite* background;
 	Vector* entities;
 	Vector* triggers;
 	Camera* camera;
 	CollisionHandler* collisionHandler;
 	GameEngine* engine;
+	float gravity;
 };
 
 Scene* Scene_create(GameEngine* engine, const char* filePath);
@@ -30,12 +29,14 @@ void Scene_draw(Scene* this, SDL_Renderer* renderer);
 void Scene_addBackground(Scene* this, const char* background);
 void Scene_addEntity(Scene* this, Entity* entity);
 
+void Scene_setBounds(Scene* this, int x, int y, int w, int h);
+
 // Lua stuff
 Scene* Scene_checkfromLua (lua_State *L, int idx);
 
 void Scene_luaExport(lua_State *l);
 int Scene_luaCreate(lua_State* l);
-int Scene_luaAddBackground(lua_State *l);
+int Scene_luaSetBackground(lua_State *l);
 void Scene_luaAddEntity(lua_State *l);
 void Scene_luaPopFrontBackgroundAndTranslateBack(lua_State);
 int Scene_luaAddTrigger(lua_State* l);
