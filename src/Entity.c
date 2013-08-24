@@ -84,7 +84,7 @@ void Entity_update(Entity* this, RawTime dt) {
 	newPosition.y += this->physics.dy;
 	if (!Entity_wouldCollide(this, &newPosition)) {
 		this->physics.bounds.y += this->physics.dy;
-		if (this->physics.groundedStatus == grounded) {
+		if (this->physics.groundedStatus == grounded || (this->physics.groundedStatus == onLadder && !this->inFrontOfLadder)) {
 			this->physics.groundedStatus = inAir;
 		}
 	}

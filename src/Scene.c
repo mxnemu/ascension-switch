@@ -92,7 +92,9 @@ void Scene_update(Scene* this, RawTime dt) {
 		if (it != NULL) {
 //			it->update(it->context, dt);
 			Entity_update(it, dt);
-			it->physics.dy += this->gravity;
+			if (it->physics.groundedStatus == grounded || it->physics.groundedStatus == inAir) {
+				it->physics.dy += this->gravity;
+			}
 		}
 	}
 	Camera_update(this->camera);

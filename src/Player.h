@@ -7,7 +7,7 @@ CLASS(Player) {
 	Input* input;
 	Entity* entity;
 	int remainingJumps;
-	int timeSinceGrounded;
+	RawTime timeSinceGrounded;
 };
 
 Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input);

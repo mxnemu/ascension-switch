@@ -7,6 +7,7 @@ Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input) {
 	this->entity->update = Player_update;
 	this->input = input;
 	this->remainingJumps = 10;
+	this->timeSinceGrounded = 0;
 
 	return this;
 }
@@ -37,6 +38,12 @@ void Player_processInput(Player* this) {
 		} else  if (x > 0) {
 			this->entity->animatedSprite->sprite->flip = false;
 		}
+	}
+
+	int y = Input_getAxis(this->input, vertical);
+	if (y != 0 && this->entity->inFrontOfLadder) {
+		this->entity->physics.groundedStatus = onLadder;
+		this->entity->physics.dy += (y*this->entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 	}
 
 	if (Input_isDown(this->input, attackSword)) {
