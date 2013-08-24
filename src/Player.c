@@ -6,6 +6,7 @@ Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input) {
 	this->entity->draw = Player_draw;
 	this->entity->update = Player_update;
 	this->input = input;
+	this->remainingJumps = 10;
 
 	return this;
 }
@@ -19,6 +20,12 @@ void Player_destroy(void* context) {
 void Player_update(void* context, RawTime dt) {
 	Player* this = context;
 	Player_processInput(this);
+
+	if (this->entity->physics.groundedStatus == grounded) {
+		this->timeSinceGrounded += dt;
+	} else {
+		this->timeSinceGrounded = 0;
+	}
 }
 
 void Player_processInput(Player* this) {
@@ -37,7 +44,13 @@ void Player_processInput(Player* this) {
 	}
 
 	if (Input_isDown(this->input, jump)) {
-		this->entity->physics.dy -= (32*10) / PHYSICS_SCALE;
+		if (this->entity->physics.groundedStatus == grounded && this->timeSinceGrounded > 120) {
+			this->remainingJumps = 10;
+		}
+		if (this->remainingJumps > 0) {
+			this->entity->physics.dy -= (32*10) / PHYSICS_SCALE;
+			this->remainingJumps--;
+		}
 	}
 }
 
