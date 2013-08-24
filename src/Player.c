@@ -23,10 +23,8 @@ void Player_update(void* context, RawTime dt) {
 
 void Player_processInput(Player* this) {
 	int x = Input_getAxis(this->input, horizontal);
-	int y = Input_getAxis(this->input, vertical);
-	if (x != 0 || 0 != y) {
-		this->entity->physics.dx += (x*5 * PHYSICS_SCALE) / AXIS_MAX;
-		this->entity->physics.dy += (y*5 * PHYSICS_SCALE) / AXIS_MAX;
+	if (x != 0) {
+		this->entity->physics.dx += (x*this->entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 		if (x < 0) {
 			this->entity->animatedSprite->sprite->flip = true;
 		} else  if (x > 0) {
@@ -36,6 +34,11 @@ void Player_processInput(Player* this) {
 
 	if (Input_isDown(this->input, attackSword)) {
 		// TODO attack
+	}
+
+	if (Input_isDown(this->input, jump)) {
+		this->entity->physics.dy += (32*4) * PHYSICS_SCALE;
+		puts("jump\n");
 	}
 }
 

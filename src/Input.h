@@ -7,7 +7,7 @@
 
 // TODO somehow differentiate the player. Store hotkeys in Player.c or something
 typedef enum ActionId {
-	none, horizontal, vertical, attackSword, attackBow, action
+	none, horizontal, vertical, jump, attackSword, attackBow, action
 } ActionId;
 
 CLASS(KeyHotkey) {

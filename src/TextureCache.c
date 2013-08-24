@@ -27,16 +27,45 @@ void TextureCache_destroy(TextureCache* this) {
 }
 
 SDL_Texture* TextureCache_get(TextureCache* this, const char* path) {
-
-	for (int i=0; i < this->images->usedElements; ++i) {
-		TextureEntry* it = this->images->elements[i];
-		if (it && 0 == strcmp(it->key, path)) {
-			return it->image;
-		}
+	TextureEntry* entry = TextureCache_getExistingEntry(this, path);
+	if (entry) {
+		return entry->image;
 	}
 	SDL_Texture* tex = TextureCache_loadImage(this, path, true);
 	if (!tex && strcmp(path, SAFE_TEXTURE_PATH) != 0) {
 		tex = TextureCache_get(this, SAFE_TEXTURE_PATH);
+	}
+	return tex;
+}
+TextureEntry* TextureCache_getExistingEntry(TextureCache* this, const char* path) {
+	for (int i=0; i < this->images->usedElements; ++i) {
+		TextureEntry* it = this->images->elements[i];
+		if (it) {
+			if ((it->key && 0 == strcmp(it->key, path)) ||
+				(it->ownedKey && 0 == strcmp(it->ownedKey, path))) {
+				return it;
+			}
+		}
+	}
+	return NULL;
+}
+
+SDL_Texture* TextureCache_getForUnconstantPath(TextureCache* this, char* path) {
+	TextureEntry* entry = TextureCache_getExistingEntry(this, path);
+	if (entry) {
+		return entry->image;
+	}
+	SDL_Texture* tex = TextureCache_loadImage(this, path, true);
+	if (!tex && strcmp(path, SAFE_TEXTURE_PATH) != 0) {
+		tex = TextureCache_get(this, SAFE_TEXTURE_PATH);
+	} else {
+		entry = TextureCache_getExistingEntry(this, path);
+		if (!entry) {
+			printf("ÈRROR RECENTLY INSERTED TEXTURE NOT CACHED see %s:%d", __FILE__, __LINE__);
+		}
+		entry->ownedKey = malloc(strlen(entry->key) * sizeof(char));
+		entry->ownedKey = strcpy(entry->ownedKey, entry->key);
+		entry->key = NULL;
 	}
 	return tex;
 }
@@ -60,6 +89,7 @@ TextureEntry* TextureEntry_create(const char* key, SDL_Texture* image, bool owns
 	this->key = key;
 	this->image = image;
 	this->ownsImage = ownsImage;
+	this->ownedKey = NULL;
 	return this;
 }
 
@@ -67,6 +97,9 @@ void TextureEntry_destroy(TextureEntry* this) {
 	CANCEL_IF_FALSE(this);
 	if (this->ownsImage) {
 		SDL_DestroyTexture(this->image);
+	}
+	if (this->ownedKey) {
+		free(this->ownedKey);
 	}
 	free(this);
 }

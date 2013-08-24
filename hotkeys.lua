@@ -8,8 +8,7 @@ keyboardHotkeys = {
     
     {["name"]="attackSword", ["key"]="j"},
     {["name"]="attackBow", ["key"]="k"},
-    {["name"]="hitLeft", ["key"]="h"},
-    {["name"]="hitRight", ["key"]="l"},
+    {["name"]="jump", ["key"]="l"},
     {["name"]="action", ["key"]="e"}
 }
 

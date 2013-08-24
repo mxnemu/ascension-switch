@@ -26,7 +26,7 @@ void MainMenu_destroy(void* context) {
 void MainMenu_init(void* context) {
 	MainMenu* this = context;
 
-	this->scene = Scene_create(this->engine, "scenes/mainMenu.lua");
+	this->scene = Scene_create(this->engine, "scenes/mainMenu.lua", NULL);
 
 	this->ui = UiNode_create(NULL, NULL);
 	SDL_RenderGetLogicalSize(this->engine->renderer, &this->ui->bounds.w, &this->ui->bounds.h);
@@ -34,9 +34,9 @@ void MainMenu_init(void* context) {
 
 	SDL_Renderer* r = this->engine->renderer;
 	UiMenuElement_create(menu, r, "Play", NULL, MainMenu_onStartButton, this);
-	UiMenuElement_create(menu, r, "Options", NULL, NULL, this);
-	UiMenuElement_create(menu, r, "Credits", NULL, NULL, this);
-	UiMenuElement_create(menu, r, "Editor", NULL, MainMenu_onEditorButton, this);
+	//UiMenuElement_create(menu, r, "Options", NULL, NULL, this);
+	//UiMenuElement_create(menu, r, "Credits", NULL, NULL, this);
+	//UiMenuElement_create(menu, r, "Editor", NULL, MainMenu_onEditorButton, this);
 	UiMenuElement_create(menu, r, "Exit", NULL, MainMenu_onExitButton, this);
 
 	UiNode_moveTo(menu->node,

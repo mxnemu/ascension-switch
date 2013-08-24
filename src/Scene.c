@@ -2,13 +2,15 @@
 #include "Utils.h"
 #include "Entity.h"
 #include "Trigger.h"
+#include "Tile.h"
 
 int Scene_luaCreate(lua_State* l) {
 	Scene* this = lua_newuserdata(l, sizeof(Scene));
 	luaL_getmetatable(l, SCENE_MTABLE);
 	lua_setmetatable(l, -2);
 	GameEngine* engine = *((GameEngine**)lua_checklightuserdata(l, 1));
-	luaL_argcheck(l, (engine != NULL), 1, "please set the global 'gameEngine' as first argument of Scene.create");
+	luaL_argcheck(l, (engine != NULL), 1, "please set the global 'gameEngine' as 1st argument of Scene.create");
+	Scene* lastScene = *((Scene**)lua_checklightuserdata(l, 2));
 
 	this->engine = engine;
 	SDL_Point screenSize;
@@ -20,16 +22,37 @@ int Scene_luaCreate(lua_State* l) {
 	this->walkableBounds.h = 185 * PHYSICS_SCALE;
 
 	//lua_pushvalue(l, -1);
-	this->background = NULL;
 	this->entities = Vector_Create();
 	this->triggers = Vector_Create();
+	this->tiles = Vector_Create();
+
+	if (lastScene) {
+		this->mirrorTiles = lastScene->mirrorTiles;
+		this->colorPrefix = lastScene->colorPrefix;
+	} else {
+		this->mirrorTiles = false;
+		this->colorPrefix = "red";
+	}
+	char* path = malloc(128 * sizeof(char));
+	sprintf(path, "images/%s/bg.png", this->colorPrefix);
+	this->background = Sprite_create(TextureCache_getForUnconstantPath(engine->textureCache, path));
+	free(path);
+
+	_Vector_RecreateWithoutSizeCheck(this->tiles, SCENE_TILES_X*SCENE_TILES_Y);
+	for (int i=0; i < SCENE_TILES_X*SCENE_TILES_Y; ++i) {
+		Vector_AddElement(this->tiles, NULL);
+	}
+
+	this->gravity = (32*5) / PHYSICS_SCALE; // flall 5 tiles per second
 
 	return 1;
 }
 
-Scene* Scene_create(GameEngine* engine, const char* filePath) {
+Scene* Scene_create(GameEngine* engine, const char* filePath, Scene* lastScene) {
 	lua_pushlightuserdata(engine->l, &engine);
 	lua_setglobal(engine->l, "gameEngine");
+	lua_pushlightuserdata(engine->l, &lastScene);
+	lua_setglobal(engine->l, "lastScene");
 //	lua_pushnil(engine->l);
 //	lua_setglobal(engine->l, "scene");
 	if (luaL_dofile(engine->l, filePath)) {
@@ -69,6 +92,7 @@ void Scene_update(Scene* this, RawTime dt) {
 		if (it != NULL) {
 //			it->update(it->context, dt);
 			Entity_update(it, dt);
+			it->physics.dy += this->gravity;
 		}
 	}
 	Camera_update(this->camera);
@@ -76,6 +100,14 @@ void Scene_update(Scene* this, RawTime dt) {
 
 void Scene_draw(Scene* this, SDL_Renderer* renderer) {
 	Sprite_drawOnCamera(this->background, renderer, this->camera);
+
+	for (int i=0; i < this->tiles->usedElements; ++i) {
+		Tile* it = this->tiles->elements[i];
+		if (it != NULL) {
+			Sprite_drawOnCamera(it->sprite, renderer, this->camera);
+		}
+	}
+
 	for (int i=0; i < this->entities->usedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
@@ -99,6 +131,38 @@ void Scene_setBounds(Scene* this, int x, int y, int w, int h) {
 	this->camera->bounds.h = h;
 }
 
+void Scene_setTile(Scene* this, const int tileId, const int tileType) {
+	Tile* oldTile = Vector_Get(this->tiles, tileId);
+	if (oldTile) {
+		Tile_destroy(oldTile);
+	}
+	Tile* t = Tile_create(tileType, this->engine->textureCache, this->colorPrefix);
+	Vector_Set(this->tiles, tileId, t);
+
+	if (t) {
+		SDL_Point p = Scene_positionForTileId(this, tileId);
+		t->sprite->bounds.x = p.x * TILE_W;
+		t->sprite->bounds.y = p.y * TILE_H;
+	}
+
+	printf("%d,", tileType);
+}
+
+SDL_Point Scene_positionForTileId(Scene* this, const int tileId) {
+	SDL_Point p;
+	if (tileId != 0) {
+		p.x = tileId % SCENE_TILES_X;
+		p.y = tileId / SCENE_TILES_X;
+	} else {
+		p.x = 0;
+		p.y = 0;
+	}
+	if (this->mirrorTiles) {
+		//p.x = (SCENE_TILES_X-1) - p.x;
+	}
+	return p;
+}
+
 
 // Lua
 
@@ -106,6 +170,10 @@ void Scene_luaExport(lua_State *l) {
 	static struct luaL_Reg methods[] = {
 		{"setBackground", Scene_luaSetBackground},
 		{"addTrigger", Scene_luaAddTrigger},
+		{"setTile", Scene_luaSetTile},
+		{"setSceneAbove", Scene_luaSetSceneAbove},
+		{"setColorPrefix", Scene_luaSetColorPrefix},
+		{"setMirrorTiles", Scene_luaSetMirrorTile},
 		//{"__gc", Scene_luaDestroy},
 		{NULL, NULL}
 	};
@@ -141,5 +209,38 @@ int Scene_luaAddTrigger(lua_State* l) {
 	Trigger* trigger = Trigger_checkFromLua(l, 2);
 	Trigger_setScene(trigger, this);
 	Vector_InsertInFirstFreeSpace(this->triggers, trigger);
+	return 0;
+}
+
+int Scene_luaSetTile(lua_State* l) {
+	Scene* this = Scene_checkfromLua(l, 1);
+	const int tileId = luaL_checkint(l, 2);
+	const int tileType = luaL_checkint(l, 3);
+	Scene_setTile(this, tileId-1, tileType);
+	lua_pop(l,3);
+	return 0;
+}
+
+int Scene_luaSetSceneAbove(lua_State* l) {
+	Scene* this = Scene_checkfromLua(l, 1);
+	const char* sceneAbove = luaL_checkstring(l, 2);
+	this->sceneAbove = sceneAbove;
+	lua_pop(l,2);
+	return 0;
+}
+
+int Scene_luaSetColorPrefix(lua_State* l) {
+	Scene* this = Scene_checkfromLua(l, 1);
+	const char* colorPrefix = luaL_checkstring(l, 2);
+	this->colorPrefix = colorPrefix;
+	lua_pop(l,2);
+	return 0;
+}
+
+int Scene_luaSetMirrorTile(lua_State* l) {
+	Scene* this = Scene_checkfromLua(l, 1);
+	const int mirror= luaL_checknumber(l, 2);
+	this->mirrorTiles = mirror == 1;
+	lua_pop(l,2);
 	return 0;
 }

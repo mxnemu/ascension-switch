@@ -20,6 +20,7 @@ typedef struct TextureCache {
 
 typedef struct TextureEntry {
 	const char* key;
+	char* ownedKey; // alt if key is NULL
 	SDL_Texture* image;
 	bool ownsImage;
 } TextureEntry;
@@ -31,4 +32,7 @@ SDL_Texture* TextureCache_loadImage(TextureCache* this, const char* path, bool s
 
 TextureEntry* TextureEntry_create(const char* key, SDL_Texture* image, bool ownsImage);
 void TextureEntry_destroy(TextureEntry* this);
+
+SDL_Texture* TextureCache_getForUnconstantPath(TextureCache* this, char* path);
+TextureEntry* TextureCache_getExistingEntry(TextureCache* this, const char* path);
 

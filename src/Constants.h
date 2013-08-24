@@ -29,6 +29,11 @@ typedef Uint32 RawTime; // in ms (1s == 1000)
 #define SCENE_SPACER_WIDTH 32
 #define SCENE_SPACER_HEIGHT 480
 
+#define TILE_W 32
+#define TILE_H 32
+#define SCENE_TILES_X 12
+#define SCENE_TILES_Y 15
+
 #define DEFAULT_BPP 24
 #define DEFAULT_WINDOW_FLAGS SDL_HWSURFACE|SDL_DOUBLEBUF
 

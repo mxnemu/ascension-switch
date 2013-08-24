@@ -16,7 +16,7 @@ CLASS(Hourglass) {
 };
 
 Hourglass* Hourglass_create(GameEngine*);
-void Hourglass_flip(Hourglass* this);
+void Hourglass_destroy(Hourglass* this);
 
 void Hourglass_draw(Hourglass* this, SDL_Renderer* renderer);
 void Hourglass_update(Hourglass* this, RawTime dt);

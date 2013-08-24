@@ -17,7 +17,7 @@ GameEngine* GameEngine_create(void) {
 
 	GameEngine* this = malloc(sizeof(GameEngine));
 	this->windowIsRunning = true;
-	this->screen = SDL_CreateWindow("Year Of The Maya", 0,0, YOM_WINDOW_W, YOM_WINDOW_H, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+	this->screen = SDL_CreateWindow("LD 27", 0,0, YOM_WINDOW_W, YOM_WINDOW_H, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
 	this->renderer = SDL_CreateRenderer(this->screen, 0, SDL_RENDERER_ACCELERATED);
 	SDL_Surface* icon = SDL_LoadBMP("images/icon.bmp");
 	SDL_SetWindowIcon(this->screen, icon);

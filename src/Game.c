@@ -22,6 +22,7 @@ Game* Game_create(GameEngine* engine) {
 void Game_destroy(void* context) {
 	CANCEL_IF_FALSE(context);
 	Game* this = context;
+	Hourglass_destroy(this->hourglass);
 	// lua propbaby kills everything
 	/* wtf is wrong with this too much headache to fix
 	for (int i=0; i < PLAYER_COUNT; ++i) {
@@ -35,8 +36,12 @@ void Game_destroy(void* context) {
 void Game_init(void* context) {
 	Game* this = context;
 
-	this->leftScene = Scene_create(this->engine, "scenes/stage1r.lua");
-	this->rightScene = Scene_create(this->engine, "scenes/stage1b.lua");
+	// fuck this lua setup it's just stupid
+	// I screwed this up
+	this->leftScene = Scene_create(this->engine, "scenes/initRed.lua", NULL);
+	this->rightScene = Scene_create(this->engine, "scenes/initBlue.lua", NULL);
+	this->leftScene = Scene_create(this->engine, "scenes/stage1.lua", this->leftScene);
+	this->rightScene = Scene_create(this->engine, "scenes/stage1.lua", this->rightScene);
 
 	memset(this->players, 0, PLAYER_COUNT * sizeof(Player*));
 	Game_setupPlayer(this, 0, this->leftScene);
@@ -68,9 +73,13 @@ void Game_setupPlayer(Game* this, int i, Scene* scene) {
 	Scene_addEntity(scene, player->entity);
 	scene->camera->trackedEntity = player->entity;
 	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
-	if (i == 1) {
+	if (i == 0) {
+		scene->colorPrefix = "red";
+	} else if (i == 1) {
+		scene->colorPrefix = "blue";
 		scene->camera->translation.x = SCENE_WIDTH + SCENE_SPACER_WIDTH;
 		scene->camera->translation.y = 0;
+		scene->mirrorTiles = true;
 	}
 }
 

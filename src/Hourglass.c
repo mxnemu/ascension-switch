@@ -11,6 +11,11 @@ Hourglass* Hourglass_create(GameEngine* engine) {
 	return this;
 }
 
+void Hourglass_destroy(Hourglass* this) {
+	Sprite_destroy(this->sprite);
+	free(this);
+}
+
 void Hourglass_draw(Hourglass* this, SDL_Renderer* renderer) {
 	Sprite_draw(this->sprite, renderer);
 }

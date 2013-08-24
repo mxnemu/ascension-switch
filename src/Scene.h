@@ -14,13 +14,17 @@ CLASS(Scene) {
 	Sprite* background;
 	Vector* entities;
 	Vector* triggers;
+	Vector* tiles;
 	Camera* camera;
 	CollisionHandler* collisionHandler;
 	GameEngine* engine;
-	float gravity;
+	int gravity;
+	const char* sceneAbove;
+	const char* colorPrefix;
+	bool mirrorTiles;
 };
 
-Scene* Scene_create(GameEngine* engine, const char* filePath);
+Scene* Scene_create(GameEngine* engine, const char* filePath, Scene* lastScene);
 int Scene_luaDestroy(lua_State* l);
 
 void Scene_update(Scene* this, RawTime dt);
@@ -31,6 +35,8 @@ void Scene_addEntity(Scene* this, Entity* entity);
 
 void Scene_setBounds(Scene* this, int x, int y, int w, int h);
 
+SDL_Point Scene_positionForTileId(Scene* this, const int tileId);
+
 // Lua stuff
 Scene* Scene_checkfromLua (lua_State *L, int idx);
 
@@ -40,3 +46,7 @@ int Scene_luaSetBackground(lua_State *l);
 void Scene_luaAddEntity(lua_State *l);
 void Scene_luaPopFrontBackgroundAndTranslateBack(lua_State);
 int Scene_luaAddTrigger(lua_State* l);
+int Scene_luaSetTile(lua_State* l);
+int Scene_luaSetSceneAbove(lua_State* l);
+int Scene_luaSetColorPrefix(lua_State* l);
+int Scene_luaSetMirrorTile(lua_State* l);

@@ -32,6 +32,7 @@ CLASS(Entity) {
 	Scene* scene;
 	void* context;
 	List* hitboxes;
+	int speedMultiplier;
 };
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);

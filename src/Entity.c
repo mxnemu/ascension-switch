@@ -14,7 +14,7 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->destroy = emptyDestroy;
 	this->context = context;
 	this->hitboxes = List_create();
-
+	this->speedMultiplier = 5;
 	return this;
 }
 
