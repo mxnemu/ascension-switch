@@ -16,6 +16,8 @@ Sprite* Sprite_create(SDL_Texture* image) {
 	this->frame.y = 0;
 	this->scrollX = 1;
 	this->scrollY = 1;
+	this->angle = 0;
+	this->flip = false;
 	if (!image || !Sprite_setFrameSizeFromImage(this, image)) {
 		Sprite_setFrameSize(this, 0,0);
 	}
@@ -49,8 +51,9 @@ void Sprite_setFrameSize(Sprite* this, int w, int h) {
 }
 
 void Sprite_draw(Sprite* this, SDL_Renderer* renderer) {
-	SDL_RenderCopy(renderer, this->image, &this->frame, &this->bounds);
+	SDL_RenderCopyEx(renderer, this->image, &this->frame, &this->bounds, this->angle, NULL, this->flip);
 }
+
 
 void Sprite_drawRelative(Sprite* this, SDL_Renderer* renderer, SDL_Rect* container) {
 	SDL_Rect translatedRect = {
@@ -60,7 +63,7 @@ void Sprite_drawRelative(Sprite* this, SDL_Renderer* renderer, SDL_Rect* contain
 		.h = this->bounds.h
 	};
 
-	SDL_RenderCopy(renderer, this->image, &this->frame, &translatedRect);
+	SDL_RenderCopyEx(renderer, this->image, &this->frame, &translatedRect, this->angle, NULL, this->flip);
 }
 
 void Sprite_drawOnCamera(Sprite* this, SDL_Renderer* renderer, Camera* camera) {
@@ -72,5 +75,5 @@ void Sprite_drawOnCamera(Sprite* this, SDL_Renderer* renderer, Camera* camera) {
 		.h = this->bounds.h
 	};
 
-	SDL_RenderCopy(renderer, this->image, &this->frame, &translatedRect);
+	SDL_RenderCopyEx(renderer, this->image, &this->frame, &translatedRect, this->angle, NULL, this->flip);
 }

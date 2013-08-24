@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Player.h"
+#include "Hourglass.h"
 
 #include "ui/UiNode.h"
 
@@ -15,6 +16,7 @@ CLASS(Game) {
 	Player* players[PLAYER_COUNT];
 	Scene* leftScene;
 	Scene* rightScene;
+	Hourglass* hourglass;
 
 	GameModule* module;
 	GameEngine* engine;

@@ -19,7 +19,7 @@
 #include <lua5.2/lauxlib.h>   /* utils*/
 #include <lua5.2/lualib.h>    /* libs */
 
-typedef Uint32 RawTime;
+typedef Uint32 RawTime; // in ms (1s == 1000)
 
 #define YOM_WINDOW_W 800
 #define YOM_WINDOW_H 480

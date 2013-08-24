@@ -41,6 +41,10 @@ void Game_init(void* context) {
 	memset(this->players, 0, PLAYER_COUNT * sizeof(Player*));
 	Game_setupPlayer(this, 0, this->leftScene);
 	Game_setupPlayer(this, 1, this->rightScene);
+
+	this->hourglass = Hourglass_create(this->engine);
+	this->hourglass->sprite->bounds.x = SCENE_WIDTH;
+	this->hourglass->sprite->bounds.y = (SCENE_HEIGHT/2) - (this->hourglass->sprite->bounds.h/2);
 }
 
 void Game_setupPlayer(Game* this, int i, Scene* scene) {
@@ -78,10 +82,12 @@ void Game_update(void* context, RawTime dt) {
 	Game* this = context;
 	Scene_update(this->leftScene, dt);
 	Scene_update(this->rightScene, dt);
+	Hourglass_update(this->hourglass, dt);
 }
 
 void Game_draw(void* context, SDL_Renderer* renderer) {
 	Game* this = context;
 	Scene_draw(this->leftScene, renderer);
 	Scene_draw(this->rightScene, renderer);
+	Hourglass_draw(this->hourglass, renderer);
 }

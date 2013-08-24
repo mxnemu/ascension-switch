@@ -27,7 +27,11 @@ void Player_processInput(Player* this) {
 	if (x != 0 || 0 != y) {
 		this->entity->physics.dx += (x*5 * PHYSICS_SCALE) / AXIS_MAX;
 		this->entity->physics.dy += (y*5 * PHYSICS_SCALE) / AXIS_MAX;
-		printf("%d, %d\n", this->entity->physics.dx,this->entity->physics.dy);
+		if (x < 0) {
+			this->entity->animatedSprite->sprite->flip = true;
+		} else  if (x > 0) {
+			this->entity->animatedSprite->sprite->flip = false;
+		}
 	}
 
 	if (Input_isDown(this->input, attackSword)) {

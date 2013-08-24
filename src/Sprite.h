@@ -7,6 +7,8 @@ typedef struct Sprite {
 	SDL_Rect bounds;
 	SDL_Rect frame;
 	float scrollX, scrollY; // camera scroll multipliers
+	int angle;
+	bool flip;
 } Sprite;
 
 Sprite* Sprite_create(SDL_Texture* image);
