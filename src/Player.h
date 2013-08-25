@@ -40,6 +40,8 @@ Entity* _Player_onEntityDestroyed(void* context);
 void Player_processInput(Player* this);
 void Player_earnMoney(Player* this, int money);
 
+void Player_loadIndicator(Player* this);
+
 void ControlledEntity_set(ControlledEntity* this, Entity* entity);
 void ControlledEntity_release(ControlledEntity* this);
 void ControlledEntity_draw(void* context, SDL_Renderer* renderer, Camera* camera);

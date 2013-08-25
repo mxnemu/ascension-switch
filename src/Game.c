@@ -61,15 +61,16 @@ void Game_init(void* context) {
 void Game_setupPlayer(Game* this, int i, Scene* scene) {
 
 	if (i == 0) {
-		this->leftPlayer = Player_create(scene, this->engine->input);
 		scene->colorPrefix = "red";
+		this->leftPlayer = Player_create(scene, this->engine->input);
 
 	} else if (i == 1) {
-		this->rightPlayer = Player_create(scene, this->engine->input);
 		scene->colorPrefix = "blue";
 		scene->camera->translation.x = SCENE_WIDTH + SCENE_SPACER_WIDTH;
 		scene->camera->translation.y = 0;
 		scene->mirrorTiles = true;
+
+		this->rightPlayer = Player_create(scene, this->engine->input);
 	}
 	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
 }

@@ -64,7 +64,7 @@ SDL_Texture* TextureCache_getForUnconstantPath(TextureCache* this, char* path) {
 		if (!entry) {
 			printf("ÈRROR RECENTLY INSERTED TEXTURE NOT CACHED see %s:%d", __FILE__, __LINE__);
 		}
-		entry->ownedKey = malloc(strlen(entry->key) * sizeof(char));
+		entry->ownedKey = malloc((strlen(entry->key)+1) * sizeof(char));
 		strcpy(entry->ownedKey, entry->key);
 		entry->key = NULL;
 	}
@@ -77,7 +77,7 @@ SDL_Texture* TextureCache_loadImage(TextureCache* this, const char* path, bool s
 		//SDL_Texture* optimizedImage = SDL_DisplayFormatAlpha(originalImage);
 		//SDL_FreeSurface(originalImage);
 		if (this && store) {
-			Vector_AddElement(this->images, TextureEntry_create(path, originalImage , true));
+			Vector_InsertInFirstFreeSpace(this->images, TextureEntry_create(path, originalImage , true));
 		}
 		return originalImage;
 	}

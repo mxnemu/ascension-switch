@@ -16,11 +16,8 @@ Player* Player_create(Scene* scene, Input* input) {
 	this->controlledEntity.originalDestroy = NULL;
 	this->controlledEntity.originalDraw = NULL;
 	this->controlledEntity.destroyOnRelease= false;
-
-	char* path = malloc(128 * sizeof(char));
-	sprintf(path, "images/%s/indicator.png", scene->colorPrefix);
-	this->controlledEntity.indicator = Sprite_create(TextureCache_getForUnconstantPath(scene->engine->textureCache, path));
-	free(path);
+	this->controlledEntity.indicator = NULL;
+	Player_loadIndicator(this);
 
 	this->entity = Player_spawnPlayerEntity(this);
 	ControlledEntity_set(&this->controlledEntity, this->entity);
@@ -44,6 +41,13 @@ void Player_destroy(void* context) {
 	this->controlledEntity.destroyOnRelease = false;
 	ControlledEntity_release(&this->controlledEntity);
 	free(this);
+}
+
+void Player_loadIndicator(Player* this) {
+	char* path = malloc(100 * sizeof(char));
+	int ret = sprintf(path, "images/%s/indicator.png", this->scene->colorPrefix);
+	this->controlledEntity.indicator = Sprite_create(TextureCache_getForUnconstantPath(this->scene->engine->textureCache, path));
+	free(path);
 }
 
 void Player_switchMode(Player* this) {
@@ -192,8 +196,10 @@ void ControlledEntity_set(ControlledEntity* this, Entity* entity) {
 
 void ControlledEntity_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 	ControlledEntity* this = context;
-	this->indicator->bounds.y = this->entity->animatedSprite->sprite->bounds.y - this->indicator->bounds.h;
-	this->indicator->bounds.x = this->entity->animatedSprite->sprite->bounds.x;
-	Sprite_drawOnCamera(this->indicator, renderer, camera);
+	if (this->indicator) {
+		this->indicator->bounds.y = this->entity->animatedSprite->sprite->bounds.y - this->indicator->bounds.h;
+		this->indicator->bounds.x = this->entity->animatedSprite->sprite->bounds.x;
+		Sprite_drawOnCamera(this->indicator, renderer, camera);
+	}
 	this->originalDraw(this->originalContext, renderer, camera);
 }
