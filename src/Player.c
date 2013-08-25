@@ -81,13 +81,26 @@ void Player_update(void* context, RawTime dt) {
 }
 
 Entity* Player_spawnPlayerEntity(Player* this) {
-	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(this->scene->engine->textureCache, "images/knightRed.png")));
-	Animation* idleAnimation = Animation_create("idle");
+	char path[128];
+	sprintf(path, "images/%s/knight.png", this->scene->colorPrefix);
+	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_getForUnconstantPath(this->scene->engine->textureCache, path)));
+	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0,0, 32, 32, 200));
 	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 200));
 	List_pushBack(idleAnimation->frames, Frame_create(64,0, 32, 32, 200));
 	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 200));
 	List_pushBack(sprite->animations, idleAnimation);
+
+	Animation* attack1PrepareAnimation = Animation_create(ANIMATION_PREPARE_ATTACK1, false);
+	List_pushBack(attack1PrepareAnimation->frames, Frame_create(0, 32, 32, 32, 60));
+	List_pushBack(attack1PrepareAnimation->frames, Frame_create(32,32, 32, 32, 60));
+	List_pushBack(attack1PrepareAnimation->frames, Frame_create(0, 32, 32, 32, 60));
+	List_pushBack(sprite->animations, attack1PrepareAnimation);
+
+	Animation* attack1Animation = Animation_create(ANIMATION_ATTACK1, false);
+	List_pushBack(attack1Animation->frames, Frame_create(64,32, 36, 32, 120));
+	List_pushBack(sprite->animations, attack1Animation);
+
 	AnimatedSprite_setFrame(sprite, ((Frame*)idleAnimation->frames->first->data)->rect);
 	sprite->progress.animation = idleAnimation;
 
@@ -129,8 +142,10 @@ void Player_processInput(Player* this) {
 		}
 	}
 
-	if (Input_isDown(this->input, attackSword)) {
-		// TODO attack
+	if (Input_isDown(this->input, attackSword) &&
+		strcmp(this->controlledEntity.entity->animatedSprite->progress.animation->name, ANIMATION_PREPARE_ATTACK1) != 0 &&
+		strcmp(this->controlledEntity.entity->animatedSprite->progress.animation->name, ANIMATION_ATTACK1) != 0) {
+		AnimatedSprite_setAnimation(this->controlledEntity.entity->animatedSprite, ANIMATION_PREPARE_ATTACK1);
 	}
 
 	int y = Input_getAxis(this->input, vertical);

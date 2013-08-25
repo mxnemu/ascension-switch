@@ -6,6 +6,11 @@ keyboardHotkeys = {
     {["name"]="vertical", ["key"]="SDLK_UP", ["axisValue"]=-1},
     {["name"]="vertical", ["key"]="SDLK_DOWN", ["axisValue"]=1},
     
+    {["name"]="horizontal", ["key"]="SDLK_KP_4", ["axisValue"]=-1},
+    {["name"]="horizontal", ["key"]="SDLK_KP_6", ["axisValue"]=1},
+    {["name"]="vertical", ["key"]="SDLK_KP_8", ["axisValue"]=-1},
+    {["name"]="vertical", ["key"]="SDLK_KP_5", ["axisValue"]=1},
+    
     {["name"]="attackSword", ["key"]="j"},
     {["name"]="attackBow", ["key"]="k"},
     {["name"]="jump", ["key"]="l"},

@@ -6,7 +6,7 @@ Healthbar* Healthbar_create(TextureCache* tc) {
 
 
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(tc, "images/healthbar.png")));
-	Animation* idleAnimation = Animation_create("idle");
+	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0, 0, 32, 128, 3000));
 	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 128, 3000));
 	List_pushBack(idleAnimation->frames, Frame_create(64,0, 32, 128, 3000));

@@ -8,6 +8,8 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	Entity* this = malloc(sizeof(Entity));
 	this->scene = scene;
 	this->animatedSprite = sprite;
+	this->animatedSprite->context = this;
+	this->animatedSprite->onAnimationEnd = Entity_AnimationEnded;
 	this->destroyed = false;
 	EntityPhysics_init(&this->physics, sprite ? sprite->sprite : NULL);
 	this->update = emptyUpdate;
@@ -165,6 +167,17 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 	}
 
 	return false;
+}
+
+void Entity_AnimationEnded(void* context) {
+	Entity* this = context;
+	if (strcmp(this->animatedSprite->progress.animation->name, ANIMATION_PREPARE_ATTACK1) == 0) {
+		AnimatedSprite_setAnimation(this->animatedSprite, ANIMATION_ATTACK1);
+	} else if (strcmp(this->animatedSprite->progress.animation->name, ANIMATION_ATTACK1) == 0) {
+		AnimatedSprite_setAnimation(this->animatedSprite, ANIMATION_IDLE);
+	} else {
+		AnimatedSprite_setAnimation(this->animatedSprite, ANIMATION_IDLE);
+	}
 }
 
 void EntityPhysics_destroy(EntityPhysics* this) {

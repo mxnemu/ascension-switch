@@ -10,9 +10,18 @@ PlayerCursor* PlayerCursor_create(Scene* scene, const char* colorPrefix) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_getForUnconstantPath(scene->engine->textureCache, path)));
 	free(path);
 
-	Animation* idleAnimation = Animation_create("idle");
+	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0, 0, 32, 32, 2000));
 	List_pushBack(sprite->animations, idleAnimation);
+
+	Animation* pa1Animation = Animation_create(ANIMATION_PREPARE_ATTACK1, true);
+	List_pushBack(pa1Animation->frames, Frame_create(0, 0, 32, 32, 2000));
+	List_pushBack(sprite->animations, pa1Animation);
+
+	Animation* a1Animation = Animation_create(ANIMATION_ATTACK1, true);
+	List_pushBack(a1Animation->frames, Frame_create(0, 0, 32, 32, 2000));
+	List_pushBack(sprite->animations, a1Animation);
+
 	AnimatedSprite_setFrame(sprite, ((Frame*)idleAnimation->frames->first->data)->rect);
 	sprite->progress.animation = idleAnimation;
 

@@ -13,6 +13,10 @@
 #define COLLISION_GROUP_ENEMY (1 << 4)
 #define COLLISION_GROUP_CURSOR (1 << 5)
 
+#define ANIMATION_IDLE "idle"
+#define ANIMATION_PREPARE_ATTACK1 "prepareAttack1"
+#define ANIMATION_ATTACK1 "attack1"
+
 enum GroundedStatus {
 	grounded, inAir, onLadder, immuneToGravity
 };
@@ -57,6 +61,8 @@ void Entity_destroy(Entity* this);
 void Entity_update(Entity* this, RawTime dt);
 bool Entity_collides(Entity* this, Entity* other, SDL_Rect* newpos);
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
+
+void Entity_AnimationEnded(void* context);
 
 bool Entity_jump(Entity* this);
 

@@ -5,6 +5,8 @@ AnimatedSprite* AnimatedSprite_create(Sprite* sprite) {
 	this->sprite = sprite;
 	this->animations = List_create();
 	AnimationProgress_init(&this->progress, this, NULL);
+	this->context = NULL;
+	this->onAnimationEnd = AnimatedSprite_emptyOnAnimationEnd;
 	return this;
 }
 void AnimatedSprite_destroy(AnimatedSprite* this) {
@@ -14,6 +16,20 @@ void AnimatedSprite_destroy(AnimatedSprite* this) {
 void AnimatedSprite_setFrame(AnimatedSprite* this, SDL_Rect frame) {
 	this->sprite->frame = frame;
 	Sprite_setFrameSize(this->sprite, frame.w, frame.h);
+}
+
+void AnimatedSprite_setAnimation(AnimatedSprite* this, const char* name) {
+	ListNode* it = this->animations->first;
+	while (it) {
+		Animation* animation = it->data;
+		if (animation && strcmp(name, animation->name) == 0) {
+			this->progress.animation = animation;
+			AnimationProgress_resetFrameLoop(&this->progress);
+			return;
+		}
+		it = it->next;
+	}
+	printf("ERROR no animation named %s", name);
 }
 
 void AnimationProgress_init(AnimationProgress* this, AnimatedSprite* owner, Animation* animation) {
@@ -40,6 +56,8 @@ void AnimationProgress_update(AnimationProgress* this, RawTime dt) {
 		} else {
 			if (this->animation->loop) {
 				AnimationProgress_resetFrameLoop(this);
+			} else {
+				this->owner->onAnimationEnd(this->owner->context);
 			}
 		}
 	}
@@ -53,10 +71,11 @@ void AnimationProgress_resetFrameLoop(AnimationProgress* this) {
 	AnimatedSprite_setFrame(this->owner, this->frame->rect);
 }
 
-Animation* Animation_create(const char* name) {
+Animation* Animation_create(const char* name, bool loop) {
 	Animation* this = malloc(sizeof(Animation));
+	this->name = name;
 	this->frames = List_create();
-	this->loop = true;
+	this->loop = loop;
 	return this;
 }
 
@@ -77,3 +96,5 @@ Frame* Frame_create(int x, int y, int w, int h, int timeToNextFrame) {
 void Frame_destroy(Frame* this) {
 	free(this);
 }
+
+void AnimatedSprite_emptyOnAnimationEnd(void* context) {}

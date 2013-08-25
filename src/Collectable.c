@@ -39,7 +39,7 @@ bool Collectable_onCollision(void* context, Entity* other) {
 
 Collectable* Collectable_createCoin(Scene* scene, SDL_Point pos, int value) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(scene->engine->textureCache, "images/coin.png")));
-	Animation* idleAnimation = Animation_create("idle");
+	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0, 0, 32, 32, 65));
 	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 65));
 	List_pushBack(idleAnimation->frames, Frame_create(64,0, 32, 32, 65));
@@ -59,7 +59,7 @@ Collectable* Collectable_createCoin(Scene* scene, SDL_Point pos, int value) {
 
 Collectable* Collectable_createKey(Scene* scene, SDL_Point pos, int value) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(scene->engine->textureCache, "images/key.png")));
-	Animation* idleAnimation = Animation_create("idle");
+	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0, 0, 32, 32, 2400));
 	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 100));
 	List_pushBack(idleAnimation->frames, Frame_create(64,0, 32, 32, 120));
@@ -81,7 +81,7 @@ Collectable* Collectable_createKey(Scene* scene, SDL_Point pos, int value) {
 
 Collectable* Collectable_createPotion(Scene* scene, SDL_Point pos, int value) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(scene->engine->textureCache, "images/potion.png")));
-	Animation* idleAnimation = Animation_create("idle");
+	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0, 0, 32, 32, 200));
 	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 200));
 	List_pushBack(idleAnimation->frames, Frame_create(64,0, 32, 32, 200));
