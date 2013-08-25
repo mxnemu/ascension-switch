@@ -13,9 +13,10 @@
 #define PLAYER_COUNT 2
 
 CLASS(Game) {
-	Player* players[PLAYER_COUNT];
 	Scene* leftScene;
 	Scene* rightScene;
+	Player* leftPlayer;
+	Player* rightPlayer;
 	Hourglass* hourglass;
 
 	GameModule* module;

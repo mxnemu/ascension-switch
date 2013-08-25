@@ -20,6 +20,7 @@ void TextureCache_destroy(TextureCache* this) {
 		TextureEntry* it = this->images->elements[i];
 		if (it) {
 			TextureEntry_destroy(it);
+			this->images->elements[i] = NULL;
 		}
 	}
 	Vector_Destroy(this->images);
@@ -64,7 +65,7 @@ SDL_Texture* TextureCache_getForUnconstantPath(TextureCache* this, char* path) {
 			printf("ÈRROR RECENTLY INSERTED TEXTURE NOT CACHED see %s:%d", __FILE__, __LINE__);
 		}
 		entry->ownedKey = malloc(strlen(entry->key) * sizeof(char));
-		entry->ownedKey = strcpy(entry->ownedKey, entry->key);
+		strcpy(entry->ownedKey, entry->key);
 		entry->key = NULL;
 	}
 	return tex;

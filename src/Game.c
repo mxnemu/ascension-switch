@@ -23,6 +23,8 @@ void Game_destroy(void* context) {
 	CANCEL_IF_FALSE(context);
 	Game* this = context;
 	Hourglass_destroy(this->hourglass);
+	Player_destroy(this->leftPlayer);
+	Player_destroy(this->rightPlayer);
 	// lua propbaby kills everything
 	/* wtf is wrong with this too much headache to fix
 	for (int i=0; i < PLAYER_COUNT; ++i) {
@@ -43,14 +45,13 @@ void Game_init(void* context) {
 	this->leftScene = Scene_create(this->engine, "scenes/stage1.lua", this->leftScene);
 	this->rightScene = Scene_create(this->engine, "scenes/stage1.lua", this->rightScene);
 
-	memset(this->players, 0, PLAYER_COUNT * sizeof(Player*));
 	Game_setupPlayer(this, 0, this->leftScene);
 	Game_setupPlayer(this, 1, this->rightScene);
 
-	this->players[0]->opponent = this->players[1];
-	this->players[1]->opponent = this->players[0];
+	this->leftPlayer->opponent = this->rightPlayer;
+	this->rightPlayer->opponent = this->leftPlayer;
 
-	Player_switchMode(this->players[0]);
+	Player_switchMode(this->leftPlayer);
 
 	this->hourglass = Hourglass_create(this->engine);
 	this->hourglass->sprite->bounds.x = SCENE_WIDTH;
@@ -59,16 +60,18 @@ void Game_init(void* context) {
 
 void Game_setupPlayer(Game* this, int i, Scene* scene) {
 
-	this->players[i] = Player_create(scene, this->engine->input);
-	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
 	if (i == 0) {
+		this->leftPlayer = Player_create(scene, this->engine->input);
 		scene->colorPrefix = "red";
+
 	} else if (i == 1) {
+		this->rightPlayer = Player_create(scene, this->engine->input);
 		scene->colorPrefix = "blue";
 		scene->camera->translation.x = SCENE_WIDTH + SCENE_SPACER_WIDTH;
 		scene->camera->translation.y = 0;
 		scene->mirrorTiles = true;
 	}
+	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
 }
 
 void Game_onStartButton(UiNode* button) {
@@ -79,8 +82,8 @@ void Game_update(void* context, RawTime dt) {
 	Game* this = context;
 	Scene_update(this->leftScene, dt);
 	Scene_update(this->rightScene, dt);
-	Player_update(this->players[0], dt);
-	Player_update(this->players[1], dt);
+	Player_update(this->leftPlayer, dt);
+	Player_update(this->rightPlayer, dt);
 	Hourglass_update(this->hourglass, dt);
 }
 
@@ -88,7 +91,7 @@ void Game_draw(void* context, SDL_Renderer* renderer) {
 	Game* this = context;
 	Scene_draw(this->leftScene, renderer);
 	Scene_draw(this->rightScene, renderer);
-	Player_draw(this->players[0], renderer);
-	Player_draw(this->players[1], renderer);
+	Player_draw(this->leftPlayer, renderer);
+	Player_draw(this->rightPlayer, renderer);
 	Hourglass_draw(this->hourglass, renderer);
 }

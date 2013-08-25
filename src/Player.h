@@ -10,6 +10,7 @@ CLASS(ControlledEntity) {
 	Entity* entity;
 	void* player;
 	bool destroyOnRelease;
+	Sprite* indicator;
 };
 
 CLASS(Player) {
@@ -27,6 +28,8 @@ void Player_destroy(void* context);
 void Player_update(void* context, RawTime dt);
 void Player_draw(void* context, SDL_Renderer* renderer);
 Entity* Player_spawnPlayerEntity(Player* this);
+
+void Player_switchMode(Player* this);
 
 void Player_destroyEntity(void* context);
 void Player_drawEntity(void* context, SDL_Renderer* renderer, Camera* camera);

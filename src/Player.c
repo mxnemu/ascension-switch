@@ -17,6 +17,11 @@ Player* Player_create(Scene* scene, Input* input) {
 	this->controlledEntity.originalDraw = NULL;
 	this->controlledEntity.destroyOnRelease= false;
 
+	char* path = malloc(128 * sizeof(char));
+	sprintf(path, "images/%s/indicator.png", scene->colorPrefix);
+	this->controlledEntity.indicator = Sprite_create(TextureCache_getForUnconstantPath(scene->engine->textureCache, path));
+	free(path);
+
 	this->entity = Player_spawnPlayerEntity(this);
 	ControlledEntity_set(&this->controlledEntity, this->entity);
 
@@ -25,7 +30,7 @@ Player* Player_create(Scene* scene, Input* input) {
 
 Entity* _Player_onEntityDestroyed(void* context) {
 	Player* this = context;
-	this->money = -1;
+	this->money -= 1;
 	if (this->controlledEntity.entity == this->entity) {
 		this->entity = NULL;
 		this->entity = Player_spawnPlayerEntity(this);
@@ -36,6 +41,8 @@ Entity* _Player_onEntityDestroyed(void* context) {
 void Player_destroy(void* context) {
 	CANCEL_IF_FALSE(context);
 	Player* this = context;
+	this->controlledEntity.destroyOnRelease = false;
+	ControlledEntity_release(&this->controlledEntity);
 	free(this);
 }
 
@@ -148,7 +155,11 @@ void Player_earnMoney(Player* this, int money) {
 void ControlledEntity_onEntityDestroyed(void* context) {
 	ControlledEntity* this = context;
 	Entity* nextEntity = _Player_onEntityDestroyed(this->player);
-	this->originalDestroy(this->originalContext);
+
+	Entity* oldEntity = this->entity;
+	ControlledEntity_release(this);
+	oldEntity->destroy(oldEntity->context);
+	this->destroyOnRelease = false;
 	ControlledEntity_set(this, nextEntity);
 }
 
@@ -181,5 +192,8 @@ void ControlledEntity_set(ControlledEntity* this, Entity* entity) {
 
 void ControlledEntity_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 	ControlledEntity* this = context;
+	this->indicator->bounds.y = this->entity->animatedSprite->sprite->bounds.y - this->indicator->bounds.h;
+	this->indicator->bounds.x = this->entity->animatedSprite->sprite->bounds.x;
+	Sprite_drawOnCamera(this->indicator, renderer, camera);
 	this->originalDraw(this->originalContext, renderer, camera);
 }
