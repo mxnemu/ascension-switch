@@ -45,12 +45,12 @@ void Player_processInput(Player* this) {
 		// TODO attack
 	}
 
+	int y = Input_getAxis(this->input, vertical);
 	bool didJump = false;
-	if (Input_isDown(this->input, jump)) {
+	if (Input_isDown(this->input, jump) || y < 0) {
 		didJump = Entity_jump(this->entity);
 	}
 
-	int y = Input_getAxis(this->input, vertical);
 	if (!didJump && y != 0 && this->entity->inFrontOfLadder) {
 		this->entity->physics.groundedStatus = onLadder;
 		this->entity->physics.dy += (y*this->entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
