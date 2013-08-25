@@ -52,7 +52,7 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
 void Entity_destroy(Entity* this);
 
 void Entity_update(Entity* this, RawTime dt);
-bool Entity_collides(Entity* this, Entity* other);
+bool Entity_collides(Entity* this, Entity* other, SDL_Rect* newpos);
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
 
 bool Entity_jump(Entity* this);

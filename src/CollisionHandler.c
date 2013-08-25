@@ -17,10 +17,11 @@ void CollisionHandler_update(CollisionHandler* this, Vector* entities) {
 		if (it != NULL) {
 
 			for (int j=0; j < entities->usedElements; ++j) {
-				Entity* jt = entities->elements[j];
-				if (jt != NULL && jt != it && Entity_collides(it, jt)) {
-					CollisionHandler_handle(this, it, jt);
-				}
+				//Entity* jt = entities->elements[j];
+				// TODO impl
+				//if (jt != NULL && jt != it && Entity_collides(it, jt)) {
+				//	CollisionHandler_handle(this, it, jt);
+				//}
 			}
 		}
 	}

@@ -32,9 +32,9 @@ void Entity_destroy(Entity* this) {
 	free(this);
 }
 
-bool Entity_collides(Entity* this, Entity* other) {
+bool Entity_collides(Entity* this, Entity* other, SDL_Rect* newpos) {
 	if ((this->physics.collidesWithGroupMask & other->physics.belongsToGroups) != 0 &&
-	    SDL_Rect_touches(&this->physics.bounds, &other->physics.bounds)) {
+	    SDL_Rect_touches(newpos, &other->physics.bounds)) {
 		int blocks = this->onCollision(this->context, other);
 		blocks = other->onCollision(other->context, this) || blocks;
 		return blocks; //TODO
@@ -130,7 +130,7 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 
 				for (int j=0; j < this->scene->entities->usedElements; ++j) {
 					Entity* jt = this->scene->entities->elements[j];
-					if (jt != NULL && jt != it && Entity_collides(it, jt)) {
+					if (jt != NULL && jt != it && Entity_collides(it, jt, rect)) {
 						return true;
 					}
 				}
