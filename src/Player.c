@@ -14,14 +14,20 @@ Player* Player_create(Scene* scene, Input* input) {
 	this->controlledEntity.originalDestroy = NULL;
 	this->controlledEntity.originalDraw = NULL;
 
-	Player_spawnPlayerEntity(this);
+	this->entity = Player_spawnPlayerEntity(this);
+	ControlledEntity_set(&this->controlledEntity, this->entity);
+
 	return this;
 }
 
-void _Player_onEntityDestroyed(void* context) {
+Entity* _Player_onEntityDestroyed(void* context) {
 	Player* this = context;
 	this->money = -1;
-	this->entity = NULL;
+	if (this->controlledEntity.entity == this->entity) {
+		this->entity = NULL;
+		this->entity = Player_spawnPlayerEntity(this);
+	}
+	return this->entity;
 }
 
 void Player_destroy(void* context) {
@@ -41,7 +47,7 @@ void Player_update(void* context, RawTime dt) {
 	Player_processInput(this);
 }
 
-void Player_spawnPlayerEntity(Player* this) {
+Entity* Player_spawnPlayerEntity(Player* this) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(this->scene->engine->textureCache, "images/knightRed.png")));
 	Animation* idleAnimation = Animation_create("idle");
 	List_pushBack(idleAnimation->frames, Frame_create(0,0, 32, 32, 200));
@@ -72,8 +78,7 @@ void Player_spawnPlayerEntity(Player* this) {
 	Scene_addEntity(this->scene, entity);
 	this->scene->camera->trackedEntity = entity;
 
-	this->entity = entity;
-	ControlledEntity_set(&this->controlledEntity, this->entity);
+	return entity;
 }
 
 void Player_processInput(Player* this) {
@@ -119,9 +124,9 @@ void Player_earnMoney(Player* this, int money) {
 
 void ControlledEntity_onEntityDestroyed(void* context) {
 	ControlledEntity* this = context;
-	_Player_onEntityDestroyed(this->player);
+	Entity* nextEntity = _Player_onEntityDestroyed(this->player);
 	this->originalDestroy(this->originalContext);
-	ControlledEntity_release(this);
+	ControlledEntity_set(this, nextEntity);
 }
 
 void ControlledEntity_release(ControlledEntity* this) {
@@ -136,13 +141,15 @@ void ControlledEntity_release(ControlledEntity* this) {
 void ControlledEntity_set(ControlledEntity* this, Entity* entity) {
 	ControlledEntity_release(this);
 	this->entity = entity;
-	this->originalDestroy = entity->destroy;
-	this->originalContext = entity->context;
-	this->originalDraw = entity->draw;
+	if (entity) {
+		this->originalDestroy = entity->destroy;
+		this->originalContext = entity->context;
+		this->originalDraw = entity->draw;
 
-	this->entity->draw = ControlledEntity_draw;
-	this->entity->destroy = ControlledEntity_onEntityDestroyed;
-	this->entity->context = this;
+		this->entity->draw = ControlledEntity_draw;
+		this->entity->destroy = ControlledEntity_onEntityDestroyed;
+		this->entity->context = this;
+	}
 }
 
 void ControlledEntity_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
