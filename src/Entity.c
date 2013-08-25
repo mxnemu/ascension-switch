@@ -174,6 +174,9 @@ void EntityPhysics_destroy(EntityPhysics* this) {
 void Entity_modifyHealth(Entity* this, const int health) {
 	this->health += health;
 	this->health = MIN(this->health, 100);
+	if (this->health <= 0) {
+		this->destroyed = true;
+	}
 	this->onHealthModified(this->context);
 }
 

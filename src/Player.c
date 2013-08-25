@@ -8,7 +8,7 @@ Player* Player_create(Scene* scene, Input* input) {
 	Player* this = malloc(sizeof(Player));
 	this->input = input;
 	this->scene = scene;
-	this->money = 0;
+	this->money = 25;
 	this->opponent = NULL;
 	this->controlledEntity.player = this;
 	this->controlledEntity.entity = NULL;
