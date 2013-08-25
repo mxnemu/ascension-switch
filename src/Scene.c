@@ -191,7 +191,7 @@ void Scene_spawnCollectable(Scene* this, int tileId, int type) {
 		c = Collectable_createCoin(this, Scene_positionForTileId(this, tileId), 25);
 	} else if (type >= COLLECTABLE_KEY_4 && type <= COLLECTABLE_KEY_6) {
 		c = Collectable_createKey(this, Scene_positionForTileId(this, tileId), type);
-	} else if (type == COLLECTABLE_COIN) {
+	} else if (type == COLLECTABLE_POTION) {
 		c = Collectable_createPotion(this, Scene_positionForTileId(this, tileId), 25);
 	}
 

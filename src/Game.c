@@ -56,6 +56,8 @@ void Game_init(void* context) {
 	this->hourglass = Hourglass_create(this->engine);
 	this->hourglass->sprite->bounds.x = SCENE_WIDTH;
 	this->hourglass->sprite->bounds.y = (SCENE_HEIGHT/2) - (this->hourglass->sprite->bounds.h/2);
+	this->hourglass->data = this;
+	this->hourglass->onSpin = Game_onHourglassSpin;
 }
 
 void Game_setupPlayer(Game* this, int i, Scene* scene) {
@@ -95,4 +97,10 @@ void Game_draw(void* context, SDL_Renderer* renderer) {
 	Player_draw(this->leftPlayer, renderer);
 	Player_draw(this->rightPlayer, renderer);
 	Hourglass_draw(this->hourglass, renderer);
+}
+
+void Game_onHourglassSpin(void* context) {
+	Game* this = context;
+	Player_switchMode(this->leftPlayer);
+	Player_switchMode(this->rightPlayer);
 }

@@ -172,11 +172,12 @@ void ControlledEntity_release(ControlledEntity* this) {
 		this->entity->destroy = this->originalDestroy;
 		this->entity->draw = this->originalDraw;
 		this->entity->context = this->originalContext;
-		this->entity = NULL;
+
 		if (this->destroyOnRelease) {
 			this->entity->destroyed = true;
 			this->destroyOnRelease = false;
 		}
+		this->entity = NULL;
 	}
 }
 

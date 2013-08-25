@@ -89,7 +89,7 @@ Collectable* Collectable_createPotion(Scene* scene, SDL_Point pos, int value) {
 	AnimatedSprite_setFrame(sprite, ((Frame*)idleAnimation->frames->first->data)->rect);
 	sprite->progress.animation = idleAnimation;
 
-	Collectable* this = Collectable_create(scene, sprite, Collectable_onCollectCoin);
+	Collectable* this = Collectable_create(scene, sprite, Collectable_onCollectPotion);
 	this->value = value;
 	this->entity->physics.bounds.x = pos.x * TILE_W * PHYSICS_SCALE;
 	this->entity->physics.bounds.y = pos.y * TILE_H * PHYSICS_SCALE;

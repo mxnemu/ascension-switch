@@ -13,6 +13,8 @@ CLASS(Hourglass) {
 	float physicalAngle;
 	int angleTarget;
 	int angleDeltaStep;
+	void* data;
+	void (*onSpin)(void*);
 };
 
 Hourglass* Hourglass_create(GameEngine*);

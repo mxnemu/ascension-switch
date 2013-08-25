@@ -7,7 +7,9 @@ Hourglass* Hourglass_create(GameEngine* engine) {
 	this->physicalAngle = 0;
 	this->angleTarget = 0;
 	this->angleDeltaStep = 0;
-	this->timeUntilNextRound = 1;
+	this->timeUntilNextRound = 12;
+	this->data = NULL;
+	this->onSpin = NULL;
 	return this;
 }
 
@@ -47,6 +49,9 @@ void Hourglass_update(Hourglass* this, RawTime dt) {
 				this->sprite->angle += 360;
 			}
 			this->angleTarget = this->sprite->angle;
+			if (this->onSpin) {
+				this->onSpin(this->data);
+			}
 		}
 	}
 }

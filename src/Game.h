@@ -30,3 +30,4 @@ void Game_update(void* context, RawTime dt);
 void Game_draw(void* context, SDL_Renderer* renderer);
 
 void Game_setupPlayer(Game* this, int i, Scene* scene);
+void Game_onHourglassSpin(void* context);
