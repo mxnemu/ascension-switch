@@ -54,30 +54,7 @@ void Game_init(void* context) {
 
 void Game_setupPlayer(Game* this, int i, Scene* scene) {
 
-	Player* player = this->players[i];
-
-	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(this->engine->textureCache, "images/knightRed.png")));
-	Animation* idleAnimation = Animation_create("idle");
-	List_pushBack(idleAnimation->frames, Frame_create(0,0, 32, 32, 200));
-	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 200));
-	List_pushBack(idleAnimation->frames, Frame_create(64,0, 32, 32, 200));
-	List_pushBack(idleAnimation->frames, Frame_create(32,0, 32, 32, 200));
-	List_pushBack(sprite->animations, idleAnimation);
-	AnimatedSprite_setFrame(sprite, ((Frame*)idleAnimation->frames->first->data)->rect);
-	sprite->progress.animation = idleAnimation;
-
-	player = Player_create(scene, sprite, this->engine->input);
-	player->entity->physics.bounds.y = 320 * PHYSICS_SCALE;
-	player->entity->physics.bounds.x = 20 * PHYSICS_SCALE;
-	player->entity->physics.bounds.w = 15 * PHYSICS_SCALE; // Make sure Mr. Fatty get's though those slim trapdoors
-	player->entity->physics.bounds.h = 15 * PHYSICS_SCALE;
-	player->entity->physics.belongsToGroups = COLLISION_GROUP_PLAYER;
-	player->entity->physics.collidesWithGroupMask = COLLISION_GROUP_TERRAIN | COLLISION_GROUP_COLLECTABLE | COLLISION_GROUP_ENEMY;
-	player->entity->offset.x = -10;
-	player->entity->offset.y = -17;
-
-	Scene_addEntity(scene, player->entity);
-	scene->camera->trackedEntity = player->entity;
+	this->players[i] = Player_create(scene, this->engine->input);
 	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
 	if (i == 0) {
 		scene->colorPrefix = "red";

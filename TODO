@@ -1,9 +1,39 @@
-Dungeon master mode
+Ui:
+	money label
+	health bar
+Player:
+	Controll any entity
+	different modes:
+		  controll entityMode
+		  pick card & place enemy mode
+		  Choose upgrade for enemy
+        get hurt on attack
+	attack
+	bow attack
+	punishment round on entity death (when player Entity)
+	trigger respawn on scene after death
+	indicator for controlled entity
+		  
+Input: 
+       different hotkeys for different players
+scene:
+	spawn position
+	load next
+	portal entity to set the next scene
+	more maps & maybe random generation or 1 list of randomly choosen maps
+
+
 Cards: Summon(skeleton, goblin, minotaur, cerberus)
        Control strongest Monster
        Spawn Rolling boulder
 
-Choose upgrade for enemy
+Enemy: 
+       walk left right
+       don't drop from tile
+       attack when player.x < 32* range
+
+
+
 
        
        
