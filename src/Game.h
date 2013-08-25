@@ -10,8 +10,6 @@
 
 #include "ui/UiNode.h"
 
-#define PLAYER_COUNT 2
-
 CLASS(Game) {
 	Scene* leftScene;
 	Scene* rightScene;

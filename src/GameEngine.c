@@ -26,8 +26,12 @@ GameEngine* GameEngine_create(void) {
 	this->l = luaL_newstate();
 	luaL_openlibs(this->l);
 	LuaInit_initCustomTypes(this->l);
-	this->input = Input_create();
-	Input_loadHotkeys(this->input, this->l, "hotkeys.lua");
+	for (int i=0; i < PLAYER_COUNT; ++i) {
+		char path[128];
+		sprintf(path, "hotkeysPlayer%d.lua", i+1);
+		this->input[i] = Input_create();
+		Input_loadHotkeys(this->input[i], this->l, path);
+	}
 	this->icon = icon;
 	this->module = NULL;
 	this->nextModule = NULL;
@@ -42,7 +46,9 @@ void GameEngine_destroy(GameEngine* this) {
 	CANCEL_IF_FALSE(this);
 	GameModule_destroy(this->module);
 	lua_close(this->l);
-	Input_destroy(this->input);
+	for (int i=0; i < PLAYER_COUNT; ++i) {
+		Input_destroy(this->input[i]);
+	}
 	TextureCache_destroy(this->textureCache);
 	SDL_FreeSurface(this->icon);
 	SDL_Quit();
@@ -102,7 +108,9 @@ int GameEngine_run(GameEngine* this) {
         		this->module->handleEvent(this->module->context, &event);
         	}
         }
-		Input_update(this->input);
+		for (int i=0; i < PLAYER_COUNT; ++i) {
+			Input_update(this->input[i]);
+		}
 
         RawTime now = SDL_GetTicks();
         while (now - lastUpdate > UPDATE_TIME) {

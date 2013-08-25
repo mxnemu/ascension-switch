@@ -23,6 +23,8 @@ typedef Uint32 RawTime; // in ms (1s == 1000)
 
 #define PHYSICS_SCALE 6
 
+#define PLAYER_COUNT 2
+
 #define YOM_WINDOW_W 800
 #define YOM_WINDOW_H 480
 

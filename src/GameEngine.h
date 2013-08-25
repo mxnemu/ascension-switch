@@ -16,7 +16,7 @@ typedef struct GameEngine {
 	bool windowIsRunning;
 	SDL_Window* screen;
 	SDL_Renderer* renderer;
-	Input* input;
+	Input* input[PLAYER_COUNT];
 	lua_State* l;
 	GameModule* module;
 	GameModule* nextModule;

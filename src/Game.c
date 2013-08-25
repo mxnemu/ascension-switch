@@ -70,14 +70,14 @@ void Game_setupPlayer(Game* this, int i, Scene* scene) {
 
 	if (i == 0) {
 		scene->colorPrefix = "red";
-		this->leftPlayer = Player_create(scene, this->engine->input);
+		this->leftPlayer = Player_create(scene, this->engine->input[i]);
 	} else if (i == 1) {
 		scene->colorPrefix = "blue";
 		scene->camera->translation.x = SCENE_WIDTH + SCENE_SPACER_WIDTH;
 		scene->camera->translation.y = 0;
 		scene->mirrorTiles = true;
 
-		this->rightPlayer = Player_create(scene, this->engine->input);
+		this->rightPlayer = Player_create(scene, this->engine->input[i]);
 
 	}
 	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
