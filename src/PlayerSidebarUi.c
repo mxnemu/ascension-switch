@@ -22,6 +22,11 @@ PlayerSidebarUi* PlayerSidebarUi_create(void* player, SDL_Point pos) {
 	this->playerIcon->bounds.x = this->position.x;
 	this->playerIcon->bounds.y = this->position.y;
 
+	this->healthbar = Healthbar_create(p->scene->engine->textureCache);
+	this->healthbar->liquid->sprite->bounds.x = pos.x;
+	this->healthbar->background->bounds.x = pos.x;
+	this->healthbar->background->bounds.y = pos.y + 42;
+
 	PlayerSidebarUi_setMoney(this, p->money);
 	return this;
 }
@@ -30,6 +35,7 @@ void PlayerSidebarUi_destroy(PlayerSidebarUi* this) {
 	Sprite_destroy(this->playerIcon);
 	Sprite_destroy(this->coin);
 	Sprite_destroy(this->money);
+	Healthbar_destroy(this->healthbar);
 	free(this);
 }
 
@@ -38,6 +44,11 @@ void PlayerSidebarUi_draw(PlayerSidebarUi* this, SDL_Renderer* renderer) {
 	Sprite_draw(this->playerIcon, renderer);
 	Sprite_draw(this->coin, renderer);
 	Sprite_draw(this->money, renderer);
+	Healthbar_draw(this->healthbar, renderer);
+}
+
+void PlayerSidebarUi_update(PlayerSidebarUi* this, RawTime dt) {
+	Healthbar_update(this->healthbar, dt);
 }
 
 void PlayerSidebarUi_setMoney(PlayerSidebarUi* this, const int money) {

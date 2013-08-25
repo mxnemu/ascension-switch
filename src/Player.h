@@ -36,6 +36,7 @@ void Player_switchMode(Player* this);
 void Player_destroyEntity(void* context);
 void Player_drawEntity(void* context, SDL_Renderer* renderer, Camera* camera);
 void Player_updateEntity(void* context, RawTime dt);
+void Player_onEntityHealthModified(void* context);
 
 Entity* _Player_onEntityDestroyed(void* context);
 

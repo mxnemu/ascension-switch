@@ -106,6 +106,6 @@ void Collectable_onCollectKey(Collectable* this, Player* player) {
 }
 
 void Collectable_onCollectPotion(Collectable* this, Player* player) {
-	Entity_heal(player->entity, this->value);
+	Entity_modifyHealth(player->entity, this->value);
 }
 

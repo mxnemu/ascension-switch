@@ -14,12 +14,14 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->draw = Entity_emptyDraw;
 	this->destroy = emptyDestroy;
 	this->onCollision = Entity_emptyOnCollision;
+	this->onHealthModified = Entity_emptyOnHealthModified;
 	this->context = context;
 	this->speedMultiplier = 5;
 	this->inFrontOfLadder = false;
 	this->offset.x = 0;
 	this->offset.y = 0;
 	this->health = 100;
+	this->maxHealth = 100;
 
 	this->remainingJumps = 10;
 	this->timeSinceGrounded = 0;
@@ -169,9 +171,12 @@ void EntityPhysics_destroy(EntityPhysics* this) {
 	free(this);
 }
 
-void Entity_heal(Entity* this, int health) {
-	this->health += abs(health);
+void Entity_modifyHealth(Entity* this, const int health) {
+	this->health += health;
+	this->health = MIN(this->health, 100);
+	this->onHealthModified(this->context);
 }
 
 void Entity_emptyDraw(void* context, SDL_Renderer* renderer, Camera* camera) {}
 bool Entity_emptyOnCollision(void* context, Entity* otherEntity) { return false; }
+void Entity_emptyOnHealthModified(void* context) {}

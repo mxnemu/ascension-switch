@@ -1,9 +1,6 @@
-Ui:
-	money label
-	health bar
 Player:
 	different modes:
-		  controll entityMode
+		  control entityMode
 		  pick card & place enemy mode
 		  Choose upgrade for enemy
         get hurt on attack
@@ -26,7 +23,6 @@ Enemy:
        walk left right
        don't drop from tile
        attack when player.x < 32* range
-
 
 
 

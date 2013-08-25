@@ -38,12 +38,14 @@ CLASS(Entity) {
 	void (*update)(void* context, RawTime dt);
 	void (*draw)(void* context, SDL_Renderer*, Camera* camera);
 	bool (*onCollision)(void* context, Entity* otherEntity);
+	void (*onHealthModified)(void* context);
 	Scene* scene;
 	void* context;
 	int speedMultiplier;
 	bool inFrontOfLadder;
 	SDL_Point offset;
 	int health;
+	int maxHealth;
 
 	int remainingJumps;
 	RawTime timeSinceGrounded;
@@ -61,6 +63,6 @@ bool Entity_jump(Entity* this);
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
 void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);
 bool Entity_emptyOnCollision(void* context, Entity* otherEntity);
+void Entity_emptyOnHealthModified(void* context);
 
-// health + abs(health)
-void Entity_heal(Entity* this, int health);
+void Entity_modifyHealth(Entity* this, const int health);

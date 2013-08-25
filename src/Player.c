@@ -68,9 +68,16 @@ void Player_updateEntity(void* context, RawTime dt) {
 void Player_destroyEntity(void* context) {
 }
 
+void Player_onEntityHealthModified(void* context) {
+	ControlledEntity* ce = context;
+	Player* this = ce->player;
+	Healthbar_set(this->sidebarUi->healthbar, this->entity->health, this->entity->maxHealth);
+}
+
 void Player_update(void* context, RawTime dt) {
 	Player* this = context;
 	Player_processInput(this);
+	PlayerSidebarUi_update(this->sidebarUi, dt);
 }
 
 Entity* Player_spawnPlayerEntity(Player* this) {
@@ -90,6 +97,7 @@ Entity* Player_spawnPlayerEntity(Player* this) {
 	entity->draw = Player_drawEntity;
 	entity->update = Player_updateEntity;
 	entity->destroy = Player_destroyEntity;
+	entity->onHealthModified = Player_onEntityHealthModified;
 
 	SDL_Point tilePos = Scene_positionForTileId(this->scene, 1 + (SCENE_TILES_X * (SCENE_TILES_Y-2)) );
 	entity->physics.bounds.x = tilePos.x * TILE_W * PHYSICS_SCALE;
@@ -154,7 +162,7 @@ void Player_draw(void* context, SDL_Renderer* renderer) {
 }
 
 void Player_earnMoney(Player* this, int money) {
-	this->money += money * 100;
+	this->money += money;
 	if (this->sidebarUi) {
 		PlayerSidebarUi_setMoney(this->sidebarUi, this->money);
 	}
