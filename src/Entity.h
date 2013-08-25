@@ -34,10 +34,10 @@ CLASS(Entity) {
 	void (*draw)(void* context, SDL_Renderer*, Camera* camera);
 	Scene* scene;
 	void* context;
-	List* hitboxes;
 	int speedMultiplier;
 	bool inFrontOfLadder;
 	SDL_Point offset;
+	int health;
 };
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
@@ -49,3 +49,6 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
 
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
 void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);
+
+// health + abs(health)
+void Entity_heal(Entity* this, int health);

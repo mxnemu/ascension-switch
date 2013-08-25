@@ -4,6 +4,8 @@
 #include "Sprite.h"
 #include "TextureCache.h"
 
+#define TILE_NONE 0
+#define TILE_BRICK 1
 #define TILE_LADDER 2
 
 CLASS(TilePhysics) {

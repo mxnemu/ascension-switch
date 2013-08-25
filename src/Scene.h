@@ -37,6 +37,9 @@ void Scene_setBounds(Scene* this, int x, int y, int w, int h);
 
 SDL_Point Scene_positionForTileId(Scene* this, const int tileId);
 
+void Scene_openDoors(Scene* this, int type);
+void Scene_spawnCollectable(Scene* this, int tileId, int type);
+
 // Lua stuff
 Scene* Scene_checkfromLua (lua_State *L, int idx);
 
@@ -50,3 +53,4 @@ int Scene_luaSetTile(lua_State* l);
 int Scene_luaSetSceneAbove(lua_State* l);
 int Scene_luaSetColorPrefix(lua_State* l);
 int Scene_luaSetMirrorTile(lua_State* l);
+int Scene_luaSpawnCollectable(lua_State* l);

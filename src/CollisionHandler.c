@@ -1,5 +1,15 @@
 #include "CollisionHandler.h"
 #include "Scene.h"
+#include "Utils.h"
+
+CollisionHandler* CollisionHandler_create() {
+	CollisionHandler* this = malloc(sizeof(CollisionHandler));
+	this->collisions = Vector_Create();
+	return this;
+}
+void CollisionHandler_destroy(CollisionHandler* this) {
+	FREE_VECTOR_WITH_ELMENTS(this->collisions, Collision_destroy)
+}
 
 void CollisionHandler_update(CollisionHandler* this, Vector* entities) {
 	for (int i=0; i < entities->usedElements; ++i) {
@@ -53,6 +63,8 @@ void CollisionHandler_removeCollisionByIndex(CollisionHandler* this, int index) 
 
 Collision* Collision_create(Entity* a, Entity* b) {
 	Collision* this = malloc(sizeof(Collision));
+	this->a = a;
+	this->b = b;
 	return this;
 }
 

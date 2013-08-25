@@ -8,6 +8,7 @@ Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input) {
 	this->input = input;
 	this->remainingJumps = 10;
 	this->timeSinceGrounded = 0;
+	this->money = 0;
 
 	return this;
 }
@@ -71,4 +72,9 @@ void Player_processInput(Player* this) {
 void Player_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 	Player* this = context;
 	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, renderer, camera);
+}
+
+void Player_earnMoney(Player* this, int money) {
+	this->money += money;
+	printf("emone %d\n", money);
 }

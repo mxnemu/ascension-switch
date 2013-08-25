@@ -32,7 +32,6 @@ void Hourglass_update(Hourglass* this, RawTime dt) {
 		}
 		this->angleDeltaStep = this->angleTarget - this->sprite->angle;
 		this->physicalAngle = this->sprite->angle;
-		printf("gonna move to %d\n", this->angleTarget);
 	}
 	if (this->sprite->angle != this->angleTarget) {
 		float step = ((float)this->angleDeltaStep) * ((float)dt / TRANSITION_TIME);
@@ -48,7 +47,6 @@ void Hourglass_update(Hourglass* this, RawTime dt) {
 				this->sprite->angle += 360;
 			}
 			this->angleTarget = this->sprite->angle;
-			printf("finished and rest to %d\n", this->angleTarget);
 		}
 	}
 }

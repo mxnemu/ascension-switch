@@ -14,39 +14,22 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->draw = Entity_emptyDraw;
 	this->destroy = emptyDestroy;
 	this->context = context;
-	this->hitboxes = List_create();
 	this->speedMultiplier = 5;
 	this->inFrontOfLadder = false;
 	this->offset.x = 0;
 	this->offset.y = 0;
+	this->health = 100;
 	return this;
 }
 
 void Entity_destroy(Entity* this) {
 	this->destroy(this->context);
-	ListNode* it = this->hitboxes->first;
-	while(it) {
-		Hitbox_destroy((Hitbox*)it->data);
-	}
-	List_destroy(this->hitboxes);
 	free(this);
 }
 
 bool Entity_collides(Entity* this, Entity* other) {
 	if (SDL_Rect_touches(&this->physics.bounds, &other->physics.bounds)) {
-		bool hitboxCollision = false;
-		ListNode* it = this->hitboxes->first;
-		while (it) {
-			ListNode* jt = other->hitboxes->first;
-			while (jt) {
-				Hitbox* a = it->data;
-				Hitbox* b = jt->data;
-				if (Hitbox_collides(a, b)) {
-					hitboxCollision = true; // TODO apply attacks / blocks and stuff
-				}
-			}
-		}
-		return hitboxCollision;
+		return false; //TODO
 	}
 	return false;
 }
@@ -149,4 +132,8 @@ void EntityPhysics_destroy(EntityPhysics* this) {
 	free(this);
 }
 
-void Entity_emptyDraw(void* context, SDL_Renderer* surface, Camera* camera) {}
+void Entity_heal(Entity* this, int health) {
+	this->health += abs(health);
+}
+
+void Entity_emptyDraw(void* context, SDL_Renderer* renderer, Camera* camera) {}

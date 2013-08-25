@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Trigger.h"
 #include "Tile.h"
+#include "Collectable.h"
 
 int Scene_luaCreate(lua_State* l) {
 	Scene* this = lua_newuserdata(l, sizeof(Scene));
@@ -25,6 +26,7 @@ int Scene_luaCreate(lua_State* l) {
 	this->entities = Vector_Create();
 	this->triggers = Vector_Create();
 	this->tiles = Vector_Create();
+	this->collisionHandler = CollisionHandler_create();
 
 	if (lastScene) {
 		this->mirrorTiles = lastScene->mirrorTiles;
@@ -85,16 +87,20 @@ int Scene_luaDestroy(lua_State* l) {
 }
 
 void Scene_update(Scene* this, RawTime dt) {
-	CollisionHandler_update(this->collisionHandler, this->entities);
+	//CollisionHandler_update(this->collisionHandler, this->entities);
 
 	for (int i=0; i < this->entities->usedElements; ++i) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
 //			it->update(it->context, dt);
 			Entity_update(it, dt);
-			if (it->physics.groundedStatus == grounded || it->physics.groundedStatus == inAir) {
+			if (it->destroyed) {
+				Entity_destroy(it);
+				Vector_Set(this->entities, i, NULL);
+			} else if (it->physics.groundedStatus == grounded || it->physics.groundedStatus == inAir) {
 				it->physics.dy += this->gravity;
 			}
+
 		}
 	}
 	Camera_update(this->camera);
@@ -166,6 +172,32 @@ SDL_Point Scene_positionForTileId(Scene* this, const int tileId) {
 	return p;
 }
 
+void Scene_openDoors(Scene* this, int type) {
+	for (int i=0; i < this->tiles->usedElements; ++i) {
+		Tile* tile = this->tiles->elements[i];
+		if (tile != NULL && tile->type == type) {
+			Scene_setTile(this, i, TILE_NONE);
+		}
+	}
+}
+
+void Scene_spawnCollectable(Scene* this, int tileId, int type) {
+	Collectable* c = NULL;
+	if (type == COLLECTABLE_COIN) {
+		c = Collectable_createCoin(this, Scene_positionForTileId(this, tileId), 5);
+	} else if (type == COLLECTABLE_COIN_BIG) {
+		c = Collectable_createCoin(this, Scene_positionForTileId(this, tileId), 25);
+	} else if (type >= COLLECTABLE_KEY_4 && type <= COLLECTABLE_KEY_6) {
+		c = Collectable_createKey(this, Scene_positionForTileId(this, tileId), type);
+	} else if (type == COLLECTABLE_COIN) {
+		c = Collectable_createPotion(this, Scene_positionForTileId(this, tileId), 25);
+	}
+
+	if (c) {
+		Scene_addEntity(this, c->entity);
+	}
+}
+
 // Lua
 
 void Scene_luaExport(lua_State *l) {
@@ -176,6 +208,7 @@ void Scene_luaExport(lua_State *l) {
 		{"setSceneAbove", Scene_luaSetSceneAbove},
 		{"setColorPrefix", Scene_luaSetColorPrefix},
 		{"setMirrorTiles", Scene_luaSetMirrorTile},
+		{"spawnCollectable", Scene_luaSpawnCollectable},
 		//{"__gc", Scene_luaDestroy},
 		{NULL, NULL}
 	};
@@ -244,5 +277,14 @@ int Scene_luaSetMirrorTile(lua_State* l) {
 	const int mirror= luaL_checknumber(l, 2);
 	this->mirrorTiles = mirror == 1;
 	lua_pop(l,2);
+	return 0;
+}
+
+int Scene_luaSpawnCollectable(lua_State* l) {
+	Scene* this = Scene_checkfromLua(l, 1);
+	const int tileId = luaL_checkint(l, 2);
+	const int collectableType = luaL_checkint(l, 3);
+	Scene_spawnCollectable(this, tileId-1, collectableType);
+	lua_pop(l,3);
 	return 0;
 }
