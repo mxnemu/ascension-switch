@@ -18,8 +18,9 @@ CLASS(Collectable) {
 };
 
 Collectable* Collectable_create(Scene* scene, AnimatedSprite* sprite, void (*onCollect)(Collectable*, Player*));
-void Collectable_destroy(Collectable*);
+void Collectable_destroy(void* context);
 void Collectable_draw(void* context, SDL_Renderer* renderer, Camera* camera);
+bool Collectable_onCollision(void* context, Entity* other);
 
 Collectable* Collectable_createCoin(Scene* scene, SDL_Point pos, int value);
 Collectable* Collectable_createKey(Scene* scene, SDL_Point point, int value);

@@ -71,6 +71,8 @@ void Game_setupPlayer(Game* this, int i, Scene* scene) {
 	player->entity->physics.bounds.x = 20 * PHYSICS_SCALE;
 	player->entity->physics.bounds.w = 15 * PHYSICS_SCALE; // Make sure Mr. Fatty get's though those slim trapdoors
 	player->entity->physics.bounds.h = 15 * PHYSICS_SCALE;
+	player->entity->physics.belongsToGroups = COLLISION_GROUP_PLAYER;
+	player->entity->physics.collidesWithGroupMask = COLLISION_GROUP_TERRAIN | COLLISION_GROUP_COLLECTABLE | COLLISION_GROUP_ENEMY;
 	player->entity->offset.x = -10;
 	player->entity->offset.y = -17;
 

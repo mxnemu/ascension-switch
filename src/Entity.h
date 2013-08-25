@@ -5,8 +5,12 @@
 #include "List.h"
 #include "Camera.h"
 
-#define COLLISION_GROUP_DEFAULT 1
-#define COLLISION_GROUP_PLAYER 1 << 2
+#define COLLISION_GROUP_NONE (0)
+#define COLLISION_GROUP_ALL (INT_MAX)
+#define COLLISION_GROUP_TERRAIN (1)
+#define COLLISION_GROUP_PLAYER (1 << 2)
+#define COLLISION_GROUP_COLLECTABLE (1 << 3)
+#define COLLISION_GROUP_ENEMY (1 << 4)
 
 enum GroundedStatus {
 	grounded, inAir, onLadder
@@ -19,8 +23,8 @@ CLASS(EntityPhysics) {
 	SDL_Rect bounds;
 	int weight;
 
-	int groups;
-	int groupMask;
+	int belongsToGroups;
+	int collidesWithGroupMask;
 	enum GroundedStatus groundedStatus;
 };
 
@@ -32,6 +36,7 @@ CLASS(Entity) {
 	void (*destroy)(void* context);
 	void (*update)(void* context, RawTime dt);
 	void (*draw)(void* context, SDL_Renderer*, Camera* camera);
+	bool (*onCollision)(void* context, Entity* otherEntity);
 	Scene* scene;
 	void* context;
 	int speedMultiplier;
@@ -49,6 +54,7 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
 
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
 void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);
+bool Entity_emptyOnCollision(void* context, Entity* otherEntity);
 
 // health + abs(health)
 void Entity_heal(Entity* this, int health);

@@ -27,6 +27,8 @@ bool Tile_initByType(Tile* this, TextureCache* tc, const char* colorPrefix) {
 	} else if (this->type == 2) {
 		this->sprite = Sprite_create(TextureCache_get(tc, "images/ladder.png"));
 		this->blocks = false;
+	} else if (this->type >= TILE_DOOR_4 && this->type <= TILE_DOOR_6) {
+		this->sprite = Sprite_create(TextureCache_get(tc, "images/door.png"));
 	} else {
 		return false;
 	}

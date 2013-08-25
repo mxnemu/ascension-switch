@@ -8,6 +8,10 @@
 #define TILE_BRICK 1
 #define TILE_LADDER 2
 
+#define TILE_DOOR_4 4
+#define TILE_DOOR_5 5
+#define TILE_DOOR_6 6
+
 CLASS(TilePhysics) {
 	SDL_Rect bounds;
 };

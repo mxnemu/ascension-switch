@@ -8,12 +8,17 @@ Collectable* Collectable_create(Scene* scene, AnimatedSprite* sprite, void (*onC
 	Collectable* this = malloc(sizeof(Collectable));
 	this->entity = Entity_create(this, scene, sprite);
 	this->entity->draw = Collectable_draw;
+	this->entity->physics.belongsToGroups = COLLISION_GROUP_COLLECTABLE;
+	this->entity->physics.collidesWithGroupMask = COLLISION_GROUP_TERRAIN;
+	this->entity->destroy = Collectable_destroy;
+	this->entity->onCollision = Collectable_onCollision;
 	this->onCollect = onCollect;
 	this->value = 0;
 	return this;
 }
 
-void Collectable_destroy(Collectable*this) {
+void Collectable_destroy(void* context) {
+	Collectable* this = context;
 	free(this);
 }
 
@@ -22,6 +27,15 @@ void Collectable_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, renderer, camera);
 }
 
+bool Collectable_onCollision(void* context, Entity* other) {
+	Collectable* this = context;
+	if (other->physics.belongsToGroups & COLLISION_GROUP_PLAYER) {
+		Player* player = other->context;
+		this->onCollect(this, player);
+		this->entity->destroyed = true;
+	}
+	return false;
+}
 
 Collectable* Collectable_createCoin(Scene* scene, SDL_Point pos, int value) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(scene->engine->textureCache, "images/coin.png")));

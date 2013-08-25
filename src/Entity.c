@@ -13,12 +13,14 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->update = emptyUpdate;
 	this->draw = Entity_emptyDraw;
 	this->destroy = emptyDestroy;
+	this->onCollision = Entity_emptyOnCollision;
 	this->context = context;
 	this->speedMultiplier = 5;
 	this->inFrontOfLadder = false;
 	this->offset.x = 0;
 	this->offset.y = 0;
 	this->health = 100;
+
 	return this;
 }
 
@@ -28,8 +30,11 @@ void Entity_destroy(Entity* this) {
 }
 
 bool Entity_collides(Entity* this, Entity* other) {
-	if (SDL_Rect_touches(&this->physics.bounds, &other->physics.bounds)) {
-		return false; //TODO
+	if ((this->physics.collidesWithGroupMask & other->physics.belongsToGroups) != 0 &&
+	    SDL_Rect_touches(&this->physics.bounds, &other->physics.bounds)) {
+		int blocks = this->onCollision(this->context, other);
+		blocks = other->onCollision(other->context, this) || blocks;
+		return blocks; //TODO
 	}
 	return false;
 }
@@ -46,8 +51,8 @@ void EntityPhysics_init(EntityPhysics* this, Sprite* sprite) {
 	}
 	this->dx = 0;
 	this->dy = 0;
-	this->groupMask = INT_MAX;
-	this->groups = COLLISION_GROUP_DEFAULT;
+	this->collidesWithGroupMask = COLLISION_GROUP_TERRAIN;
+	this->belongsToGroups = COLLISION_GROUP_NONE;
 	this->groundedStatus = inAir;
 }
 
@@ -92,14 +97,16 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 	}
 
 	// test entities
-	for (int i=0; i < this->scene->entities->usedElements; ++i) {
-		Entity* it = this->scene->entities->elements[i];
-		if (it != NULL) {
+	if (this->physics.collidesWithGroupMask & (COLLISION_GROUP_ENEMY | COLLISION_GROUP_COLLECTABLE | COLLISION_GROUP_PLAYER)) {
+		for (int i=0; i < this->scene->entities->usedElements; ++i) {
+			Entity* it = this->scene->entities->elements[i];
+			if (it != NULL) {
 
-			for (int j=0; j < this->scene->entities->usedElements; ++j) {
-				Entity* jt = this->scene->entities->elements[j];
-				if (jt != NULL && jt != it && Entity_collides(it, jt)) {
-					return true;
+				for (int j=0; j < this->scene->entities->usedElements; ++j) {
+					Entity* jt = this->scene->entities->elements[j];
+					if (jt != NULL && jt != it && Entity_collides(it, jt)) {
+						return true;
+					}
 				}
 			}
 		}
@@ -112,14 +119,16 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 		if (NULL != tile) {
 			SDL_Rect tr = tile->physics.bounds;
 			if (SDL_Rect_touches(rect, &tr)) {
-				if (tile->blocks && SDL_Rect_above(rect, &tile->physics.bounds)) {
-					this->physics.groundedStatus = grounded;
-				}
 				if (tile->type == TILE_LADDER) {
 					this->inFrontOfLadder = true;
 				}
-				if (tile->blocks) {
-					return true;
+				if (this->physics.collidesWithGroupMask & COLLISION_GROUP_TERRAIN) {
+					if (tile->blocks && SDL_Rect_above(rect, &tile->physics.bounds)) {
+						this->physics.groundedStatus = grounded;
+					}
+					if (tile->blocks) {
+						return true;
+					}
 				}
 			}
 		}
@@ -137,3 +146,4 @@ void Entity_heal(Entity* this, int health) {
 }
 
 void Entity_emptyDraw(void* context, SDL_Renderer* renderer, Camera* camera) {}
+bool Entity_emptyOnCollision(void* context, Entity* otherEntity) { return false; }

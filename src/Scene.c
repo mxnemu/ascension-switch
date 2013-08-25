@@ -151,9 +151,9 @@ void Scene_setTile(Scene* this, const int tileId, const int tileType) {
 		p.x *= TILE_W;
 		p.y *= TILE_H;
 		Tile_setPosition(t, p);
-		Vector_Set(this->tiles, tileId, t);
 	}
 
+	Vector_Set(this->tiles, tileId, t);
 	printf("%d,", tileType);
 }
 
