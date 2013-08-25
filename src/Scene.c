@@ -161,7 +161,7 @@ SDL_Point Scene_positionForTileId(Scene* this, const int tileId) {
 		p.y = 0;
 	}
 	if (this->mirrorTiles) {
-		//p.x = (SCENE_TILES_X-1) - p.x;
+		p.x = (SCENE_TILES_X-1) - p.x;
 	}
 	return p;
 }

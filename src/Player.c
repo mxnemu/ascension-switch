@@ -40,24 +40,31 @@ void Player_processInput(Player* this) {
 		}
 	}
 
-	int y = Input_getAxis(this->input, vertical);
-	if (y != 0 && this->entity->inFrontOfLadder) {
-		this->entity->physics.groundedStatus = onLadder;
-		this->entity->physics.dy += (y*this->entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
-	}
-
 	if (Input_isDown(this->input, attackSword)) {
 		// TODO attack
 	}
 
+	bool didJump = false;
 	if (Input_isDown(this->input, jump)) {
-		if (this->entity->physics.groundedStatus == grounded && this->timeSinceGrounded > 120) {
+		if (this->entity->physics.groundedStatus == onLadder ||
+			(this->entity->physics.groundedStatus == grounded && this->timeSinceGrounded > 120)) {
 			this->remainingJumps = 10;
 		}
 		if (this->remainingJumps > 0) {
-			this->entity->physics.dy -= (32*10) / PHYSICS_SCALE;
+			if (this->entity->physics.groundedStatus == onLadder) {
+				this->entity->physics.dy -= (32*5) / PHYSICS_SCALE;
+			} else {
+				this->entity->physics.dy -= (32*10) / PHYSICS_SCALE;
+			}
+			didJump = true;
 			this->remainingJumps--;
 		}
+	}
+
+	int y = Input_getAxis(this->input, vertical);
+	if (!didJump && y != 0 && this->entity->inFrontOfLadder) {
+		this->entity->physics.groundedStatus = onLadder;
+		this->entity->physics.dy += (y*this->entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 	}
 }
 
