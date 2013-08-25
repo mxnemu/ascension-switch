@@ -28,7 +28,8 @@ bool SDL_Rect_isInside(SDL_Rect* a, int x, int y);
 	} \
 	Vector_Destroy(vector);
 
-#define ENUM_TO_STRING_MATCH(e, s) if (strcmp(STR(e), s) == 0) { return e; }
+#define STRING_TO_ENUM(e, s) if (strcmp(STR(e), s) == 0) { return e; }
+#define ENUM_TO_STRING(e, v) if (e == v) { return STR(e); }
 
 void emptyInit(void* context);
 void emptyUpdate(void* context, RawTime dt);

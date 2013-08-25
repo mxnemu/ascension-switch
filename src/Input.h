@@ -63,4 +63,6 @@ InputHotkey* InputHotkey_create(int type, int actionId);
 // Utils
 SDL_Keycode Input_stringToKeycode(const char* keyText);
 ActionId Input_stringToActionId(const char* actionIdText);
+char* Input_keycodeToPrintable(SDL_Keycode key);
+const char* Input_keycodeToConstantName(SDL_Keycode keyText);
 

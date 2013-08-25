@@ -8,8 +8,6 @@ Player:
 	bow attack
 	punishment round on entity death (when player Entity)
 		  
-Input: 
-       different hotkeys for different players
 scene:
 	load next
 	portal entity to set the next scene
