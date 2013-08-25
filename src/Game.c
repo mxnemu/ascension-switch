@@ -47,6 +47,11 @@ void Game_init(void* context) {
 	Game_setupPlayer(this, 0, this->leftScene);
 	Game_setupPlayer(this, 1, this->rightScene);
 
+	this->players[0]->opponent = this->players[1];
+	this->players[1]->opponent = this->players[0];
+
+	Player_switchMode(this->players[0]);
+
 	this->hourglass = Hourglass_create(this->engine);
 	this->hourglass->sprite->bounds.x = SCENE_WIDTH;
 	this->hourglass->sprite->bounds.y = (SCENE_HEIGHT/2) - (this->hourglass->sprite->bounds.h/2);

@@ -11,9 +11,10 @@
 #define COLLISION_GROUP_PLAYER (1 << 2)
 #define COLLISION_GROUP_COLLECTABLE (1 << 3)
 #define COLLISION_GROUP_ENEMY (1 << 4)
+#define COLLISION_GROUP_CURSOR (1 << 5)
 
 enum GroundedStatus {
-	grounded, inAir, onLadder
+	grounded, inAir, onLadder, immuneToGravity
 };
 
 typedef struct Scene Scene;

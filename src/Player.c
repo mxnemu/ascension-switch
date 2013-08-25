@@ -2,17 +2,20 @@
 #include "AnimatedSprite.h"
 #include "TextureCache.h"
 #include "Scene.h"
+#include "PlayerCursor.h"
 
 Player* Player_create(Scene* scene, Input* input) {
 	Player* this = malloc(sizeof(Player));
 	this->input = input;
 	this->scene = scene;
 	this->money = 0;
+	this->opponent = NULL;
 	this->controlledEntity.player = this;
 	this->controlledEntity.entity = NULL;
 	this->controlledEntity.originalContext = NULL;
 	this->controlledEntity.originalDestroy = NULL;
 	this->controlledEntity.originalDraw = NULL;
+	this->controlledEntity.destroyOnRelease= false;
 
 	this->entity = Player_spawnPlayerEntity(this);
 	ControlledEntity_set(&this->controlledEntity, this->entity);
@@ -34,6 +37,17 @@ void Player_destroy(void* context) {
 	CANCEL_IF_FALSE(context);
 	Player* this = context;
 	free(this);
+}
+
+void Player_switchMode(Player* this) {
+	if (this->controlledEntity.entity == this->entity) {
+		PlayerCursor* cursor = PlayerCursor_create(this->opponent->scene, this->scene->colorPrefix);
+		Scene_addEntity(this->opponent->scene, cursor->entity);
+		ControlledEntity_set(&this->controlledEntity, cursor->entity);
+		this->controlledEntity.destroyOnRelease = true;
+	} else {
+		ControlledEntity_set(&this->controlledEntity, this->entity);
+	}
 }
 
 void Player_updateEntity(void* context, RawTime dt) {
@@ -85,10 +99,13 @@ void Player_processInput(Player* this) {
 	int x = Input_getAxis(this->input, horizontal);
 	if (x != 0) {
 		this->controlledEntity.entity->physics.dx += (x*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
-		if (x < 0) {
-			this->controlledEntity.entity->animatedSprite->sprite->flip = true;
-		} else  if (x > 0) {
-			this->controlledEntity.entity->animatedSprite->sprite->flip = false;
+		// shitty check to not flip the cursor
+		if (this->controlledEntity.entity->physics.groundedStatus != immuneToGravity) {
+			if (x < 0) {
+				this->controlledEntity.entity->animatedSprite->sprite->flip = true;
+			} else  if (x > 0) {
+				this->controlledEntity.entity->animatedSprite->sprite->flip = false;
+			}
 		}
 	}
 
@@ -97,14 +114,20 @@ void Player_processInput(Player* this) {
 	}
 
 	int y = Input_getAxis(this->input, vertical);
-	bool didJump = false;
-	if (Input_isDown(this->input, jump) || y < 0) {
-		didJump = Entity_jump(this->controlledEntity.entity);
-	}
+	if (this->controlledEntity.entity->physics.groundedStatus == immuneToGravity) {
+		if (y != 0) {
+			this->controlledEntity.entity->physics.dy += (y*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
+		}
+	} else {
+		bool didJump = false;
+		if (Input_isDown(this->input, jump) || y < 0) {
+			didJump = Entity_jump(this->controlledEntity.entity);
+		}
 
-	if (!didJump && y != 0 && this->controlledEntity.entity->inFrontOfLadder) {
-		this->controlledEntity.entity->physics.groundedStatus = onLadder;
-		this->controlledEntity.entity->physics.dy += (y*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
+		if (!didJump && y != 0 && this->controlledEntity.entity->inFrontOfLadder) {
+			this->controlledEntity.entity->physics.groundedStatus = onLadder;
+			this->controlledEntity.entity->physics.dy += (y*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
+		}
 	}
 }
 
@@ -135,6 +158,10 @@ void ControlledEntity_release(ControlledEntity* this) {
 		this->entity->draw = this->originalDraw;
 		this->entity->context = this->originalContext;
 		this->entity = NULL;
+		if (this->destroyOnRelease) {
+			this->entity->destroyed = true;
+			this->destroyOnRelease = false;
+		}
 	}
 }
 

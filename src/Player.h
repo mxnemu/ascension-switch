@@ -9,6 +9,7 @@ CLASS(ControlledEntity) {
 	void (*originalDestroy)(void* context);
 	Entity* entity;
 	void* player;
+	bool destroyOnRelease;
 };
 
 CLASS(Player) {
@@ -16,6 +17,7 @@ CLASS(Player) {
 	Entity* entity;
 	ControlledEntity controlledEntity;
 	Scene* scene;
+	Player* opponent;
 	int money;
 };
 

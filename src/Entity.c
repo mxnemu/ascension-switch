@@ -118,7 +118,9 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 		return true;
 	}
 	if (rect->y + rect->h > this->scene->walkableBounds.y + this->scene->walkableBounds.h) {
-		this->physics.groundedStatus = grounded;
+		if (this->physics.groundedStatus != immuneToGravity) {
+			this->physics.groundedStatus = grounded;
+		}
 		return true;
 	}
 
@@ -145,7 +147,7 @@ bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 		if (NULL != tile) {
 			SDL_Rect tr = tile->physics.bounds;
 			if (SDL_Rect_touches(rect, &tr)) {
-				if (tile->type == TILE_LADDER) {
+				if (this->physics.groundedStatus != immuneToGravity && tile->type == TILE_LADDER) {
 					this->inFrontOfLadder = true;
 				}
 				if (this->physics.collidesWithGroupMask & COLLISION_GROUP_TERRAIN) {
