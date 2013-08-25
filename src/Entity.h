@@ -43,6 +43,9 @@ CLASS(Entity) {
 	bool inFrontOfLadder;
 	SDL_Point offset;
 	int health;
+
+	int remainingJumps;
+	RawTime timeSinceGrounded;
 };
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
@@ -51,6 +54,8 @@ void Entity_destroy(Entity* this);
 void Entity_update(Entity* this, RawTime dt);
 bool Entity_collides(Entity* this, Entity* other);
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect);
+
+bool Entity_jump(Entity* this);
 
 void EntityPhysics_init(EntityPhysics* this, Sprite* sprite);
 void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);

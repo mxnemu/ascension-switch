@@ -21,6 +21,9 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->offset.y = 0;
 	this->health = 100;
 
+	this->remainingJumps = 10;
+	this->timeSinceGrounded = 0;
+
 	return this;
 }
 
@@ -82,6 +85,29 @@ void Entity_update(Entity* this, RawTime dt) {
 		this->animatedSprite->sprite->bounds.x = this->offset.x + (this->physics.bounds.x / PHYSICS_SCALE);
 		this->animatedSprite->sprite->bounds.y = this->offset.y + (this->physics.bounds.y / PHYSICS_SCALE);
 	}
+
+	if (this->physics.groundedStatus == grounded) {
+		this->timeSinceGrounded += dt;
+	} else {
+		this->timeSinceGrounded = 0;
+	}
+}
+
+bool Entity_jump(Entity* this) {
+	if (this->physics.groundedStatus == onLadder ||
+		(this->physics.groundedStatus == grounded && this->timeSinceGrounded > 120)) {
+		this->remainingJumps = 10;
+	}
+	if (this->remainingJumps > 0) {
+		if (this->physics.groundedStatus == onLadder) {
+			this->physics.dy -= (32*5) / PHYSICS_SCALE;
+		} else {
+			this->physics.dy -= (32*10) / PHYSICS_SCALE;
+		}
+		this->remainingJumps--;
+		return true;
+	}
+	return false;
 }
 
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {

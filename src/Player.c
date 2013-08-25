@@ -5,12 +5,18 @@ Player* Player_create(Scene* scene, AnimatedSprite* sprite, Input* input) {
 	this->entity = Entity_create(this, scene, sprite);
 	this->entity->draw = Player_draw;
 	this->entity->update = Player_update;
+	this->entity->destroy = Player_onEntityDestroyed;
 	this->input = input;
-	this->remainingJumps = 10;
-	this->timeSinceGrounded = 0;
+
 	this->money = 0;
 
 	return this;
+}
+
+void Player_onEntityDestroyed(void* context) {
+	Player* this = context;
+	this->money = -1;
+	this->entity = NULL;
 }
 
 void Player_destroy(void* context) {
@@ -22,12 +28,6 @@ void Player_destroy(void* context) {
 void Player_update(void* context, RawTime dt) {
 	Player* this = context;
 	Player_processInput(this);
-
-	if (this->entity->physics.groundedStatus == grounded) {
-		this->timeSinceGrounded += dt;
-	} else {
-		this->timeSinceGrounded = 0;
-	}
 }
 
 void Player_processInput(Player* this) {
@@ -47,19 +47,7 @@ void Player_processInput(Player* this) {
 
 	bool didJump = false;
 	if (Input_isDown(this->input, jump)) {
-		if (this->entity->physics.groundedStatus == onLadder ||
-			(this->entity->physics.groundedStatus == grounded && this->timeSinceGrounded > 120)) {
-			this->remainingJumps = 10;
-		}
-		if (this->remainingJumps > 0) {
-			if (this->entity->physics.groundedStatus == onLadder) {
-				this->entity->physics.dy -= (32*5) / PHYSICS_SCALE;
-			} else {
-				this->entity->physics.dy -= (32*10) / PHYSICS_SCALE;
-			}
-			didJump = true;
-			this->remainingJumps--;
-		}
+		didJump = Entity_jump(this->entity);
 	}
 
 	int y = Input_getAxis(this->input, vertical);
