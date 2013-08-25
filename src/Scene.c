@@ -93,12 +93,14 @@ void Scene_update(Scene* this, RawTime dt) {
 		Entity* it = this->entities->elements[i];
 		if (it != NULL) {
 //			it->update(it->context, dt);
-			Entity_update(it, dt);
 			if (it->destroyed) {
 				Entity_destroy(it);
 				Vector_Set(this->entities, i, NULL);
-			} else if (it->physics.groundedStatus == grounded || it->physics.groundedStatus == inAir) {
-				it->physics.dy += this->gravity;
+			} else {
+				Entity_update(it, dt);
+				if (it->physics.groundedStatus == grounded || it->physics.groundedStatus == inAir) {
+					it->physics.dy += this->gravity;
+				}
 			}
 
 		}

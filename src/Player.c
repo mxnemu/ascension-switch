@@ -8,12 +8,17 @@ Player* Player_create(Scene* scene, Input* input) {
 	this->input = input;
 	this->scene = scene;
 	this->money = 0;
+	this->controlledEntity.player = this;
+	this->controlledEntity.entity = NULL;
+	this->controlledEntity.originalContext = NULL;
+	this->controlledEntity.originalDestroy = NULL;
+	this->controlledEntity.originalDraw = NULL;
 
 	Player_spawnPlayerEntity(this);
 	return this;
 }
 
-void Player_onEntityDestroyed(void* context) {
+void _Player_onEntityDestroyed(void* context) {
 	Player* this = context;
 	this->money = -1;
 	this->entity = NULL;
@@ -23,6 +28,12 @@ void Player_destroy(void* context) {
 	CANCEL_IF_FALSE(context);
 	Player* this = context;
 	free(this);
+}
+
+void Player_updateEntity(void* context, RawTime dt) {
+}
+
+void Player_destroyEntity(void* context) {
 }
 
 void Player_update(void* context, RawTime dt) {
@@ -44,9 +55,9 @@ void Player_spawnPlayerEntity(Player* this) {
 	sprite->sprite->flip = this->scene->mirrorTiles;
 
 	Entity* entity = Entity_create(this, this->scene, sprite);
-	entity->draw = Player_draw;
-	entity->update = Player_update;
-	entity->destroy = Player_onEntityDestroyed;
+	entity->draw = Player_drawEntity;
+	entity->update = Player_updateEntity;
+	entity->destroy = Player_destroyEntity;
 
 	SDL_Point tilePos = Scene_positionForTileId(this->scene, 1 + (SCENE_TILES_X * (SCENE_TILES_Y-2)) );
 	entity->physics.bounds.x = tilePos.x * TILE_W * PHYSICS_SCALE;
@@ -62,17 +73,17 @@ void Player_spawnPlayerEntity(Player* this) {
 	this->scene->camera->trackedEntity = entity;
 
 	this->entity = entity;
-	this->controlledEntity = this->entity;
+	ControlledEntity_set(&this->controlledEntity, this->entity);
 }
 
 void Player_processInput(Player* this) {
 	int x = Input_getAxis(this->input, horizontal);
 	if (x != 0) {
-		this->controlledEntity->physics.dx += (x*this->controlledEntity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
+		this->controlledEntity.entity->physics.dx += (x*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 		if (x < 0) {
-			this->controlledEntity->animatedSprite->sprite->flip = true;
+			this->controlledEntity.entity->animatedSprite->sprite->flip = true;
 		} else  if (x > 0) {
-			this->controlledEntity->animatedSprite->sprite->flip = false;
+			this->controlledEntity.entity->animatedSprite->sprite->flip = false;
 		}
 	}
 
@@ -83,21 +94,58 @@ void Player_processInput(Player* this) {
 	int y = Input_getAxis(this->input, vertical);
 	bool didJump = false;
 	if (Input_isDown(this->input, jump) || y < 0) {
-		didJump = Entity_jump(this->controlledEntity);
+		didJump = Entity_jump(this->controlledEntity.entity);
 	}
 
-	if (!didJump && y != 0 && this->controlledEntity->inFrontOfLadder) {
-		this->controlledEntity->physics.groundedStatus = onLadder;
-		this->controlledEntity->physics.dy += (y*this->controlledEntity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
+	if (!didJump && y != 0 && this->controlledEntity.entity->inFrontOfLadder) {
+		this->controlledEntity.entity->physics.groundedStatus = onLadder;
+		this->controlledEntity.entity->physics.dy += (y*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 	}
 }
 
-void Player_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
+void Player_drawEntity(void* context, SDL_Renderer* renderer, Camera* camera) {
 	Player* this = context;
 	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, renderer, camera);
+}
+
+void Player_draw(void* context, SDL_Renderer* renderer) {
+
 }
 
 void Player_earnMoney(Player* this, int money) {
 	this->money += money;
 	printf("emone %d\n", money);
+}
+
+void ControlledEntity_onEntityDestroyed(void* context) {
+	ControlledEntity* this = context;
+	_Player_onEntityDestroyed(this->player);
+	this->originalDestroy(this->originalContext);
+	ControlledEntity_release(this);
+}
+
+void ControlledEntity_release(ControlledEntity* this) {
+	if (this->entity) {
+		this->entity->destroy = this->originalDestroy;
+		this->entity->draw = this->originalDraw;
+		this->entity->context = this->originalContext;
+		this->entity = NULL;
+	}
+}
+
+void ControlledEntity_set(ControlledEntity* this, Entity* entity) {
+	ControlledEntity_release(this);
+	this->entity = entity;
+	this->originalDestroy = entity->destroy;
+	this->originalContext = entity->context;
+	this->originalDraw = entity->draw;
+
+	this->entity->draw = ControlledEntity_draw;
+	this->entity->destroy = ControlledEntity_onEntityDestroyed;
+	this->entity->context = this;
+}
+
+void ControlledEntity_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
+	ControlledEntity* this = context;
+	this->originalDraw(this->originalContext, renderer, camera);
 }

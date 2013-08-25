@@ -30,8 +30,8 @@ void Collectable_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 bool Collectable_onCollision(void* context, Entity* other) {
 	Collectable* this = context;
 	if (other->physics.belongsToGroups & COLLISION_GROUP_PLAYER) {
-		Player* player = other->context;
-		this->onCollect(this, player);
+		ControlledEntity* controlled = other->context;
+		this->onCollect(this, controlled->player);
 		this->entity->destroyed = true;
 	}
 	return false;

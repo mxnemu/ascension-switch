@@ -74,6 +74,8 @@ void Game_update(void* context, RawTime dt) {
 	Game* this = context;
 	Scene_update(this->leftScene, dt);
 	Scene_update(this->rightScene, dt);
+	Player_update(this->players[0], dt);
+	Player_update(this->players[1], dt);
 	Hourglass_update(this->hourglass, dt);
 }
 
@@ -81,5 +83,7 @@ void Game_draw(void* context, SDL_Renderer* renderer) {
 	Game* this = context;
 	Scene_draw(this->leftScene, renderer);
 	Scene_draw(this->rightScene, renderer);
+	Player_draw(this->players[0], renderer);
+	Player_draw(this->players[1], renderer);
 	Hourglass_draw(this->hourglass, renderer);
 }
