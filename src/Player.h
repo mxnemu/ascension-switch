@@ -2,6 +2,7 @@
 #include "Constants.h"
 #include "Entity.h"
 #include "Input.h"
+#include "PlayerSidebarUi.h"
 
 CLASS(ControlledEntity) {
 	void* originalContext;
@@ -19,6 +20,7 @@ CLASS(Player) {
 	ControlledEntity controlledEntity;
 	Scene* scene;
 	Player* opponent;
+	PlayerSidebarUi* sidebarUi;
 	int money;
 };
 

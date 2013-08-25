@@ -17,6 +17,7 @@ Player* Player_create(Scene* scene, Input* input) {
 	this->controlledEntity.originalDraw = NULL;
 	this->controlledEntity.destroyOnRelease= false;
 	this->controlledEntity.indicator = NULL;
+	this->sidebarUi = NULL;
 	Player_loadIndicator(this);
 
 	this->entity = Player_spawnPlayerEntity(this);
@@ -45,7 +46,7 @@ void Player_destroy(void* context) {
 
 void Player_loadIndicator(Player* this) {
 	char* path = malloc(100 * sizeof(char));
-	int ret = sprintf(path, "images/%s/indicator.png", this->scene->colorPrefix);
+	sprintf(path, "images/%s/indicator.png", this->scene->colorPrefix);
 	this->controlledEntity.indicator = Sprite_create(TextureCache_getForUnconstantPath(this->scene->engine->textureCache, path));
 	free(path);
 }
@@ -148,12 +149,15 @@ void Player_drawEntity(void* context, SDL_Renderer* renderer, Camera* camera) {
 }
 
 void Player_draw(void* context, SDL_Renderer* renderer) {
-
+	Player* this = context;
+	PlayerSidebarUi_draw(this->sidebarUi, renderer);
 }
 
 void Player_earnMoney(Player* this, int money) {
-	this->money += money;
-	printf("emone %d\n", money);
+	this->money += money * 100;
+	if (this->sidebarUi) {
+		PlayerSidebarUi_setMoney(this->sidebarUi, this->money);
+	}
 }
 
 void ControlledEntity_onEntityDestroyed(void* context) {

@@ -58,6 +58,12 @@ void Game_init(void* context) {
 	this->hourglass->sprite->bounds.y = (SCENE_HEIGHT/2) - (this->hourglass->sprite->bounds.h/2);
 	this->hourglass->data = this;
 	this->hourglass->onSpin = Game_onHourglassSpin;
+
+	SDL_Point p1 = {.x=SCENE_WIDTH, .y=1};
+	this->leftPlayer->sidebarUi = PlayerSidebarUi_create(this->leftPlayer, p1);
+
+	SDL_Point p2 = {.x=SCENE_WIDTH, .y=(SCENE_HEIGHT/2) + (this->hourglass->sprite->bounds.h/2)};
+	this->rightPlayer->sidebarUi = PlayerSidebarUi_create(this->rightPlayer, p2);
 }
 
 void Game_setupPlayer(Game* this, int i, Scene* scene) {
@@ -65,7 +71,6 @@ void Game_setupPlayer(Game* this, int i, Scene* scene) {
 	if (i == 0) {
 		scene->colorPrefix = "red";
 		this->leftPlayer = Player_create(scene, this->engine->input);
-
 	} else if (i == 1) {
 		scene->colorPrefix = "blue";
 		scene->camera->translation.x = SCENE_WIDTH + SCENE_SPACER_WIDTH;
@@ -73,6 +78,7 @@ void Game_setupPlayer(Game* this, int i, Scene* scene) {
 		scene->mirrorTiles = true;
 
 		this->rightPlayer = Player_create(scene, this->engine->input);
+
 	}
 	Scene_setBounds(scene, 0, 0, SCENE_WIDTH, SCENE_HEIGHT);
 }

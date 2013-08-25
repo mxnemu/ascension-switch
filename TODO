@@ -10,8 +10,6 @@ Player:
 	attack
 	bow attack
 	punishment round on entity death (when player Entity)
-	trigger respawn on scene after death
-	indicator for controlled entity
 		  
 Input: 
        different hotkeys for different players
@@ -19,7 +17,6 @@ scene:
 	load next
 	portal entity to set the next scene
 	more maps & maybe random generation or 1 list of randomly choosen maps
-
 
 Cards: Summon(skeleton, goblin, minotaur, cerberus)
        Control strongest Monster
