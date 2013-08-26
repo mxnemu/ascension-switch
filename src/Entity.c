@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "Scene.h"
 #include "Tile.h"
+#include "GameOverModule.h"
 
 Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	Entity* this = malloc(sizeof(Entity));
@@ -131,10 +132,19 @@ bool Entity_jump(Entity* this) {
 bool Entity_wouldCollide(Entity* this, SDL_Rect *rect) {
 	// test scene
 	if (rect->x < this->scene->walkableBounds.x ||
-		rect->x + rect->w > this->scene->walkableBounds.x + this->scene->walkableBounds.w ||
-		rect->y + rect->h < this->scene->walkableBounds.y) {
+		rect->x + rect->w > this->scene->walkableBounds.x + this->scene->walkableBounds.w) {
 		return true;
 	}
+	if (rect->y + rect->h < this->scene->walkableBounds.y) {
+		if ((this->physics.belongsToGroups & COLLISION_GROUP_PLAYER)) {
+			GameOverModule* gm = GameOverModule_create(this->scene->engine);
+			gm->winnerName = this->scene->colorPrefix;
+			this->scene->engine->nextModule = gm->module;
+		}
+
+		return true;
+	}
+
 	if (rect->y + rect->h > this->scene->walkableBounds.y + this->scene->walkableBounds.h) {
 		if (this->physics.groundedStatus != immuneToGravity) {
 			this->physics.groundedStatus = grounded;
