@@ -4,7 +4,6 @@ Player:
 		  pick card & place enemy mode
 		  Choose upgrade for enemy
         get hurt on attack
-	attack
 	bow attack
 	punishment round on entity death (when player Entity)
 		  

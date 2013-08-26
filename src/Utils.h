@@ -28,6 +28,19 @@ bool SDL_Rect_isInside(SDL_Rect* a, int x, int y);
 	} \
 	Vector_Destroy(vector);
 
+#define FREE_LIST_WITH_ELMENTS(list, destructor) \
+	{ \
+		ListNode* util_freeingNode = list->first; \
+		while (util_freeingNode) { \
+			void* util_data = util_freeingNode->data; \
+			if (util_data != NULL) { \
+				destructor(util_data); \
+			} \
+			util_freeingNode = util_freeingNode->next; \
+		} \
+		List_destroy(list); \
+	}
+
 #define STRING_TO_ENUM(e, s) if (strcmp(STR(e), s) == 0) { return e; }
 #define ENUM_TO_STRING(e, v) if (e == v) { return STR(e); }
 

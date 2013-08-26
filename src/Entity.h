@@ -50,6 +50,9 @@ CLASS(Entity) {
 	SDL_Point offset;
 	int health;
 	int maxHealth;
+	int attack1;
+	int immuneToDamageTime;
+	int maxImmuneToDamageTime;
 
 	int remainingJumps;
 	RawTime timeSinceGrounded;
@@ -71,4 +74,5 @@ void Entity_emptyDraw(void* context, SDL_Renderer* screen, Camera* camera);
 bool Entity_emptyOnCollision(void* context, Entity* otherEntity);
 void Entity_emptyOnHealthModified(void* context);
 
-void Entity_modifyHealth(Entity* this, const int health);
+void Entity_hurt(Entity* this, const int health);
+void Entity_modifyHealth(Entity* this, const int health); // mod health without getting immune

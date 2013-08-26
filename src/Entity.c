@@ -24,6 +24,9 @@ Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite) {
 	this->offset.y = 0;
 	this->health = 100;
 	this->maxHealth = 100;
+	this->attack1 = 35;
+	this->immuneToDamageTime = 0;
+	this->maxImmuneToDamageTime = 1500;
 
 	this->remainingJumps = 10;
 	this->timeSinceGrounded = 0;
@@ -41,6 +44,13 @@ bool Entity_collides(Entity* this, Entity* other, SDL_Rect* newpos) {
 	    SDL_Rect_touches(newpos, &other->physics.bounds)) {
 		int blocks = this->onCollision(this->context, other);
 		blocks = other->onCollision(other->context, this) || blocks;
+
+		if (strcmp(this->animatedSprite->progress.animation->name, ANIMATION_ATTACK1) == 0) {
+			if (other->immuneToDamageTime <= 0) {
+				Entity_hurt(other, -this->attack1);
+			}
+		}
+
 		return blocks; //TODO
 	}
 	return false;
@@ -65,6 +75,10 @@ void EntityPhysics_init(EntityPhysics* this, Sprite* sprite) {
 
 void Entity_update(Entity* this, RawTime dt) {
 	this->update(this->context, dt);
+
+	if (this->immuneToDamageTime > 0) {
+		this->immuneToDamageTime -= dt;
+	}
 
 	if (this->animatedSprite) {
 		AnimationProgress_update(&this->animatedSprite->progress, dt);
@@ -182,6 +196,13 @@ void Entity_AnimationEnded(void* context) {
 
 void EntityPhysics_destroy(EntityPhysics* this) {
 	free(this);
+}
+
+void Entity_hurt(Entity* this, const int health) {
+	if (health < 0) {
+		this->immuneToDamageTime = this->maxImmuneToDamageTime;
+	}
+	Entity_modifyHealth(this, health);
 }
 
 void Entity_modifyHealth(Entity* this, const int health) {

@@ -141,6 +141,19 @@ void Scene_setBounds(Scene* this, int x, int y, int w, int h) {
 	this->camera->bounds.h = h;
 }
 
+Tile* Scene_getTile(Scene* this, SDL_Point tilePos) {
+	const int tileId = tilePos.x + (tilePos.y* SCENE_TILES_X);
+	return Vector_Get(this->tiles, tileId);
+}
+
+SDL_Point Scene_positionToTilePosition(SDL_Point position) {
+	SDL_Point p = {
+		.x=(position.x / TILE_W) % SCENE_TILES_X,
+		.y=(position.y / TILE_H) % SCENE_TILES_Y
+	};
+	return p;
+}
+
 void Scene_setTile(Scene* this, const int tileId, const int tileType) {
 	Tile* oldTile = Vector_Get(this->tiles, tileId);
 	if (oldTile) {

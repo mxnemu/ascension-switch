@@ -29,6 +29,7 @@ void Collectable_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 
 bool Collectable_onCollision(void* context, Entity* other) {
 	Collectable* this = context;
+	//FIXME this will crash when the player falls on a coin after switching the mode
 	if (other->physics.belongsToGroups & COLLISION_GROUP_PLAYER) {
 		ControlledEntity* controlled = other->context;
 		this->onCollect(this, controlled->player);

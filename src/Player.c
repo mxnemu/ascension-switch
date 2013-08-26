@@ -18,6 +18,9 @@ Player* Player_create(Scene* scene, Input* input) {
 	this->controlledEntity.destroyOnRelease= false;
 	this->controlledEntity.indicator = NULL;
 	this->sidebarUi = NULL;
+	this->dungeonMasterUi = NULL;
+	this->timeSinceLastEnemySpawn = PLAYER_SPAWN_ENEMY_DELAY;
+	this->timeSinceLastSelectionChange = PLAYER_SELECTION_CHANGE_DELAY;
 	Player_loadIndicator(this);
 
 	this->entity = Player_spawnPlayerEntity(this);
@@ -57,7 +60,11 @@ void Player_switchMode(Player* this) {
 		Scene_addEntity(this->opponent->scene, cursor->entity);
 		ControlledEntity_set(&this->controlledEntity, cursor->entity);
 		this->controlledEntity.destroyOnRelease = true;
+
+		this->dungeonMasterUi = DungeonMasterUi_create(this);
 	} else {
+		DungeonMasterUi_destroy(this->dungeonMasterUi);
+		this->dungeonMasterUi = NULL;
 		ControlledEntity_set(&this->controlledEntity, this->entity);
 	}
 }
@@ -78,6 +85,13 @@ void Player_update(void* context, RawTime dt) {
 	Player* this = context;
 	Player_processInput(this);
 	PlayerSidebarUi_update(this->sidebarUi, dt);
+
+	if (this->timeSinceLastEnemySpawn < PLAYER_SPAWN_ENEMY_DELAY) {
+		this->timeSinceLastEnemySpawn += dt;
+	}
+	if (this->timeSinceLastSelectionChange < PLAYER_SELECTION_CHANGE_DELAY) {
+		this->timeSinceLastSelectionChange += dt;
+	}
 }
 
 Entity* Player_spawnPlayerEntity(Player* this) {
@@ -129,11 +143,16 @@ Entity* Player_spawnPlayerEntity(Player* this) {
 }
 
 void Player_processInput(Player* this) {
+	PlayerCursor* cursor = NULL;
+	if (this->dungeonMasterUi && (this->controlledEntity.entity->physics.belongsToGroups & COLLISION_GROUP_CURSOR)) {
+		cursor = this->controlledEntity.entity->context;
+	}
+
 	int x = Input_getAxis(this->input, horizontal);
 	if (x != 0) {
 		this->controlledEntity.entity->physics.dx += (x*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 		// shitty check to not flip the cursor
-		if (this->controlledEntity.entity->physics.groundedStatus != immuneToGravity) {
+		if (!cursor) {
 			if (x < 0) {
 				this->controlledEntity.entity->animatedSprite->sprite->flip = true;
 			} else  if (x > 0) {
@@ -142,18 +161,39 @@ void Player_processInput(Player* this) {
 		}
 	}
 
-	if (Input_isDown(this->input, attackSword) &&
-		strcmp(this->controlledEntity.entity->animatedSprite->progress.animation->name, ANIMATION_PREPARE_ATTACK1) != 0 &&
-		strcmp(this->controlledEntity.entity->animatedSprite->progress.animation->name, ANIMATION_ATTACK1) != 0) {
-		AnimatedSprite_setAnimation(this->controlledEntity.entity->animatedSprite, ANIMATION_PREPARE_ATTACK1);
-	}
-
 	int y = Input_getAxis(this->input, vertical);
-	if (this->controlledEntity.entity->physics.groundedStatus == immuneToGravity) {
+	if (cursor) {
 		if (y != 0) {
 			this->controlledEntity.entity->physics.dy += (y*this->controlledEntity.entity->speedMultiplier * PHYSICS_SCALE) / AXIS_MAX;
 		}
+
+		if (Input_isDown(this->input, action) && this->timeSinceLastEnemySpawn >= PLAYER_SPAWN_ENEMY_DELAY) {
+			SDL_Point p = {
+					.x= this->controlledEntity.entity->animatedSprite->sprite->bounds.x,
+					.y= this->controlledEntity.entity->animatedSprite->sprite->bounds.y
+			};
+			DungeonMasterUi_summonSelectedCard(this->dungeonMasterUi, this->opponent->scene, Scene_positionToTilePosition(p));
+			this->timeSinceLastEnemySpawn = 0;
+		}
+
+		if (Input_isDown(this->input, attackBow)) {
+			DungeonMasterUi_selectPrevious(this->dungeonMasterUi);
+			this->timeSinceLastSelectionChange = 0;
+		}
+
+		if (Input_isDown(this->input, attackSword) && this->timeSinceLastSelectionChange >= PLAYER_SELECTION_CHANGE_DELAY) {
+			DungeonMasterUi_selectNext(this->dungeonMasterUi);
+			this->timeSinceLastSelectionChange = 0;
+		}
+
 	} else {
+
+		if (Input_isDown(this->input, attackSword) &&
+			strcmp(this->controlledEntity.entity->animatedSprite->progress.animation->name, ANIMATION_PREPARE_ATTACK1) != 0 &&
+			strcmp(this->controlledEntity.entity->animatedSprite->progress.animation->name, ANIMATION_ATTACK1) != 0) {
+			AnimatedSprite_setAnimation(this->controlledEntity.entity->animatedSprite, ANIMATION_PREPARE_ATTACK1);
+		}
+
 		bool didJump = false;
 		if (Input_isDown(this->input, jump) || y < 0) {
 			didJump = Entity_jump(this->controlledEntity.entity);
@@ -174,6 +214,9 @@ void Player_drawEntity(void* context, SDL_Renderer* renderer, Camera* camera) {
 void Player_draw(void* context, SDL_Renderer* renderer) {
 	Player* this = context;
 	PlayerSidebarUi_draw(this->sidebarUi, renderer);
+	if (this->dungeonMasterUi) {
+		DungeonMasterUi_draw(this->dungeonMasterUi, renderer);
+	}
 }
 
 void Player_earnMoney(Player* this, int money) {

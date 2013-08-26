@@ -6,6 +6,7 @@
 #include "GameEngine.h"
 #include "Vector.h"
 #include "CollisionHandler.h"
+#include "Tile.h"
 
 #define SCENE_MTABLE "yotm.Scene"
 
@@ -39,6 +40,9 @@ SDL_Point Scene_positionForTileId(Scene* this, const int tileId);
 
 void Scene_openDoors(Scene* this, int type);
 void Scene_spawnCollectable(Scene* this, int tileId, int type);
+
+Tile* Scene_getTile(Scene* this, SDL_Point tilePos);
+SDL_Point Scene_positionToTilePosition(SDL_Point position);
 
 // Lua stuff
 Scene* Scene_checkfromLua (lua_State *L, int idx);

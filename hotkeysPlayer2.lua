@@ -1,20 +1,20 @@
 
 keyboardHotkeys = {
     -- movement
-    {["name"]="horizontal", ["key"]="SDLK_LEFT", ["axisValue"]=-1},
-    {["name"]="horizontal", ["key"]="SDLK_RIGHT", ["axisValue"]=1},
-    {["name"]="vertical", ["key"]="SDLK_UP", ["axisValue"]=-1},
-    {["name"]="vertical", ["key"]="SDLK_DOWN", ["axisValue"]=1},
+    --{["name"]="horizontal", ["key"]="SDLK_LEFT", ["axisValue"]=-1},
+    --{["name"]="horizontal", ["key"]="SDLK_RIGHT", ["axisValue"]=1},
+    --{["name"]="vertical", ["key"]="SDLK_UP", ["axisValue"]=-1},
+    --{["name"]="vertical", ["key"]="SDLK_DOWN", ["axisValue"]=1},
     
     {["name"]="horizontal", ["key"]="SDLK_KP_4", ["axisValue"]=-1},
     {["name"]="horizontal", ["key"]="SDLK_KP_6", ["axisValue"]=1},
     {["name"]="vertical", ["key"]="SDLK_KP_8", ["axisValue"]=-1},
-    {["name"]="vertical", ["key"]="SDLK_KP_5", ["axisValue"]=1},
+    {["name"]="vertical", ["key"]="SDLK_KP_2", ["axisValue"]=1},
     
-    {["name"]="attackSword", ["key"]="j"},
-    {["name"]="attackBow", ["key"]="k"},
-    {["name"]="jump", ["key"]="l"},
-    {["name"]="action", ["key"]="e"}
+    {["name"]="attackSword", ["key"]="SDLK_KP_0"},
+    {["name"]="attackBow", ["key"]="SDLK_KP_ENTER"},
+    {["name"]="jump", ["key"]="SDLK_KP_7"},
+    {["name"]="action", ["key"]="SDLK_KP_9"}
 }
 
 -- TODO maybe use this for more control about different hat buttons

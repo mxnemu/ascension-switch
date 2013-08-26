@@ -3,7 +3,12 @@
 #include "Entity.h"
 #include "Input.h"
 #include "PlayerSidebarUi.h"
+#include "DungeonMasterUi.h"
 
+#define PLAYER_SPAWN_ENEMY_DELAY 2000
+#define PLAYER_SELECTION_CHANGE_DELAY 300
+
+typedef struct DungeonMasterUi DungeonMasterUi;
 CLASS(ControlledEntity) {
 	void* originalContext;
 	void (*originalDraw)(void* context, SDL_Renderer*, Camera* camera);
@@ -21,7 +26,10 @@ CLASS(Player) {
 	Scene* scene;
 	Player* opponent;
 	PlayerSidebarUi* sidebarUi;
+	DungeonMasterUi* dungeonMasterUi;
 	int money;
+	RawTime timeSinceLastEnemySpawn;
+	RawTime timeSinceLastSelectionChange;
 };
 
 

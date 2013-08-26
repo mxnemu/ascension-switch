@@ -414,11 +414,11 @@ char* Input_keycodeToPrintable(SDL_Keycode key) {
 	if (strncmp(keyPrefix, raw, strlen(keyPrefix)) == 0) {
 		const char* numPrefix = "SDLK_KP_";
 		if (strncmp(numPrefix, raw, strlen(numPrefix)) == 0) {
-			formatted = malloc((1+strlen(raw) - strlen(numPrefix))* sizeof(char));
-			strcpy(formatted, raw + strlen(numPrefix));
+			formatted = malloc((5+strlen(raw) - strlen(numPrefix))* sizeof(char));
+			sprintf(formatted, "NUM_%s", raw + strlen(numPrefix));
 		} else {
-			formatted = malloc((5+strlen(raw) - strlen(keyPrefix))* sizeof(char));
-			sprintf(formatted, "NUM_%s", raw + strlen(keyPrefix));
+			formatted = malloc((1+strlen(raw) - strlen(keyPrefix))* sizeof(char));
+			strcpy(formatted, raw + strlen(keyPrefix));
 		}
 	} else {
 		formatted = malloc((1+strlen(raw))* sizeof(char));
@@ -737,6 +737,16 @@ bool Input_keysymIsDown(Input* this, SDL_Keysym* keysym) {
 void Input_update(Input* this) {
 	this->keystates = SDL_GetKeyboardState(NULL);
 	this->keymods = SDL_GetModState();
+}
+
+SDL_Keycode Input_getHotkeyForAction(Input* this, ActionId action) {
+	for (int i=0; i < this->hotkeys->usedElements; ++i) {
+		InputHotkey* hotkey = this->hotkeys->elements[i];
+		if (hotkey && hotkey->id == action && hotkey->hotkeyType == HOTKEY_TYPE_KEYBOARD) {
+			return hotkey->hotkey.key.key.sym;
+		}
+	}
+	return SDLK_UNKNOWN;
 }
 
 InputHotkey* InputHotkey_create(int type, int actionId) {

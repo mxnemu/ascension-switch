@@ -50,6 +50,9 @@ void Input_loadHotkeys(Input* this, lua_State* l, const char* filePath);
 void Input_parseKeyboardHotkeys(Input* this, lua_State* l);
 void Input_parseJoystickHotkeys(Input* this, lua_State* l);
 
+// TODO get list or something and choose the best however that should work
+SDL_Keycode Input_getHotkeyForAction(Input* this, ActionId action);
+
 
 int Input_getAxis(Input* this, ActionId id);
 float Input_getAxisMultiplier(Input* this, ActionId hotkeyId);

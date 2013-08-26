@@ -6,9 +6,9 @@ keyboardHotkeys = {
     {["name"]="vertical", ["key"]="w", ["axisValue"]=-1},
     {["name"]="vertical", ["key"]="s", ["axisValue"]=1},
     
-    {["name"]="attackSword", ["key"]="j"},
-    {["name"]="attackBow", ["key"]="k"},
-    {["name"]="jump", ["key"]="l"},
+    {["name"]="attackSword", ["key"]="SDLK_LCTRL"},
+    {["name"]="attackBow", ["key"]="SDLK_SPACE"},
+    {["name"]="jump", ["key"]="q"},
     {["name"]="action", ["key"]="e"}
 }
 
