@@ -689,9 +689,9 @@ int Input_getAxis(Input* this, ActionId hotkeyId) {
 				if (this->joysticks->usedElements > 0) {
 					int newValue = SDL_JoystickGetAxis(this->joysticks->elements[0], it->hotkey.joystick.axisNumber);
 					if (newValue < 0) {
-						value = MAX(value + newValue, -AXIS_MAX);
+						value = imax(value + newValue, -AXIS_MAX);
 					} else {
-						value = MIN(value + newValue, AXIS_MAX);
+						value = imin(value + newValue, AXIS_MAX);
 					}
 				}
 			}

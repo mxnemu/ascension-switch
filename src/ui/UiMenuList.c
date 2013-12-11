@@ -17,7 +17,7 @@ void UiMenuList_addElement(UiMenuList* this, UiMenuElement* element) {
 	element->node->bounds.x = this->node->bounds.x;
 	element->node->bounds.y = this->node->bounds.y + this->node->bounds.h;
 
-	this->node->bounds.w = MAX(this->node->bounds.w, element->node->bounds.w);
+	this->node->bounds.w = imax(this->node->bounds.w, element->node->bounds.w);
 	this->node->bounds.h += element->node->bounds.h;
 }
 

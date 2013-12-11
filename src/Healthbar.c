@@ -35,7 +35,7 @@ void Healthbar_draw(Healthbar* this, SDL_Renderer* renderer) {
 
 void Healthbar_set(Healthbar* this, const float health, const float maxHealth) {
 	this->transitionTarget = ((float)this->fullHeight) * (health / maxHealth);
-	this->transitionTarget = MAX(this->transitionTarget, 0);
+	this->transitionTarget = imax(this->transitionTarget, 0);
 	//this->transitionStep;
 }
 

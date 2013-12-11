@@ -217,7 +217,7 @@ void Entity_hurt(Entity* this, const int health) {
 
 void Entity_modifyHealth(Entity* this, const int health) {
 	this->health += health;
-	this->health = MIN(this->health, 100);
+	this->health = imin(this->health, 100);
 	if (this->health <= 0) {
 		this->destroyed = true;
 	}

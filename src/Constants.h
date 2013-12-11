@@ -50,21 +50,12 @@ typedef Uint32 RawTime; // in ms (1s == 1000)
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-// Thanks to David Titarenco for providing this typesafe min/max
-// http://stackoverflow.com/a/3437484
-#ifndef MAX
-#define MAX(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a > _b ? _a : _b; })
-#endif
-
-#ifndef MIN
-#define MIN(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a < _b ? _a : _b; })
-#endif
+static inline int imax(int a, int b) {
+	return a > b ? a : b;
+}
+static inline int imin(int a, int b) {
+	return a < b ? a : b;
+}
 
 #define inRange(a, min, max) (a > min && a < max)
 #define inRangeOrEqual(a, min, max) (a >= min && a <= max)
