@@ -4,7 +4,6 @@
 #include "AnimatedSprite.h"
 #include "List.h"
 #include "Camera.h"
-#include "Scene.h"
 
 #define COLLISION_GROUP_NONE (0)
 #define COLLISION_GROUP_ALL (INT_MAX)
@@ -21,7 +20,7 @@
 enum GroundedStatus {
 	grounded, inAir, onLadder, immuneToGravity
 };
-
+struct Scene;
 CLASS(EntityPhysics) {
 	struct Scene* scene;
 	int dx, dy;

@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "Tile.h"
 
-DungeonMasterUi* DungeonMasterUi_create(Player* player) {
+DungeonMasterUi* DungeonMasterUi_create(struct Player* player) {
 	DungeonMasterUi* this = malloc(sizeof(DungeonMasterUi));
 	this->cards = List_create();
 	SDL_Renderer* renderer = player->scene->engine->renderer;
@@ -80,7 +80,7 @@ void DungeonMasterUi_destroy(DungeonMasterUi* this) {
 	TTF_CloseFont(this->cardFont);
 }
 
-void DungeonMasterUi_summonSelectedCard(DungeonMasterUi* this, Scene* scene, SDL_Point tilePosition) {
+void DungeonMasterUi_summonSelectedCard(DungeonMasterUi* this, struct Scene* scene, SDL_Point tilePosition) {
 	Card* card = this->selected->data;
 	if (card && this->player->money >= card->cost) {
 		Player_earnMoney(this->player, -card->cost);

@@ -37,7 +37,7 @@ void DungeonMasterUi_destroy(DungeonMasterUi* this);
 void DungeonMasterUi_draw(DungeonMasterUi* this, SDL_Renderer* renderer);
 void DungeonMasterUi_update(DungeonMasterUi* this, RawTime dt);
 
-void DungeonMasterUi_summonSelectedCard(DungeonMasterUi* this, Scene* scene, SDL_Point tilePosition);
+void DungeonMasterUi_summonSelectedCard(DungeonMasterUi* this, struct Scene* scene, SDL_Point tilePosition);
 void DungeonMasterUi_selectNext(DungeonMasterUi* this);
 void DungeonMasterUi_selectPrevious(DungeonMasterUi* this);
 
