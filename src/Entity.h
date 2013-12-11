@@ -4,6 +4,7 @@
 #include "AnimatedSprite.h"
 #include "List.h"
 #include "Camera.h"
+#include "Scene.h"
 
 #define COLLISION_GROUP_NONE (0)
 #define COLLISION_GROUP_ALL (INT_MAX)
@@ -21,9 +22,8 @@ enum GroundedStatus {
 	grounded, inAir, onLadder, immuneToGravity
 };
 
-typedef struct Scene Scene;
 CLASS(EntityPhysics) {
-	Scene* scene;
+	struct Scene* scene;
 	int dx, dy;
 	SDL_Rect bounds;
 	int weight;
@@ -43,7 +43,7 @@ CLASS(Entity) {
 	void (*draw)(void* context, SDL_Renderer*, Camera* camera);
 	bool (*onCollision)(void* context, Entity* otherEntity);
 	void (*onHealthModified)(void* context);
-	Scene* scene;
+	struct Scene* scene;
 	void* context;
 	int speedMultiplier;
 	bool inFrontOfLadder;
@@ -58,7 +58,7 @@ CLASS(Entity) {
 	RawTime timeSinceGrounded;
 };
 
-Entity* Entity_create(void* context, Scene* scene, AnimatedSprite* sprite);
+Entity* Entity_create(void* context, struct Scene* scene, AnimatedSprite* sprite);
 void Entity_destroy(Entity* this);
 
 void Entity_update(Entity* this, RawTime dt);

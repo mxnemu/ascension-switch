@@ -8,7 +8,7 @@ CLASS(PlayerCursor) {
 	Entity* entityUnderCursor;
 };
 
-PlayerCursor* PlayerCursor_create(Scene* scene, const char* colorPrefix);
+PlayerCursor* PlayerCursor_create(struct Scene* scene, const char* colorPrefix);
 void PlayerCursor_destroy(void* context);
 
 void PlayerCursor_draw(void* context, SDL_Renderer* renderer, Camera* camera);

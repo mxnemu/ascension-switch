@@ -6,7 +6,6 @@
 #define CARD_CONTROL_STRONGEST 2
 #define CARD_SUMMON_BOULDER 3
 
-typedef struct Player Player;
 CLASS(Card) {
 	Sprite* sprite;
 	Sprite* costLabel;
@@ -20,7 +19,7 @@ CLASS(Card) {
 };
 
 CLASS(DungeonMasterUi) {
-	Player* player;
+	struct Player* player;
 	ListNode* selected;
 	List* cards;
 	TTF_Font* cardFont;
@@ -32,7 +31,7 @@ CLASS(DungeonMasterUi) {
 	SDL_Rect background;
 };
 
-DungeonMasterUi* DungeonMasterUi_create(Player* player);
+DungeonMasterUi* DungeonMasterUi_create(struct Player* player);
 void DungeonMasterUi_destroy(DungeonMasterUi* this);
 
 void DungeonMasterUi_draw(DungeonMasterUi* this, SDL_Renderer* renderer);

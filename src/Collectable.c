@@ -4,7 +4,7 @@
 #include "Player.h"
 
 
-Collectable* Collectable_create(Scene* scene, AnimatedSprite* sprite, void (*onCollect)(Collectable*, Player*)) {
+Collectable* Collectable_create(Scene* scene, AnimatedSprite* sprite, void (*onCollect)(Collectable*, struct Player*)) {
 	Collectable* this = malloc(sizeof(Collectable));
 	this->entity = Entity_create(this, scene, sprite);
 	this->entity->draw = Collectable_draw;
@@ -27,7 +27,7 @@ void Collectable_draw(void* context, SDL_Renderer* renderer, Camera* camera) {
 	Sprite_drawOnCamera(this->entity->animatedSprite->sprite, renderer, camera);
 }
 
-bool Collectable_onCollision(void* context, Entity* other) {
+bool Collectable_onCollision(void* context, struct Entity* other) {
 	Collectable* this = context;
 	//FIXME this will crash when the player falls on a coin after switching the mode
 	if (other->physics.belongsToGroups & COLLISION_GROUP_PLAYER) {
@@ -80,7 +80,7 @@ Collectable* Collectable_createKey(Scene* scene, SDL_Point pos, int value) {
 	return this;
 }
 
-Collectable* Collectable_createPotion(Scene* scene, SDL_Point pos, int value) {
+Collectable* Collectable_createPotion(struct Scene* scene, SDL_Point pos, int value) {
 	AnimatedSprite* sprite = AnimatedSprite_create(Sprite_create(TextureCache_get(scene->engine->textureCache, "images/potion.png")));
 	Animation* idleAnimation = Animation_create("idle", true);
 	List_pushBack(idleAnimation->frames, Frame_create(0, 0, 32, 32, 200));
@@ -98,15 +98,15 @@ Collectable* Collectable_createPotion(Scene* scene, SDL_Point pos, int value) {
 }
 
 
-void Collectable_onCollectCoin(Collectable* this, Player* player) {
+void Collectable_onCollectCoin(struct Collectable* this, struct Player* player) {
 	Player_earnMoney(player, this->value);
 }
 
-void Collectable_onCollectKey(Collectable* this, Player* player) {
+void Collectable_onCollectKey(struct Collectable* this, struct Player* player) {
 	Scene_openDoors(player->entity->scene, this->value);
 }
 
-void Collectable_onCollectPotion(Collectable* this, Player* player) {
+void Collectable_onCollectPotion(struct Collectable* this, struct Player* player) {
 	Entity_modifyHealth(player->entity, this->value);
 }
 

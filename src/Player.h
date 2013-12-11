@@ -8,7 +8,6 @@
 #define PLAYER_SPAWN_ENEMY_DELAY 2000
 #define PLAYER_SELECTION_CHANGE_DELAY 300
 
-typedef struct DungeonMasterUi DungeonMasterUi;
 CLASS(ControlledEntity) {
 	void* originalContext;
 	void (*originalDraw)(void* context, SDL_Renderer*, Camera* camera);
@@ -23,23 +22,23 @@ CLASS(Player) {
 	Input* input;
 	Entity* entity;
 	ControlledEntity controlledEntity;
-	Scene* scene;
+	struct Scene* scene;
 	Player* opponent;
 	PlayerSidebarUi* sidebarUi;
-	DungeonMasterUi* dungeonMasterUi;
+	struct DungeonMasterUi* dungeonMasterUi;
 	int money;
 	RawTime timeSinceLastEnemySpawn;
 	RawTime timeSinceLastSelectionChange;
 };
 
 
-Player* Player_create(Scene* scene, Input* input);
+Player* Player_create(struct Scene* scene, Input* input);
 void Player_destroy(void* context);
 void Player_update(void* context, RawTime dt);
 void Player_draw(void* context, SDL_Renderer* renderer);
-Entity* Player_spawnPlayerEntity(Player* this);
+Entity* Player_spawnPlayerEntity(struct Player* this);
 
-void Player_switchMode(Player* this);
+void Player_switchMode(struct Player* this);
 
 void Player_destroyEntity(void* context);
 void Player_drawEntity(void* context, SDL_Renderer* renderer, Camera* camera);

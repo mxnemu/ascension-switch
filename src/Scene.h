@@ -7,6 +7,7 @@
 #include "Vector.h"
 #include "CollisionHandler.h"
 #include "Tile.h"
+#include "Entity.h"
 
 #define SCENE_MTABLE "yotm.Scene"
 
@@ -17,7 +18,7 @@ CLASS(Scene) {
 	Vector* triggers;
 	Vector* tiles;
 	Camera* camera;
-	CollisionHandler* collisionHandler;
+	struct CollisionHandler* collisionHandler;
 	GameEngine* engine;
 	int gravity;
 	const char* sceneAbove;
@@ -32,13 +33,13 @@ void Scene_update(Scene* this, RawTime dt);
 void Scene_draw(Scene* this, SDL_Renderer* renderer);
 
 void Scene_addBackground(Scene* this, const char* background);
-void Scene_addEntity(Scene* this, Entity* entity);
+void Scene_addEntity(Scene* this, struct Entity* entity);
 
 void Scene_setBounds(Scene* this, int x, int y, int w, int h);
 
 SDL_Point Scene_positionForTileId(Scene* this, const int tileId);
 
-void Scene_openDoors(Scene* this, int type);
+void Scene_openDoors(struct Scene* this, int type);
 void Scene_spawnCollectable(Scene* this, int tileId, int type);
 
 Tile* Scene_getTile(Scene* this, SDL_Point tilePos);

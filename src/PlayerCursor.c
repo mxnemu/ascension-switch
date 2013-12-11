@@ -2,7 +2,7 @@
 #include "TextureCache.h"
 #include "Scene.h"
 
-PlayerCursor* PlayerCursor_create(Scene* scene, const char* colorPrefix) {
+PlayerCursor* PlayerCursor_create(struct Scene* scene, const char* colorPrefix) {
 	PlayerCursor* this = malloc(sizeof(PlayerCursor));
 
 	char* path = malloc(128 * sizeof(char));
