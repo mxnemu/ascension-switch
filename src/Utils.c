@@ -75,8 +75,19 @@ void lua_createLib(lua_State* l, const char* tableName, const char* globalName, 
 	lua_setfield(l, -2, "__gc"); // write top of stack into table -2 (before the functions)
 	lua_pop(l,1); // pop the table from stack, we no longer need it there
 
-    luaL_newlib(l, functions);
+	lua_newlib(l, functions);
     luaL_setmetatable(l, tableName);
 
     lua_setglobal(l, globalName);
+}
+
+// same as luaL_newlib, but without the implicit buffer overflow warning.
+// Not really different to the original, but a cast to int to avoid the implicit warnig
+// At a first glance I don't see how it can fail if sizeof(functions) is > 0
+// TODO join lua mailing list and post this warning
+// The mailing list seems to be the only list for bug reports.
+void lua_newlib(lua_State* l, const luaL_Reg* functions) {
+	const int numberOfFunctions = (int)(sizeof(functions)/sizeof((functions)[0])) -1;
+	lua_createtable(l, 0, numberOfFunctions);
+	luaL_setfuncs(l,functions,0);
 }

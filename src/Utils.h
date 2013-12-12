@@ -5,6 +5,7 @@
 void stackDump (lua_State *L);
 void* lua_checklightuserdata(lua_State* l, int idx);
 void lua_createLib(lua_State* l, const char* tableName, const char* globalName, const luaL_Reg* functions, const luaL_Reg* methods, lua_CFunction destructor);
+void lua_newlib(lua_State* l, const luaL_Reg* functions);
 
 // SDL utils
 void SDL_Rect_init(SDL_Rect* rect);
