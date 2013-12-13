@@ -42,6 +42,22 @@ bool SDL_Rect_isInside(SDL_Rect* a, int x, int y);
 		List_destroy(list); \
 	}
 
+#define DEFAULT_CREATE_DESTROY_H(prefix)		\
+    struct prefix * prefix ## _create();		\
+    void prefix ## _destroy(struct prefix * this);
+
+#define DEFAULT_CREATE_DESTROY(prefix)			\
+    struct prefix * prefix ## _create() {		\
+	const int size = sizeof(struct prefix);		\
+	struct prefix * newValue = malloc(size);	\
+	prefix ## _init(newValue);			\
+	return newValue;				\
+    }							\
+    void prefix ## _destroy(struct prefix * this) {	\
+	prefix ## _destroyMembers(this);		\
+	free(this);					\
+    }
+
 #define STRING_TO_ENUM(e, s) if (strcmp(STR(e), s) == 0) { return e; }
 #define ENUM_TO_STRING(e, v) if (e == v) { return STR(e); }
 
