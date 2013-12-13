@@ -2,3 +2,6 @@ Default/
 *~
 Debug/
 Game
+*.o
+bin/
+objects/
